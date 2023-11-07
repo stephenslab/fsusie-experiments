@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --job-name=decay_128_fsusie_sbatch
+#SBATCH --output=decay_128_fsusie.out
+#SBATCH --error=decay_128_fsusie.err
+#SBATCH --time=23:00:00
+#SBATCH --partition=broadwl
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=10000
+#SBATCH --array=1-4
+
+module load R/4.1.0
+Rscript /home/wdenault/fsusi_simu/script/dist_decay_sim_128_$SLURM_ARRAY_TASK_ID.R
