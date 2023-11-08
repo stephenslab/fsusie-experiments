@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --job-name=block_512_fsusie_sbatch
+#SBATCH --output=block_512_fsusie.out
+#SBATCH --error=block_512_fsusie.err
+#SBATCH --time=23:00:00
+#SBATCH --partition=broadwl
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem-per-cpu=10000
+#SBATCH --array=1-4
+
+module load R/4.1.0
+Rscript /home/wdenault/fsusi_simu/script/block_sim_512_$SLURM_ARRAY_TASK_ID.R
