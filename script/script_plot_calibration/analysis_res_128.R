@@ -1,9 +1,9 @@
 library(dplR)
 ### For PVE=10% ----
-path <- getwd()
-load(paste( path,"/simulation/Simulation_results/dist_decay_L_accuracy_sd1.RData", 
-            sep=""))
 
+path <- getwd()
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd1.RData", 
+            sep=""))
 
 
 
@@ -158,8 +158,10 @@ P1_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
 P1_pur
 ### For PVE=20% ------ 
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/dist_decay_L_accuracy_sd2.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd2.RData", 
             sep=""))
+
+
 
 df_simu <- do.call(rbind, res)
 
@@ -283,7 +285,7 @@ P2_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
                 position=position_dodge(.9) )+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("Coverage PVE=20%") +
   theme_linedraw()
 
@@ -294,7 +296,7 @@ P2_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
 
   ylim(c(1,17))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("CS size PVE=20%") +
   theme_linedraw()
 
@@ -311,10 +313,12 @@ P2_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   theme_linedraw()
 
 P2_pur
-### For PVE=30% ----- 
+### For PVE=30% -----
+
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/dist_decay_L_accuracy_sd3.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd3.RData", 
             sep=""))
+
 
 
 
@@ -428,8 +432,8 @@ P3_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   geom_errorbar(aes(ymin=pw_er_low, ymax=pw_er_up), width=.2,
                 position=position_dodge(.9) )+
   ylim(c(0 ,1))+
-  ylab(" ")+
-  ggtitle("PVE=30%")  +
+   ylab(" ")+
+   ggtitle("PVE=30%")  +
   theme_linedraw()
 P3_p
 
@@ -439,7 +443,7 @@ P3_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
                 position=position_dodge(.9) )+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("Coverage PVE=30%") +
   theme_linedraw()
 
@@ -450,7 +454,7 @@ P3_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
 
   ylim(c(1,17))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("PVE=30%") +
   theme_linedraw()
 
@@ -462,15 +466,17 @@ P3_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
 
   ylim(c(0.9,1))+
 
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("Purity size PVE=30%") +
   theme_linedraw()
 
 P3_pur
 ### For PVE=40% ------ 
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/dist_decay_L_accuracy_sd4.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd4.RData", 
             sep=""))
+
+
 
 
 df_simu <- do.call(rbind, res)
@@ -583,7 +589,7 @@ P4_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   geom_errorbar(aes(ymin=pw_er_low, ymax=pw_er_up), width=.2,
                 position=position_dodge(.9) )+
   ylim(c(0 ,1))+
-  ylab(" ")+
+   ylab(" ")+
   ggtitle(" PVE=40%") +
   theme_linedraw()
 P4_p
@@ -594,7 +600,7 @@ P4_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
                 position=position_dodge(.9) )+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("Coverage PVE=40%") +
   theme_linedraw()
 
@@ -605,7 +611,7 @@ P4_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
 
   ylim(c(1,17))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("CS size PVE=40%") +
   theme_linedraw()
 
@@ -616,7 +622,7 @@ P4_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
 
   ylim(c(0.9,1))+
-  ylab(" ")+
+   ylab(" ")+
   #ggtitle("Purity size PVE=40%") +
   theme_linedraw()
 
@@ -647,7 +653,7 @@ ggarrange(P1_p,P2_p,P3_p,P4_p,
           P1_t1,P2_t1,P3_t1,P4_t1,
           P1_cs,P2_cs,P3_cs,P4_cs,
           P1_pur,P2_pur,P3_pur,P4_pur ,
-          nrow=4,
+nrow=4,
           ncol=4,common.legend = TRUE, legend="bottom")
 x = c(0.01  , 0.5, 0.99,       0.5 , 0.5 , 0.5,0.25 , 0.25 ,0.25,0.75 , 0.75 ,0.75,    0.01  , 0.5, 0.99,    0.01  , 0.5, 0.99  )
 y = c(0.525, 0.525, 0.525, 0.05   , 0.5 , 0.99 , 0.05   , 0.5 , 0.99, 0.05   , 0.5 , 0.99, 0.76, 0.76, 0.76, 0.285, 0.285, 0.285)

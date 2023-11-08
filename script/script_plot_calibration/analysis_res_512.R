@@ -1,8 +1,10 @@
 library(dplR)
-### For PVE=10% ---- 
+### For PVE=10% ----
+ 
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/block_L_accuracy_sd1.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_sd1.RData", 
             sep=""))
+
 
 
 
@@ -156,9 +158,11 @@ P1_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
 
 P1_pur
 ### For PVE=20% ------ 
+
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/block_L_accuracy_sd2.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_sd2.RData", 
             sep=""))
+
 
 df_simu <- do.call(rbind, res)
 
@@ -311,9 +315,13 @@ P2_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
 
 P2_pur
 ### For PVE=30% -----
+ 
+
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/block_L_accuracy_sd3.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_s3.RData", 
             sep=""))
+
+
 
 df_simu <- do.call(rbind, res)
 
@@ -464,10 +472,11 @@ P3_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   theme_linedraw()
 
 P3_pur
-### For PVE=40% ------
+### For PVE=40% ------ 
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/block_L_accuracy_sd4.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_sd4.RData", 
             sep=""))
+
 
 df_simu <- do.call(rbind, res)
 
