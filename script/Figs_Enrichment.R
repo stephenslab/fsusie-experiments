@@ -1,8 +1,10 @@
-annotation_plot <- read.delim("D:/Document/Serieux/Travail/Data_analysis_and_papers/susiF_data_simu/enrichment_results/annotation_plot_df_firth_log_ha_m_context_grouped.tsv")
+rm(list=ls())
 library(ggplot2)
 library(dplyr)
 
-
+path <- getwd()
+annotation_plot <- read.delim(paste( path,"/data/enrichment_results/annotation_plot_df_firth_log_ha_m_context_grouped.tsv", 
+            sep=""))
 
 
 t_pv <- 2*( 1-pnorm(abs(annotation_plot$mean), mean=0, sd=((annotation_plot$upper-annotation_plot$lower)/(1.96*2)) ) )
@@ -27,7 +29,9 @@ annotation_plot$feature<- sub("[.]"," ", annotation_plot$feature)
 table(sig, annotation_plot$type)
 
 
-ggplot(annotation_plot)+
+#### All the annotation ----
+
+Pall <- ggplot(annotation_plot)+
   geom_point(aes(x = mean, y =  reorder(feature,-abs(mean) ), shape=Significant , color = type))+
   geom_linerange(aes(xmin = lower, xmax= upper , y = feature   ,color = type))+
   geom_vline(aes( xintercept = 0 ))+
@@ -121,5 +125,8 @@ P7
 
 
 library(ggpubr)
+
+# Interesting annotations
 ggarrange( P1,P3, P7,P5,
            common.legend = TRUE, legend="bottom")
+Pall
