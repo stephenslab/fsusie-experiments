@@ -356,6 +356,7 @@ P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
   scale_x_discrete(guide = guide_axis(angle = 90)) +
   theme_linedraw() +
   xlab("")+
+  ylim(c(0.6,1))+
   ylab("Probability of overlapp")+scale_y_continuous(labels = scales::percent)
 
 
@@ -369,3 +370,8 @@ P_out <- ggarrange(
                    legend="bottom"
                    )
 P_out
+ggsave(P_out , file="plot/Fig3.png",
+       width = 29.7,
+       height = 21,
+       units = "cm"
+)
