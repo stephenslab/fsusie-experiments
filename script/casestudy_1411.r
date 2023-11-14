@@ -13,34 +13,7 @@ Neu_int = read_delim("../data/resource//Neu_hg38.Int.Nott.tsv")
 Oli_int = read_delim("../data/resource//Oli_hg38.Int.Nott.tsv")
 rbind(Neu_int%>%mutate(type = "Neu"),Oli_int%>%select(-`...1`)%>%mutate(type = "Oli"))-> annotation
 
-gene_plot75 = gene_plot75%>%filter(gene_id %in% c("ENSG00000128335"))
-chr_select = "chr22"
-#gene_plot[4,] = gene_plot[3,]
-gene_plot75$x_label <- (0.5*(gene_plot75$end-gene_plot75$start)+gene_plot75$start)
-nn = 0.9
-gene_plot_plot <-ggplot(gene_plot75,aes()) +
-  geom_segment( aes(x = start,xend = end, y = (nn-strand/100), yend =(nn-strand/100) ) ,
-                arrow = arrow(length = unit(0.5, "cm")) )+
-  geom_text(aes(x = x_label,y = (nn-0.05-strand/100), label = gene_name, vjust=-1),
-            size = 7)+
-  ylab("")+
-  xlab("")+
-  theme(legend.position="none")+
-  theme(text = element_blank())+
-  xlim(plot_range)+
-  geom_point(aes(x = start, y = (nn-strand/100)),
-             color = "black",size = 3  )+        
-    geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start1, end = end1, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
-    geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start2,start1, end = end2, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
-    geom_segment(color = "cyan", aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.7,size = 0.4, color  = "purple",  annotation%>%select(type, start2,start1,  chr = chr1)%>%filter(chr == chr_select, start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )  ) +
-    geom_segment( color = "red",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.1,size = 0.5,  annotation%>%filter(chr1 == chr_select,start1 > 36125000 , start1 < 36226209 ,start2 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) +
-    geom_segment( color = "red",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36000000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
-    geom_segment( color = "red",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36125000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start2, end = end2, chr = chr1)  ) +     
-    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
-    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu")%>%rename(start = start2, end = end2, chr = chr1)  ) +
-    geom_segment( color = "purple",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) 
 
-gene_plot_plot
 
 
 
@@ -156,7 +129,34 @@ refine_effect_plot+
 
 
 
+gene_plot75 = gene_plot75%>%filter(gene_id %in% c("ENSG00000128335"))
+chr_select = "chr22"
+#gene_plot[4,] = gene_plot[3,]
+gene_plot75$x_label <- (0.5*(gene_plot75$end-gene_plot75$start)+gene_plot75$start)
+nn = 0.9
+gene_plot_plot <-ggplot(gene_plot75,aes()) +
+  geom_segment( aes(x = start,xend = end, y = (nn-strand/100), yend =(nn-strand/100) ) ,
+                arrow = arrow(length = unit(0.5, "cm")) )+
+  geom_text(aes(x = x_label,y = (nn-0.05-strand/100), label = gene_name, vjust=-1),
+            size = 7)+
+  ylab("")+
+  xlab("")+
+  theme(legend.position="none")+
+  theme(text = element_blank())+
+  xlim(plot_range)+
+  geom_point(aes(x = start, y = (nn-strand/100)),
+             color = "black",size = 3  )+        
+    geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start1, end = end1, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
+    geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start2,start1, end = end2, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
+    geom_segment(color = "cyan", aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.7,size = 0.4, color  = "purple",  annotation%>%select(type, start2,start1,  chr = chr1)%>%filter(chr == chr_select, start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )  ) +
+    geom_segment( color = "red",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.1,size = 0.5,  annotation%>%filter(chr1 == chr_select,start1 > 36125000 , start1 < 36226209 ,start2 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) +
+    geom_segment( color = "red",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36000000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
+    geom_segment( color = "red",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36125000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start2, end = end2, chr = chr1)  ) +     
+    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
+    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu")%>%rename(start = start2, end = end2, chr = chr1)  ) +
+    geom_segment( color = "purple",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) 
 
+gene_plot_plot
 
 cowplot::plot_grid(plotlist = list(refine_effect_plot+theme(strip.text.y.right = element_text(angle = 0,size = 20),axis.text.y = element_text(size = 18), 
                                            panel.spacing=unit(0.7, "lines"))+
