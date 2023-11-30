@@ -308,7 +308,9 @@ grid.arrange(arrangeGrob(geno_plot,
                          CS_lab, heights=c(0.5,0.5)),
              arrangeGrob(P_effect,
                          pip_plot, heights=c(0.5,0.5)),
-             ncol=4, widths=c(0.35, 0.2,  0.1,0.35))
+             ncol=4, 
+             widths=c(0.35, 0.2,  0.1,0.35)
+             )
 vp = viewport(x = 0, y=0, width=1, height=1)
 pushViewport(vp)
 popViewport()

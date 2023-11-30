@@ -181,8 +181,7 @@ grid.arrange(P01, P11,
 path <-  getwd()
 
 
-m_1182_resid_plot_box <- read.delim(paste( path, "/data/fig_1_data/tad1182_raw.beta.tsv", sep=""))
-
+m_1182_resid_plot_box <- read.delim("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_1_data/tad1182_raw.beta.tsv")
 logit <- function( p)
 {
 
