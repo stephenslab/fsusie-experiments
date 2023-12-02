@@ -8,14 +8,16 @@ library("cowplot")
 library("ComplexUpset")
 effect1411 = read_delim("../data/case_study_tad1411/4_tad1411effect_superfine.tsv")
 gene_plot75  = read_delim("../data/case_study_tad1411/4_tad1411gene_info.tsv")%>%mutate(strand = strand%>%as.factor%>%as.numeric)
-
+simul_tf=read_delim("../data/case_study_tad1411/4_tad1411_annotation_simul_tf","\t")
 Neu_int = read_delim("../data/resource//Neu_hg38.Int.Nott.tsv")
 Oli_int = read_delim("../data/resource//Oli_hg38.Int.Nott.tsv")
 rbind(Neu_int%>%mutate(type = "Neu"),Oli_int%>%select(-`...1`)%>%mutate(type = "Oli"))-> annotation
 
-
-
-
+gene_plot75 = gene_plot75%>%filter(gene_id %in% c("ENSG00000128335"))
+chr_select = "chr22"
+#gene_plot[4,] = gene_plot[3,]
+gene_plot75$x_label <- (0.5*(gene_plot75$end-gene_plot75$start)+gene_plot75$start)
+nn = 0.9
 
 n = c(1,2,3,4)
 color = color2 = c("black", "dodgerblue2", "#6A3D9A","#FF7F00","skyblue2","#6A3D9A",
@@ -67,6 +69,7 @@ refine_effect_plot
 
 refine_plot =read_delim("../data/case_study_tad1411/4_tad1411pip_superfine.tsv","\t")
 plot_range = c(min(refine_plot$pos),max(refine_plot$pos))
+plot_range[2] = 36530000
 refine_plot$molecular_trait_id  [ which(str_detect(refine_plot$molecular_trait_id,"haQTL"))]<- "H3K9ac"
 refine_plot$molecular_trait_id  [ which(str_detect(refine_plot$molecular_trait_id,"mQTL"))]<- "DNAm"
 refine_plot$molecular_trait_id  [ which(refine_plot$molecular_trait_id =="pQTL 22_APOL2_Q9BQE5" )]<- "pQTL APOL2"
@@ -126,14 +129,6 @@ refine_plot
 
 refine_effect_plot+
   xlim(plot_range)
-
-
-
-gene_plot75 = gene_plot75%>%filter(gene_id %in% c("ENSG00000128335"))
-chr_select = "chr22"
-#gene_plot[4,] = gene_plot[3,]
-gene_plot75$x_label <- (0.5*(gene_plot75$end-gene_plot75$start)+gene_plot75$start)
-nn = 0.9
 gene_plot_plot <-ggplot(gene_plot75,aes()) +
   geom_segment( aes(x = start,xend = end, y = (nn-strand/100), yend =(nn-strand/100) ) ,
                 arrow = arrow(length = unit(0.5, "cm")) )+
@@ -149,14 +144,25 @@ gene_plot_plot <-ggplot(gene_plot75,aes()) +
     geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start1, end = end1, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
     geom_segment(color = "cyan", aes(color = type,x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%select(type,start = start2,start1, end = end2, chr = chr1)%>%filter(chr == chr_select, start > plot_range[[1]],start < plot_range[[2]],type =="Neu"  )  ) +
     geom_segment(color = "cyan", aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.7,size = 0.4, color  = "purple",  annotation%>%select(type, start2,start1,  chr = chr1)%>%filter(chr == chr_select, start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )  ) +
-    geom_segment( color = "red",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.1,size = 0.5,  annotation%>%filter(chr1 == chr_select,start1 > 36125000 , start1 < 36226209 ,start2 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) +
-    geom_segment( color = "red",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36000000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
-    geom_segment( color = "red",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36125000,start1 > 36125000 , start1 < 36226209 ,start2 <36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start2, end = end2, chr = chr1)  ) +     
-    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
-    geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu")%>%rename(start = start2, end = end2, chr = chr1)  ) +
-    geom_segment( color = "purple",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename( end = end2, chr = chr1)  ) 
+    #geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.87, yend =  0.87),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu"  )%>%rename(start = start1, end = end1, chr = chr1)  ) +
+    #geom_segment( color = "cyan",aes(x = start,xend = end, y = 0.835, yend =  0.835),alpha = 0.7,size = 5, data = annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209 , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu")%>%rename(start = start2, end = end2, chr = chr1)  ) +
+    geom_segment( color = "purple",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  simul_tf%>%count(start1,end1,start2,end2)%>%filter(start2 < 36500000 )%>%rename( end = end2))+
+    geom_segment( color = "red",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  simul_tf%>%count(start1,end1,start2,end2)%>%filter(start2 > 36500000 )%>%rename( end = end2)  )+
+
+    #geom_segment( color = "purple",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "purple",  annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu", start2 < 36500000  )%>%rename( end = end2, chr = chr1)  ) +
+    #geom_segment( color = "red",aes(x = start1,xend = start2, y = 0.87 , yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "red",  annotation%>%filter(chr1 == chr_select,start1 > 36000000 , start1 < 36226209  , start1 > plot_range[[1]],start1 < plot_range[[2]],type =="Neu",start2 > 36500000  )%>%rename( end = end2, chr = chr1)  ) + 
+geom_point( color = "red",aes(x = 36219878, y = 0.87  ),alpha = 1,size = 1 ) +  geom_point( color = "red",aes(x = 36221298, y = 0.87  ),alpha = 1,size = 1 )#+
+#geom_point( color = "red",aes(x = 36505275, y = 0.87  ),alpha = 1,size = 1 ) +  geom_point( color = "red",aes(x = 36529241, y = 0.87  ),alpha = 1,size = 1 )+
+
+    geom_vline( color = "black",aes(xintercept = 36480000 ),alpha = 1,size = 1 ) 
 
 gene_plot_plot
+
+
+
+
+
+
 
 cowplot::plot_grid(plotlist = list(refine_effect_plot+theme(strip.text.y.right = element_text(angle = 0,size = 20),axis.text.y = element_text(size = 18), 
                                            panel.spacing=unit(0.7, "lines"))+
@@ -171,7 +177,7 @@ cowplot::plot_grid(plotlist = list(refine_effect_plot+theme(strip.text.y.right =
                                      theme(text = element_text(size = 20)),
                                    refine_plot+
                                      theme_bw()+
-                                     theme(axis.ticks.x = element_blank()) +
+                                     theme(axis.ticks.x = element_blank()) +#scale_x_continuous(breaks=seq(35000000,36500000,length.out =  9))+
                                      theme(strip.text.y.right = element_text(angle = 0,size = 20))+
                                      xlab("") +ylim(c(0,1))+theme(text = element_text(size = 20),axis.text.x = element_text(size = 30), axis.text.y = element_text(size = 18), 
                                            panel.spacing=unit(0.7, "lines"),legend.position = "none")+scale_y_continuous(breaks = c(0,0.5,1))
@@ -182,6 +188,8 @@ align = "v",
 axis = "tlbr",
 rel_heights = c(5,1.5,6),labels  = c("A","B","C"),label_size = 25
 )-> result_plot
+
+
 
 result_plot%>%ggsave(filename = "../plot/casestudy_1411.pdf",width = 20, height = 15, device = "pdf")
 result_plot%>%ggsave(filename = "../plot/casestudy_1411.png",width = 20, height = 15, device = "png")
