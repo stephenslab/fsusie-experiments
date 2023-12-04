@@ -176,7 +176,7 @@ P1b <-  ggplot( df1b, aes(x=x, y=y, colour=color))+
                                      y = dummy, yend = y), 
                  
                colour = "#377eb8", 
-               size = 1)+
+               size = 1.5)+
   ggtitle("Observed wavelet coefficients ")+
   ylab("Scale")+
   theme_bw()+  
@@ -514,9 +514,35 @@ ggsave(P1b , file="data/fig_2_data/raw_wc.pdf" ,
        height = 21,
        unit="cm")
 
+
+
+
+
+
+
+
+source(paste(getwd(), "/script/plot_explanation.R", sep=""), echo=TRUE)
+
+
 mat <- do.call( rbind, out$est_pi[[1]])
 row.names(mat) <- paste("scale", 0:(nrow(mat)-1))
 saveRDS(mat, file = "data/fig_2_data/fitted_weight_data.rds")
 
+mat2 <- do.call( rbind, out$est_pi[[2]])
+row.names(mat2) <- paste("scale", 0:(nrow(mat)-1))
+saveRDS(mat2, file = "data/fig_2_data/fitted_weight_data2.rds")
 
+F_mat <- Reduce ("+",lapply( 1: length(out$cs), function(l) {
+  return(sweep(out$fitted_wc[[l]],
+                             1,
+                             out$alpha[[l]],
+                             "*"  )
+         )}
+  )
+  )
 
+F_mat <- as.data.frame (F_mat[ -c(1:280, 379:497),])
+image(as.matrix(F_mat) )
+
+ 
+saveRDS(F_mat, file = "data/fig_2_data/B_mat.rds")
