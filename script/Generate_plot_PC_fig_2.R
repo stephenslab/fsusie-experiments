@@ -113,6 +113,22 @@ P_obs <-p+
 P_obs
 
 
+i=17
+p <- ggplot()
+dat  <- data.frame(y = Y[i,], x = 1:length(Y[i,]))
+p <- p + geom_line(data = dat , mapping = aes(x = x, y = y) ,alpha= 1, linewidth=1.5)
+
+#dat  <- data.frame(y =  f1, x = 1:length(Y[i,]))
+#p <- p + geom_line(data = dat , mapping = aes(x = x, y = y) ,lwd=1.5, col="darkgreen")
+#dat  <- data.frame(y =   f2, x = 1:length(Y[i,]))
+#p <- p + geom_line(data = dat , mapping = aes(x = x, y = y) ,lwd=1.5, col="#6A3D9A")
+
+P_obs2 <-p+
+  theme_bw()+
+  ggtitle("Observed methylation profile")+
+  ylab("Methylation level")+xlab('base pair')
+P_obs2
+
 
 
 f1_list <- list()
@@ -149,13 +165,18 @@ df1b <- data.frame(y= do.call(c,wd1_list),
                    scale =  factor(  do.call(c, ywd1)))
 df1b$color= ifelse(abs(df1b$y)>0.01, "#377eb8","#e41a1c")
 
+df1b$dummy <- rep( 0, nrow(df1b))
 
-P1b <- ggplot( df1b, aes(x=x, y=y, colour=color))+
-  geom_point(size=2.5)+
+P1b <-  ggplot( df1b, aes(x=x, y=y, colour=color))+
+  #geom_point(size=2.5)+
   geom_hline(yintercept = 0)+
   facet_wrap(.~scale, ncol=1,strip.position = "left")+
   scale_color_manual(values= c( "#377eb8","#e41a1c") )+
-  
+  geom_segment(data = df1b, aes(x =x, xend = x, 
+                                     y = dummy, yend = y), 
+                 
+               colour = "#377eb8", 
+               size = 1)+
   ggtitle("Observed wavelet coefficients ")+
   ylab("Scale")+
   theme_bw()+  
@@ -340,12 +361,19 @@ df1b <- data.frame(y= do.call(c,wd1_list),
 df1b$color= ifelse(abs(df1b$y)>0.01, "#377eb8","#e41a1c")
 
 
+
+df1b$dummy <- rep( 0, nrow(df1b))
+ 
 P1 <- ggplot( df1b, aes(x=x, y=y, colour=color))+
   geom_point(size=2.5)+
   geom_hline(yintercept = 0)+
-  facet_wrap(.~scale,scales = "free", ncol=1)+
+  facet_wrap(.~scale,scales = "free_y", ncol=1)+
   scale_color_manual(values= c( "#377eb8","#e41a1c") )+
-  
+  geom_segment(data = df1b, aes(x =x, xend = x, 
+                                y = dummy, yend = y), 
+               
+               colour = "#377eb8", 
+               size = 1)+
   ggtitle("Wavelet coefficients ")+
   ylab("Scale")+
   theme_bw()+ 
@@ -354,7 +382,7 @@ P1 <- ggplot( df1b, aes(x=x, y=y, colour=color))+
   xlab("")
 
 
-
+P1
 
 
 
@@ -469,7 +497,7 @@ ggsave(pip_plot  , file="data/fig_2_data/pip_plot.pdf",
        width=29.7,
        height = 21,
        unit="cm")
-ggsave(geno_plot , file="data/fig_2_data/geno_plot.pdf",
+ggsave(geno_plot , file="data/fig_2_data/geno_plot.png",
        width=29.7,
        height = 21,
        unit="cm")
@@ -477,7 +505,10 @@ ggsave(P_obs , file="data/fig_2_data/observed_DNAm.pdf",
        width=29.7,
        height = 21,
        unit="cm")
-
+ggsave(P_obs2 , file="data/fig_2_data/observed_DNAm2.pdf",
+       width=29.7,
+       height = 21,
+       unit="cm")
 ggsave(P1b , file="data/fig_2_data/raw_wc.pdf" ,
        width=29.7,
        height = 21,
