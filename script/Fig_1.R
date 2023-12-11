@@ -502,7 +502,8 @@ Fig1 <- ggdraw() +
   draw_plot(P1_2, x = 0.25, y = 0.05, width = .25, height = .4) +
   draw_plot(legend, x = 0.0, y = 0.0 , width = .5, height = .05) +
  
-   draw_plot_label(label = c(" ", "A", "B"), size = 15,                  x = c(0, 0 , 0.25), y = c(1, 0.4, 0.4))+
+   draw_plot_label(label = c(" ", "A", "B"), size = 15,
+                   x = c(0, 0 , 0.25), y = c(1, 0.45, 0.45))+
 
   draw_plot(P01, x = 0.5, y = 0.8, width = 0.25, height = 0.2)+
 
@@ -528,8 +529,8 @@ id = c(1, 1    ,1  )
 grid.polygon(x , y , id=id)
 
 
-#ggsave(Fig1 , file="plot/Fig1.png",
-#       width = 29.7,
-#       height = 21,
-#       units = "cm"
-#       )
+ ggsave(Fig1 , file="plot/Fig1.png",
+         width = 29.7,
+        height = 21,
+       units = "cm"
+        )
