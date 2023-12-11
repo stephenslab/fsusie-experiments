@@ -43,15 +43,18 @@ df_effect <-data.frame(x=1:128,
                        y=effect)
 P00 <- ggplot( df_effect, aes(x=x, y=y))+
   geom_point()+
-  xlab("")+
-  ylab("")+
+  
   ylim(c(-0.1,1.3))+
-  theme_bw()+
-  theme(axis.title.x=element_blank(),
+  theme_classic()+
+  theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
 P01 <- P00+geom_point(x=88,y=effect[88], col="blue1",size=3)+
-  ylab("")
+  
+  geom_hline(yintercept = 0)+
+  xlab("CpG")+
+  ylab("Effect ") 
 
 tt <- susie( X=X,y=y[,88], L=1)
 
@@ -65,8 +68,12 @@ P11 <- ggplot( )+
   geom_point(df_pip1, mapping=aes(x=x, y=y))+
   xlab("SNP index")+
   ylab("PIP")+
-  theme_bw()+
-
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
     geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
 
@@ -76,8 +83,14 @@ P11
 
 
 P02 <- P00+geom_point(x=91,y=effect[91], col="blue1",size=3)+
-  ylab("")
-
+  ylab("")+
+  xlab("CpG")+
+  ylab("Effect ")+
+  geom_hline(yintercept = 0)+
+  theme( axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())
 tt <- susie( X=X,y=y[,91], L=1)
 
 df_pip2 <-data.frame(x=1:length(tt$pip),
@@ -89,14 +102,28 @@ P21 <- ggplot( )+
   geom_point(df_pip2, mapping=aes(x=x, y=y))+
   xlab("SNP index")+
   ylab("PIP")+
-  theme_bw()+
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
 
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
 
 
 P03 <- P00+geom_point(x=94,y=effect[94], col="blue1",size=3)+
-  ylab("")
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
+  
+  geom_hline(yintercept = 0)+
+  xlab("CpG")+
+  ylab("Effect ") 
 
 tt <- susie( X=X,y=y[,94], L=1)
 
@@ -109,13 +136,26 @@ P31 <-ggplot( )+
   geom_point(df_pip3, mapping=aes(x=x, y=y))+
   xlab("SNP index")+
   ylab("PIP")+
-  theme_bw()+
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
 
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
 
 P04 <- P00+geom_point(x=100,y=effect[100], col="blue1",size=3)+
-  ylab("")
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
+  
+  geom_hline(yintercept = 0)+
+  xlab("CpG")+
+  ylab("Effect ") 
 
 tt <- susie( X=X,y=y[,100], L=1)
 
@@ -124,11 +164,16 @@ df_pip4 <-data.frame(x=1:length(tt$pip),
 df2   <-data.frame(x= tt$sets$cs$L1,
                    y=tt$pip[tt$sets$cs$L1])
 df3   <-data.frame(x= 700,y=tt$pip[700])
-P41 <-  ggplot( )+
+P41 <-  ggplot( )+ theme_classic()+
   geom_point(df_pip4, mapping=aes(x=x, y=y))+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
   xlab("SNP index")+
   ylab("PIP")+
-  theme_bw()+
+ 
 
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
@@ -148,24 +193,72 @@ df_est_f<- data.frame(y=c( tt$fitted_func[[1]],
 ),
 x= rep( 1:128, 3),
 type=factor(rep(1:3, each=128)))
-P05 <- ggplot(df_est_f, aes(x=x, y=y,linetype=type))+
-  geom_line(size=1.3)+
+
+
+
+df_est_f<- data.frame(y=c( tt$fitted_func[[1]],
+                           tt$cred_band[[1]][1,],
+                           tt$cred_band[[1]][2,]
+),
+x= rep( 1:128, 3),
+type=factor(rep(1:3, each=128)))
+
+
+ggplot( )+
+  geom_point(df_effect,  mapping=aes(x=x, y=y))+
+  geom_line( df_est_f[which(df_est_f$type==1),],
+             mapping=aes(x=x, y=y,linetype="longdash"), 
+             col="blue1",
+             size=1.3)+
+  geom_line( df_est_f[which(df_est_f$type==2),],
+             mapping=aes(x=x, y=y,linetype="solid"),
+             col="blue1",
+             size=1.3)+
+  geom_line( df_est_f[which(df_est_f$type==3),],
+             mapping=aes(x=x, y=y,linetype="solid"),
+             col="blue1",
+             size=1.3)+
+  
   xlab("")+
   ylab("")+
-  theme_bw()+
+  theme_classic()
 
-  theme(legend.position = "none")+
+P05 <-  ggplot( )+
+  geom_point(df_effect,  mapping=aes(x=x, y=y))+
+  geom_line( df_est_f[which(df_est_f$type==1),],
+             mapping=aes(x=x, y=y,linetype="longdash"), 
+             col="blue1",
+             size=1.3)+
+  geom_line( df_est_f[which(df_est_f$type==2),],
+             mapping=aes(x=x, y=y,linetype="solid"),
+             col="blue1",
+             size=1.3)+
+  geom_line( df_est_f[which(df_est_f$type==3),],
+             mapping=aes(x=x, y=y,linetype="solid"),
+             col="blue1",
+             size=1.3)+
+  
+  xlab("CpG")+
+  ylab("Effect ")+
+  theme_classic()+
   geom_hline(yintercept = 0)+
-  theme(axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
-
+  theme(legend.position = "none",
+        panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())
 P51 <- ggplot( df_pip5, aes(x=x, y=y))+
   geom_point()+
   xlab("SNP index")+
   ylab("PIP")+
-  theme_bw()+
+  theme_classic()+
   geom_point(x= 700,y=tt$pip[700], col="chartreuse2",size=3)+
+  theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+         axis.text.y=element_blank(),
+         axis.ticks.y=element_blank(),
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())+
 
   geom_point(x= 700,y=tt$pip[700], col="blue2",size=2)
 
@@ -235,24 +328,26 @@ t_df <- data.frame(pv=pv, est=est,x=df$dummy_pos )
 
 P2 <- ggplot( t_df, aes(y=est,x=x))+
   geom_line()+
-  geom_point() +theme_bw( )+
+  geom_point() +theme_classic( )+
   geom_hline(yintercept = 0)+
   ylab("Z-score")+
-  xlab("")+theme(axis.text.x=element_blank())
+  xlab("")+theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+                 axis.text.x=element_blank())
 P2
 
 P3 <- ggplot( t_df, aes(y=-log10(pv),x=x))+
   geom_line()+
-  geom_point() +theme_bw( )+
+  geom_point() +theme_classic( )+
   geom_hline(yintercept = 0)+
   ylab("-log10(pv)")+
-  xlab("")+theme(axis.text.x=element_blank())
+  xlab("")+theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+                 axis.text.x=element_blank())
 P3
 
 
 
 P1_1 <-ggplot(df[which( df$dummy_pos2> 35 & df$dummy_pos2<50),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
-  geom_boxplot(aes(fill=genotype),position=position_dodge(1 ),
+   geom_boxplot(aes(fill=genotype),position=position_dodge(1 ),
                #size = 0.5 ,
                alpha = 0.5,coef = 6)+
 
@@ -260,14 +355,18 @@ P1_1 <-ggplot(df[which( df$dummy_pos2> 35 & df$dummy_pos2<50),] , aes(x =  as.fa
   stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x  = as.factor(dummy_pos2)),
-               size = 1.2)+
-  theme_bw( )+
+               size = 1.1,alpha=0.5)+
+  theme_classic( )+
   ylab("Methylation level ")+
-  xlab("")+ theme(legend.position="none",axis.text.x =   element_blank())
+  xlab("CpG")+ theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+                     legend.position="none",
+                     axis.text.x =   element_blank(),
+                     axis.ticks.x=element_blank(),
+                     axis.text.y =   element_blank(),
+                     axis.ticks.y=element_blank())
 
 P1_1
-
-
+  
 
 
 
@@ -280,10 +379,16 @@ ylim(c(0,.17))+
   stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x = as.factor(dummy_pos2)),
-               size = 1.2)+
-  theme_bw( )+
+               size = 1.1,alpha=0.5)+
+  theme_classic( )+
   ylab("Methylation level ")+
-  xlab("")+ theme(legend.position="none",axis.text.x = element_blank())
+  theme_classic()+
+  xlab("CpG")+ theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+                     legend.position="none",
+                     axis.text.x = element_blank(),
+                     axis.ticks.x=element_blank(),
+                     axis.text.y =   element_blank(),
+                     axis.ticks.y=element_blank())
 
 
 P1_2
@@ -295,10 +400,21 @@ df$alpha= rep(0.2,nrow(df))
 
 df$alpha[c(38:47, 141:146)]<- 1
 #df$rs35060601 <- df$genotype
-P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
-  geom_boxplot(aes(fill=genotype), alpha=0.5,position=position_dodge(1 ),
 
-               coef = 6)+
+
+P1_prime <- ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
+   stat_summary(fun=median,
+               geom="line",
+               aes(group = X,color = genotype,x = dummy_pos),
+               size = 0.8)+
+  theme_classic( )+
+  theme( 
+         legend.position = "bottom")
+
+P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
+  # geom_boxplot(aes(fill=genotype), alpha=0.5,position=position_dodge(1 ),
+
+  #              coef = 6)+
 
 
   stat_summary(fun=median,
@@ -306,24 +422,25 @@ P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.fac
                aes(group = X,color = genotype,x = dummy_pos),
                size = 0.8)+
 
-  theme_bw( )+
+  theme_classic( )+
 
   ylab("Methylation level")+
-  xlab("Base pair")+
+  xlab("CpG")+
+  theme_classic()+
   geom_segment(aes(x =17, y = 0.25, xend = 25, yend = 0.25),size=1.5)+
   geom_text(x=21, y=0.33, label="A" )+
   geom_segment(aes(x =  46, y = 0.25, xend =55, yend = 0.25),size=1.5)+
   geom_text(x=50.5, y=0.33, label="B" )+
-  theme(axis.text.x = element_blank(),
-        legend.position = "bottom"
+  theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        legend.position = "none",
+        axis.text.x =   element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y =   element_blank(),
+        axis.ticks.y=element_blank()
         )
 
-
-
-
-
-
-
+legend <- cowplot::get_legend(P1_prime)
+ 
 library(ggridges)
 set.seed(2)
 
@@ -353,12 +470,18 @@ mh_plot <- ggplot( tt, aes (x=as.factor(x),
                             group=type)
                    )+
   geom_ridgeline(fill="lightblue", alpha=0.2)+
-  theme_bw( )+
+  theme_classic( )+
   ylab("-log10 pvalue")+
   xlab("")+
-
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_text(angle =0, vjust = 0, hjust= 0))#+scale_y_discrete(guide = guide_axis(check.overlap = TRUE))
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.x =   element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y =   element_blank(),
+        axis.ticks.y=element_blank()
+       # axis.text.x = element_blank(),
+        #axis.text.y = element_text(angle =45, vjust = 0, hjust= 0)
+        )#+scale_y_discrete(guide = guide_axis(check.overlap = TRUE))
 mh_plot
 #ggdraw() +draw_plot(mh_plot, x = 0, y = 0.8, width = 1, height = 0.2)+
 #  draw_plot(P1, x = 0, y = 0.4, width = 1, height = 0.4) +
@@ -372,39 +495,41 @@ mh_plot
 
 
 
-Fig1 <- ggdraw() +draw_plot(mh_plot, x = 0, y = 0.8, width = 0.5, height = 0.2)+
-  draw_plot(P1, x = 0, y = 0.4, width = 0.5, height = 0.4) +
-  draw_plot(P1_1, x = 0, y = 0, width = .25, height = .4) +
-  draw_plot(P1_2, x = 0.25, y = 0, width = .25, height = .4) +
-
+Fig1 <- ggdraw() +
+  draw_plot(mh_plot, x = 0, y = 0.8, width = 0.5, height = 0.2)+
+  draw_plot(P1, x = 0, y = 0.45, width = 0.5, height = 0.35) +
+  draw_plot(P1_1, x = 0, y = 0.05, width = .25, height = .4) +
+  draw_plot(P1_2, x = 0.25, y = 0.05, width = .25, height = .4) +
+  draw_plot(legend, x = 0.0, y = 0.0 , width = .5, height = .05) +
+ 
    draw_plot_label(label = c(" ", "A", "B"), size = 15,                  x = c(0, 0 , 0.25), y = c(1, 0.4, 0.4))+
 
   draw_plot(P01, x = 0.5, y = 0.8, width = 0.25, height = 0.2)+
 
   draw_plot(P11, x = 0.75, y = 0.8, width = 0.25, height = 0.2)+
-  draw_plot(P02, x = 0.5, y = 0.6, width = 0.25, height = 0.2)+
+  draw_plot(P02, x = 0.5,  y = 0.6, width = 0.25, height = 0.2)+
   draw_plot(P21, x = 0.75, y = 0.6, width = 0.25, height = 0.2)+
-  draw_plot(P03, x = 0.5, y = 0.4, width = 0.25, height = 0.2)+
+  draw_plot(P03, x = 0.5,  y = 0.4, width = 0.25, height = 0.2)+
   draw_plot(P31, x = 0.75, y = 0.4, width = 0.25, height = 0.2)+
-  draw_plot(P04, x = 0.5, y = 0.2, width = 0.25, height = 0.2)+
+  draw_plot(P04, x = 0.5,  y = 0.2, width = 0.25, height = 0.2)+
   draw_plot(P41, x = 0.75, y = 0.2, width = 0.25, height = 0.2)+
-  draw_plot(P05, x = 0.5, y = 0.0, width = 0.25, height = 0.2)+
-  draw_plot(P51, x = 0.75, y = 0.0, width = 0.25, height = 0.2 )
+  draw_plot(P05, x = 0.5,  y = 0.0, width = 0.25, height = 0.2)+
+  draw_plot(P51, x = 0.75, y = 0.0, width = 0.25, height = 0.2)
 
 library(gridExtra)
 library(grid)
 Fig1
 library(ggpubr)
-y = c(0.001  , 0.5, 0.999  )
-x = c(0.515, 0.515, 0.515   )
+y = c(0.0081  , 0.5, 0.99  )
+x = c(0.5, 0.5, 0.5   )
 id = c(1, 1    ,1  )
 
 
 grid.polygon(x , y , id=id)
 
 
-ggsave(Fig1 , file="plot/Fig1.png",
-       width = 29.7,
-       height = 21,
-       units = "cm"
-       )
+#ggsave(Fig1 , file="plot/Fig1.png",
+#       width = 29.7,
+#       height = 21,
+#       units = "cm"
+#       )

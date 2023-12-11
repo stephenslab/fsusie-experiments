@@ -65,6 +65,9 @@ for (o  in (length(res)+1):10000) {
              y=PCA$u[,1],
              L=5
   )
+  m01 <-susiF(Y=Y, X=G,L=2  ,nullweight=10,  maxit=10,
+              prior="mixture_normal",
+              post_processing="none")
 
 
 
@@ -85,7 +88,13 @@ for (o  in (length(res)+1):10000) {
   Y2 <-Y2+matrix(rnorm((2^7)*N ,sd=sd(c(Y))/sqrt(0.5)), nrow = N)
 
   PCA <- svd(Y2)
-  m12 <-susiF(Y=Y2, X=G,L=2  ,nullweight=10,  maxit=10)
+  m12 <-susiF(Y=Y2, X=G,L=2  ,nullweight=10,  maxit=10,
+              post_processing="none")
+  ### buidling zscore
+  m11 <-susiF(Y=Y, X=G,L=2  ,nullweight=10,  maxit=10,
+              prior="mixture_normal",
+              post_processing="none")
+
   ### buidling zscore
 
 
@@ -99,12 +108,23 @@ for (o  in (length(res)+1):10000) {
                                                1,
                                                0),
                   m1$pip,
+
+                  is_overlap_susif_sp  =       ifelse(length( which(m11$cs[[1]] %in% m01$cs[[1]] )) >0,
+                                                   1,
+                                                   0),
+
                   susie_rss_pip= m2$pip,
                   is_overlap_susie=  ifelse(length( which(m2$sets$cs$L1 %in% m22$sets$cs$L1 )) >0,
                                             1,
                                             0) ,
-                  susiF_pip = m1$pip, susie_rss_pip= m2$pip,
+                  susiF_pip = m1$pip,
+
+                  susiF_sp_pip = m11$pip,
+
+                  susie_rss_pip= m2$pip,
                   susiF_cs= m1$cs,
+                  susiF_sp_cs= m11$cs,
+
                   susie_cs= m2$sets,
                   fsusie_purity = cal_purity(m1$cs,G  ),
                   true_pos=true_pos)
