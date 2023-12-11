@@ -277,9 +277,9 @@ path <-  getwd()
 m_1182_resid_plot_box <- read.delim("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_1_data/tad1182_raw.beta.tsv")
 logit <- function( p)
 {
-
+  
   out <- log( p/(1-p))
-
+  
   return(out)
 }
 
@@ -298,8 +298,8 @@ df$dummy_pos <-  rep(NA, nrow(df))
 tt <- df$peak_pos[order(df$peak_pos)]
 for ( k in 1:length(unique(tt))){
   df$dummy_pos[which(df$peak_pos==unique(tt)[k] )] <- k
-
-
+  
+  
 }
 
 df$genotype <- factor(df$rs35060601)
@@ -315,7 +315,7 @@ pv <- c()
 for ( k in 1:length(unique(tt))){
   fit <-  lm( df$count[which(df$peak_pos==unique(tt)[k] )]  ~  as.factor(df$X[which(df$peak_pos==unique(tt)[k] )]  ))
   fit2 <-  lm( df$count[which(df$peak_pos==unique(tt)[k] )]  ~  1 )
-
+  
   ano <-  anova(fit,fit2)
   fit <-  lm( df$count[which(df$peak_pos==unique(tt)[k] )]  ~  as.factor(df$X[which(df$peak_pos==unique(tt)[k] )]  ))
   est <-  c(est,summary( fit)$coefficients[2,1]/summary( fit)$coefficients[2,2])
@@ -347,11 +347,11 @@ P3
 
 
 P1_1 <-ggplot(df[which( df$dummy_pos2> 35 & df$dummy_pos2<50),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
-   geom_boxplot(aes(fill=genotype),position=position_dodge(1 ),
+  geom_boxplot(aes(fill=genotype),position=position_dodge(1 ),
                #size = 0.5 ,
                alpha = 0.5,coef = 6)+
-
-
+  
+  
   stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x  = as.factor(dummy_pos2)),
@@ -366,7 +366,7 @@ P1_1 <-ggplot(df[which( df$dummy_pos2> 35 & df$dummy_pos2<50),] , aes(x =  as.fa
                      axis.ticks.y=element_blank())
 
 P1_1
-  
+
 
 
 
@@ -374,8 +374,8 @@ P1_2 <-ggplot(df[which( df$dummy_pos2>67 & df$dummy_pos2<78),] , aes(x =  as.fac
   geom_boxplot(aes(fill=genotype),position=position_dodge(1 ),
                #size = 0.5 ,
                alpha = 0.5,coef = 6)+
-
-ylim(c(0,.17))+
+  
+  ylim(c(0,.17))+
   stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x = as.factor(dummy_pos2)),
@@ -403,27 +403,27 @@ df$alpha[c(38:47, 141:146)]<- 1
 
 
 P1_prime <- ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
-   stat_summary(fun=median,
+  stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x = dummy_pos),
                size = 0.8)+
   theme_classic( )+
   theme( 
-         legend.position = "bottom")
+    legend.position = "bottom")
 
 P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.factor(dummy_pos2),  y = count   ))+
   # geom_boxplot(aes(fill=genotype), alpha=0.5,position=position_dodge(1 ),
-
+  
   #              coef = 6)+
-
-
+  
+  
   stat_summary(fun=median,
                geom="line",
                aes(group = X,color = genotype,x = dummy_pos),
                size = 0.8)+
-
+  
   theme_classic( )+
-
+  
   ylab("Methylation level")+
   xlab("CpG")+
   theme_classic()+
@@ -432,15 +432,15 @@ P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.fac
   geom_segment(aes(x =  46, y = 0.25, xend =55, yend = 0.25),size=1.5)+
   geom_text(x=50.5, y=0.33, label="B" )+
   theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
-        legend.position = "none",
-        axis.text.x =   element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.y =   element_blank(),
-        axis.ticks.y=element_blank()
-        )
+         legend.position = "none",
+         axis.text.x =   element_blank(),
+         axis.ticks.x=element_blank(),
+         axis.text.y =   element_blank(),
+         axis.ticks.y=element_blank()
+  )
 
 legend <- cowplot::get_legend(P1_prime)
- 
+
 library(ggridges)
 set.seed(2)
 
@@ -457,19 +457,56 @@ tt1 <- pv2[22]
 pv2[23] <-tt1
 pv2[22]<-tt0
 
-pv3 <- pv2- runif( length(pv1), max= min(pv2)/2)
+pv3 <- pv2- runif( length(pv1), max= max(pv2)/5)
+pv4 <- pv3+ runif( length(pv1), max= max(pv3)/5)
 
-tt <- data.frame(pv =(c(pv1-min(pv1)*.9,pv2-min(pv2)*.9,pv3-min(pv3)*.9) ),
-                 x= rep( c(1:length( 23:84 )),3),
-               #  type= factor(rep(c("rs35060601", "rs1595553879", "rs1963838328"),each=length( 23:84 ))))
-                 type= factor(rep(c("SNP1", "SNP2", "SNP3"),each=length( 23:84 ))))
+pv5 <- pv4- runif( length(pv1), max= max(pv4)/5)
+
+pv6 <- pv5+ runif( length(pv1), max= max(pv5)/5)
+
+pv7 <- pv6- runif( length(pv1), max= max(pv6)/5)
+
+pv8 <- pv7+ runif( length(pv1), max= max(pv7)/5)
+
+pv9 <- pv8- runif( length(pv1), max= max(pv8)/5)
+
+pv10 <- pv9+ runif( length(pv1), max= max(pv9)/5)
+
+
+tt <- data.frame(pv =(c(pv1-min(pv1) ,
+                        pv2-min(pv2) ,
+                        pv3-min(pv3) ,
+                        pv4-min(pv4) ,
+                        pv5-min(pv5) ,
+                        pv6-min(pv6) ,
+                        pv7-min(pv7) ,
+                        pv8-min(pv8) ,
+                        pv9-min(pv9) ,
+                        pv10-min(pv10) ) 
+                      
+                      
+                      
+),
+x= rep( c(1:length( 23:84 )),10),
+#  type= factor(rep(c("rs35060601", "rs1595553879", "rs1963838328"),each=length( 23:84 ))))
+type= factor(rep(c("SNP1", 
+                   "SNP2",
+                   "SNP3",
+                   "SNP4",
+                   "SNP5",
+                   "SNP6",
+                   "SNP7",
+                   "SNP8",
+                   "SNP9",
+                   "SNP10" ),
+                 each=length( 23:84 ))))
 
 mh_plot <- ggplot( tt, aes (x=as.factor(x),
                             y=type ,
                             height = pv,
                             group=type)
-                   )+
-  geom_ridgeline(fill="lightblue", alpha=0.2)+
+)+
+  geom_ridgeline(fill="lightblue", alpha=0.5,scale=2)+
   theme_classic( )+
   ylab("-log10 pvalue")+
   xlab("")+
@@ -479,10 +516,11 @@ mh_plot <- ggplot( tt, aes (x=as.factor(x),
         axis.ticks.x=element_blank(),
         axis.text.y =   element_blank(),
         axis.ticks.y=element_blank()
-       # axis.text.x = element_blank(),
+        # axis.text.x = element_blank(),
         #axis.text.y = element_text(angle =45, vjust = 0, hjust= 0)
-        )#+scale_y_discrete(guide = guide_axis(check.overlap = TRUE))
+  )#+scale_y_discrete(guide = guide_axis(check.overlap = TRUE))
 mh_plot
+
 #ggdraw() +draw_plot(mh_plot, x = 0, y = 0.8, width = 1, height = 0.2)+
 #  draw_plot(P1, x = 0, y = 0.4, width = 1, height = 0.4) +
 #  draw_plot(P1_1, x = 0, y = 0, width = .45, height = .4) +
