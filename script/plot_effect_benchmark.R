@@ -1,8 +1,8 @@
-set.seed(4)
-
+set.seed(2)
+library(reshape2)
 L <- sample(1:5, size =1)#actual number of effect
 lf <-  list()
-R=2^7
+R=2^7-2
 for(l in 1:L){
   
   block_cov_generate = function(corr=0.9, v=1){
@@ -11,10 +11,10 @@ for(l in 1:L){
     return(cov)
   }
   
-  decay_corr_generate = function(R =2^7,# # sites
+  decay_corr_generate = function(R =2^7-2,# # sites
                                  num_block = 3,# #islands within the region
                                  off_diag_corr = 0.99,
-                                 decay =0.99#
+                                 decay =0.995#
   ){
     corr_b = matrix(0,nrow=R,ncol=R)
     region_mat = matrix(off_diag_corr,R/num_block,R/num_block)
@@ -43,7 +43,19 @@ for(l in 1:L){
 plot( lf[[1]])
 
 
+df_plot_decay  <- data.frame(y= lf[[1]], x= 1:length(lf[[1]])) 
 
+Pf_decay  <-  ggplot( df_plot_decay, aes( x=x,y=y))+
+  geom_line()+theme_void() +  # Minimal theme
+  theme(   # Rotate x axis texts
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank() ,
+    legend.position = "none")
+Pf_decay
 L <- sample(1:5, size =1)#actual number of effect
 lf <-  list()
 R=(2^7) -2
@@ -94,9 +106,9 @@ for(l in 1:L){
    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", 
                         name="Pearson\nCorrelation") +
-   theme_minimal() +  # Minimal theme
+   theme_void() +  # Minimal theme
  
-  theme_minimal() +  # Minimal theme
+   # Minimal theme
   theme(   # Rotate x axis texts
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
@@ -151,10 +163,22 @@ for(l in 1:L){
    lf[[l]] <- dae::rmvnorm(mean = rep(0,R),V = cov) #functional effect for effect l
  }
  
- plot( lf[[1]])
- image (cov)
+ 
  # Plot the correlation matrix
- plot( lf[[1]])
+ 
+ df_plot_block  <- data.frame(y= lf[[1]], x= 1:length(lf[[1]])) 
+ 
+Pf_block <-  ggplot(df_plot_block, aes( x=x,y=y))+
+   geom_line()+theme_void() +  # Minimal theme
+   theme(   # Rotate x axis texts
+     axis.title.x = element_blank(),
+     axis.title.y = element_blank(),
+     axis.text.x=element_blank(),
+     axis.ticks.x=element_blank(),
+     axis.text.y=element_blank(),
+     axis.ticks.y=element_blank() ,
+     legend.position = "none")
+Pf_block
  library(ggplot2)
  library(reshape2)
  
@@ -167,7 +191,7 @@ P_block <-  ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", 
                         name="Pearson\nCorrelation") +
-   theme_minimal() +  # Minimal theme
+   theme_void() +  # Minimal theme
    theme(   # Rotate x axis texts
          axis.title.x = element_blank(),
          axis.title.y = element_blank(),
@@ -179,9 +203,82 @@ P_block <-  ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
    coord_fixed()  # Ensure the tiles are square
 P_block
 
+set.seed(1)
+f2 <-  simu_IBSS_per_level(7)$sim_func
+
+f3 <-  simu_IBSS_per_level(7)$sim_func
+f1 <-  simu_IBSS_per_level(7)$sim_func
+
+idx_lst <-  susiF.alpha:::gen_wavelet_indx(7)
 
 
-dat <- readRDS("B_mat.rds")
-clrs <- c("white","#fee5d9","#fcae91","#fb6a4a","#de2d26","#a50f15")
-image(abs(as.matrix(dat[40:80,100:128])),col = clrs)
- 
+f1_list <- list()
+wd1_list <- list()
+
+xwd1 <-list()
+ywd1 <-list()
+library(wavethresh)
+library(ashr)
+for (s in 1:log2(length(f1))){
+  tt <- rep( 0, length(f1) )
+  
+  
+  tt_wd <- wd(tt)
+  tt_wd$D[ idx_lst[[s]]]  <- wd(f1)$D[ idx_lst[[s]]]
+  
+  wd1_list[ idx_lst[[s]]]  <- wd(f1)$D[ idx_lst[[s]]]
+  xwd1[[s]] <- (idx_lst[[s]]-mean(idx_lst[[s]]))/length(idx_lst[[s]])
+  ywd1[[s]] <- rep( s,length(idx_lst[[s]]))
+  f1_list[[s]] <- wr(tt_wd)
+  
+  #  ash( wd(f1)$D[ idx_lst[[s]]])
+  
+  
+}
+
+
+df1b <- data.frame(y= do.call(c,wd1_list),
+                   x= do.call(c,xwd1),
+                   scale =  factor(  do.call(c, ywd1)))
+df1b$color= ifelse(abs(df1b$y)>0.01, "#377eb8","#e41a1c")
+
+df1b$dummy <- rep( 0, nrow(df1b))
+df1b <- df1b[-which( df1b$scale %in% c(1,2,3)),]
+P_wac <-  ggplot( df1b, aes(x=x, y=y, colour=color))+
+  #geom_point(size=2.5)+
+  geom_hline(yintercept = 0)+
+  facet_wrap(.~scale, ncol=1,strip.position = "left",scale="free")+
+  scale_color_manual(values= c( "#377eb8","#e41a1c") )+
+  geom_segment(data = df1b, aes(x =x, xend = x, 
+                                y = dummy, yend = y), 
+               
+               colour = "#377eb8", 
+               size = 1.5)+
+  ggtitle("")+
+  ylab("")+
+  theme_bw()+  
+  theme(
+    legend.position = "none",
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_blank()
+   # strip.placement = "outside"
+    ) +
+  xlab("") 
+P_wac
+df_plot_wac  <- data.frame(y= f1, x= 1:length(f1)) 
+
+Pf_wac <-  ggplot(df_plot_wac , aes( x=x,y=y))+
+  geom_line()+theme_void() +  # Minimal theme
+  theme(   # Rotate x axis texts
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank() ,
+    legend.position = "none")
+Pf_wac

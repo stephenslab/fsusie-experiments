@@ -1,12 +1,11 @@
-
-score_fsusie <-  do.call( c, lapply( 1: length(res),
-                                     function( i) res[[i]]$susiF_pip))
+ 
 library(dplR)
 library(ggplot2)
 library(gridExtra)
 library(grid)
 
 
+colors <- c("gold1","green4","blue1" )
 library(dplyr)
 library(susieR)
 library(ggpubr)
@@ -111,7 +110,7 @@ P1 <- ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   xlim( c(0,0.05))+
   theme(legend.position = "none")+
   theme_linedraw()+
-  ggtitle("Gaussian functional effect ")+
+  ggtitle("Gaussian functional")+
   scale_color_manual(values = colors)
 P1
 
@@ -212,7 +211,7 @@ P2 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   xlim( c(0,0.05))+
   theme(legend.position = "none")+
   theme_linedraw()+
-  ggtitle("WGBS block effect ")+
+  ggtitle("WGBS block")+
   scale_color_manual(values = colors)
 
 
@@ -311,7 +310,7 @@ P3 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   geom_line(size=1.2)+
   xlim( c(0,0.05))+
   theme_linedraw()+
-  ggtitle("WGBS distance decay effect ")+
+  ggtitle("WGBS decay ")+
   scale_color_manual(values = colors)
 
 
@@ -328,14 +327,14 @@ df_cs_purity <- data.frame( scenario= factor(
   method= factor( rep(c("fSuSiE SPS","fSuSiE IS","SuSiE"),3))
 )
 P4 <- ggplot( df_cs_purity, aes(x= scenario, y=cs_size, col=method))+
-  geom_point(size=3)+ scale_x_discrete(guide = guide_axis(angle = 00)) +
+  geom_point(size=3)+ scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
   ylab("CS size")+
   scale_color_manual(values = colors)
 P5  <-ggplot( df_cs_purity, aes(x= scenario, y=purity, col=method))+
   geom_point(size=3)+
-  scale_x_discrete(guide = guide_axis(angle = 00)) +
+  scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
   ylab("Purity")+
@@ -378,7 +377,7 @@ df_overlapp <- data.frame( scenario= factor(
 )
 P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
   geom_point(size=3)+
-  scale_x_discrete(guide = guide_axis(angle = 00)) +
+  scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
   
@@ -512,7 +511,12 @@ P1_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   ylim(c(0 ,1))+
   ylab("Power")+
   theme_linedraw()+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_discrete( label=c( "1","2","","4",
+                             "","6","","8","", 
+                             "10","","12","","14",
+                             "", "16","","18","","20") 
+                  )
 P1_p
 
 P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
@@ -524,7 +528,13 @@ P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   ylab("Coverage")+
   #ggtitle("Coverage PVE=10%") +
   theme_linedraw()+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_discrete( label=c( "1","2","","4",
+                             "","6","","8","", 
+                             "10","","12","","14",
+                             "", "16","","18","","20") 
+  )
+ 
 
 P1_t1
 
@@ -601,40 +611,65 @@ p_run_time
 
 
 
-
-library(cowplot)
-
+path <- getwd()
+library(susiF.alpha)
+source(paste( path ,"/script/plot_effect_benchmark.R", sep=""), echo=FALSE)
 
 grid_plot <- ggdraw()+
+  
+  draw_plot(Pf_wac       ,
+            x = 0.01 , y = .88, width = .19, height = .11)+
+  draw_plot(P_wac         ,
+            x = .0, y = .66, width = .2, height = .22)+
+  
+  draw_plot(Pf_block       ,
+            x = .25 ,y = .88, width = .15, height = .11)+
+  draw_plot(P_block         ,
+            x = .2, y = .66, width = .25, height = .22)+
+  draw_plot(Pf_decay       ,
+            x = .45 , y = .88, width = .15, height = .11)+
+  draw_plot(P_decay         ,
+            x = .4, y = .66, width = .25, height = .22)+
+  
+   
+  
   draw_plot(P1         + theme(legend.position = "none"),
-            x = 0 , y = .5, width = .2, height = .5)+
+            x = 0.0 , y = .33, width = .2, height = .33)+
   draw_plot(P2         + theme(legend.position = "none"),
-            x = .2, y = .5, width = .2, height = .5)+
+            x = .2, y = .33, width = .2, height = .33)+
   draw_plot(P3         + theme(legend.position = "none"),
-            x = .4, y = .5, width = .2, height = .5)+
+            x = .4, y = .33, width = .2, height = .33)+
   draw_plot(P4         + theme(legend.position = "none"),
-            x = 0 , y = .0, width = .2, height = .5)+
+            x = 0 , y = .0, width = .2, height = .33)+
   draw_plot(P5         + theme(legend.position = "none"),
-            x = .2, y = .0, width = .2, height = .5)+
+            x = .2, y = .0, width = .2, height = .33)+
   draw_plot(P6         + theme(legend.position = "none"),
-            x = .4, y = .0, width = .2, height = .5)+
+            x = .4, y = .0, width = .2, height = .33)+
   draw_plot(P1_p       + theme(legend.position = "none"),
-            x = .6, y = .5, width = .2, height = .475)+
+            x = .6, y = .6, width = .2, height = .35)+
   draw_plot(P1_t1      + theme(legend.position = "none"),
-            x = .8, y = .5, width = .2, height = .475)+
+            x = .8, y = .6, width = .2, height = .35)+
   draw_plot(p_run_time + theme(legend.position = "none"),
-            x = .6, y = .0, width = .4, height = .5)+
+            x = .6, y = .1, width = .4, height = .4)+
+  
   draw_label("A", x = 0.01, y = 0.98, vjust = 1  ) +
-  draw_label("B", x =0.62, y = 0.98,  vjust = 1) +
   
-  draw_label("C", x = 0.01 , y = .5, hjust = 1, vjust = 1) +
+  draw_label("B", x = 0.01, y = 0.62, vjust = 1  ) +
   
-  draw_label("D", x = 0.62, y = .5, hjust = 1, vjust = 1)
+  draw_label("D", x =0.62, y = 0.98,  vjust = 1) +
+  
+  draw_label("C", x = 0.01, y = .33,   vjust = 1)+
+  draw_label("E", x = 0.62, y = .5,   vjust = 1)
 legend <- get_legend(
   P1 +
     guides(color = guide_legend(nrow = 1)) +
     theme(legend.position = "bottom")
 )
-plot_grid(grid_plot, legend , ncol=1,rel_heights = c(0.9, .1))
+P_out <- plot_grid(grid_plot, legend , ncol=1,rel_heights = c(0.9, .1))
 
 
+ggsave(P_out , file="plot/Fig3.png",
+       width = 29.7,
+       height = 21,
+       units = "cm"
+)
