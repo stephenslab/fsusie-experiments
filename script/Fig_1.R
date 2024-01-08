@@ -27,8 +27,8 @@ y <- do.call(rbind, obs)
 susie_est <- list()
 
 for (i in which( effect>0)){
-
-
+  
+  
   susie_est [[i]]<- susie( X=X,y=y[,i], L=1)$sets
 }
 
@@ -48,8 +48,8 @@ P00 <- ggplot( df_effect, aes(x=x, y=y))+
   theme_classic()+
   theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.text.y=element_blank(),
          axis.ticks.y=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+         axis.text.x=element_blank(),
+         axis.ticks.x=element_blank())
 P01 <- P00+geom_point(x=88,y=effect[88], col="red", shape=21,size=3)+
   
   geom_hline(yintercept = 0)+
@@ -71,10 +71,10 @@ P11 <- ggplot( )+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
-    geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
 P11
@@ -105,10 +105,10 @@ P21 <- ggplot( )+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
-
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
@@ -118,8 +118,8 @@ P03 <- P00+geom_point(x=94,y=effect[94], col="red", shape=21,size=3)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
   
   geom_hline(yintercept = 0)+
   xlab("CpG")+
@@ -139,19 +139,19 @@ P31 <-ggplot( )+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
-
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
 P04 <- P00+geom_point(x=100,y=effect[100], col="red", shape=21,size=3)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
   
   geom_hline(yintercept = 0)+
   xlab("CpG")+
@@ -168,13 +168,13 @@ P41 <-  ggplot( )+ theme_classic()+
   geom_point(df_pip4, mapping=aes(x=x, y=y))+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
   xlab("SNP index")+
   ylab("PIP")+
- 
-
+  
+  
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
@@ -245,9 +245,9 @@ P05 <-  ggplot( )+
   theme(legend.position = "none",
         panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 P51 <- ggplot( df_pip5, aes(x=x, y=y))+
   geom_point()+
   xlab("SNP index")+
@@ -259,7 +259,7 @@ P51 <- ggplot( df_pip5, aes(x=x, y=y))+
          axis.ticks.y=element_blank(),
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())+
-
+  
   geom_point(x= 700,y=tt$pip[700], col="red", shape=21,size=3)
 
 library(cowplot)
@@ -563,12 +563,12 @@ P1_all <-
 Fig1 <- ggdraw() +
   draw_plot(mh_plot, x = 0, y = 0.8, width = 0.5, height = 0.2)+
   draw_plot(P1_all, x = 0, y = 0.05, width = 0.5, height = 0.75) +
- # draw_plot(P1_1, x = 0, y = 0.05, width = .25, height = .4) +
+  # draw_plot(P1_1, x = 0, y = 0.05, width = .25, height = .4) +
   #draw_plot(P1_2, x = 0.25, y = 0.05, width = .25, height = .4) +
   draw_plot(legend, x = 0.0, y = 0.0 , width = .5, height = .05) +
-
+  
   draw_plot(P01, x = 0.5, y = 0.8, width = 0.25, height = 0.2)+
-
+  
   draw_plot(P11, x = 0.75, y = 0.8, width = 0.25, height = 0.2)+
   draw_plot(P02, x = 0.5,  y = 0.6, width = 0.25, height = 0.2)+
   draw_plot(P21, x = 0.75, y = 0.6, width = 0.25, height = 0.2)+
@@ -595,8 +595,8 @@ id = c(1, 1    ,1  )
 grid.polygon(x , y , id=id)
 
 
- ggsave(Fig1 , file="plot/Fig1.png",
-         width = 29.7,
-        height = 21,
+ggsave(Fig1 , file="plot/Fig1.png",
+       width = 29.7,
+       height = 21,
        units = "cm"
-        )
+)
