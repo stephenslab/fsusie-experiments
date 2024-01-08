@@ -50,7 +50,7 @@ P00 <- ggplot( df_effect, aes(x=x, y=y))+
          axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
-P01 <- P00+geom_point(x=88,y=effect[88], col="blue1",size=3)+
+P01 <- P00+geom_point(x=88,y=effect[88], col="red", shape=21,size=3)+
   
   geom_hline(yintercept = 0)+
   xlab("CpG")+
@@ -74,15 +74,15 @@ P11 <- ggplot( )+
          axis.ticks.y=element_blank(),
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())+
-    geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
-  geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
+    geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
 P11
 
 
 
 
-P02 <- P00+geom_point(x=91,y=effect[91], col="blue1",size=3)+
+P02 <- P00+geom_point(x=91,y=effect[91], col="red", shape=21,size=3)+
   ylab("")+
   xlab("CpG")+
   ylab("Effect ")+
@@ -109,11 +109,11 @@ P21 <- ggplot( )+
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())+
 
-  geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
-  geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
+  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
 
-P03 <- P00+geom_point(x=94,y=effect[94], col="blue1",size=3)+
+P03 <- P00+geom_point(x=94,y=effect[94], col="red", shape=21,size=3)+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
@@ -143,10 +143,10 @@ P31 <-ggplot( )+
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())+
 
-  geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
-  geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
+  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
-P04 <- P00+geom_point(x=100,y=effect[100], col="blue1",size=3)+
+P04 <- P00+geom_point(x=100,y=effect[100], col="red", shape=21,size=3)+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
          axis.ticks.y=element_blank(),
@@ -175,8 +175,8 @@ P41 <-  ggplot( )+ theme_classic()+
   ylab("PIP")+
  
 
-  geom_point(df2 ,  mapping=aes(x=x,y=y), col="chartreuse2",size=3)+
-  geom_point(df3 ,  mapping=aes(x=x,y=y), col="blue1",size=2)
+  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
 
 tt <- susiF(y, X, L=1)
@@ -208,15 +208,15 @@ ggplot( )+
   geom_point(df_effect,  mapping=aes(x=x, y=y))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
-             col="blue1",
+             col="red",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==2),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="blue1",
+             col="red",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==3),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="blue1",
+             col="red",
              size=1.3)+
   
   xlab("")+
@@ -227,15 +227,15 @@ P05 <-  ggplot( )+
   geom_point(df_effect,  mapping=aes(x=x, y=y))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
-             col="blue1",
+             col="red",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==2),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="blue1",
+             col="red",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==3),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="blue1",
+             col="red",
              size=1.3)+
   
   xlab("CpG")+
@@ -253,14 +253,14 @@ P51 <- ggplot( df_pip5, aes(x=x, y=y))+
   xlab("SNP index")+
   ylab("PIP")+
   theme_classic()+
-  geom_point(x= 700,y=tt$pip[700], col="chartreuse2",size=3)+
+  geom_point(x= 700,y=tt$pip[700], col="lightblue3",size=3)+
   theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
          axis.text.y=element_blank(),
          axis.ticks.y=element_blank(),
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())+
 
-  geom_point(x= 700,y=tt$pip[700], col="blue2",size=2)
+  geom_point(x= 700,y=tt$pip[700], col="red", shape=21,size=3)
 
 library(cowplot)
 library(gridExtra)
@@ -427,10 +427,10 @@ P1 <-ggplot(df[which(  df$dummy_pos2>22 &  df$dummy_pos2<85),] , aes(x =  as.fac
   ylab("Methylation level")+
   xlab("CpG")+
   theme_classic()+
-  geom_segment(aes(x =17, y = 0.25, xend = 25, yend = 0.25),size=1.5)+
-  geom_text(x=21, y=0.33, label="A" )+
-  geom_segment(aes(x =  46, y = 0.25, xend =55, yend = 0.25),size=1.5)+
-  geom_text(x=50.5, y=0.33, label="B" )+
+  # geom_segment(aes(x =17, y = 0.25, xend = 25, yend = 0.25),size=1.5)+
+  # geom_text(x=21, y=0.33, label="A" )+
+  # geom_segment(aes(x =  46, y = 0.25, xend =55, yend = 0.25),size=1.5)+
+  # geom_text(x=50.5, y=0.33, label="B" )+
   theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
          legend.position = "none",
          axis.text.x =   element_blank(),
@@ -533,15 +533,39 @@ mh_plot
 
 
 
+P1_all <-  
+  
+  
+  cowplot::ggdraw() +
+  coord_equal(xlim = c(0, 20), ylim = c(0, 20), expand = FALSE) +
+  annotation_custom(ggplotGrob(P1), xmin = 0, xmax = 20, ymin = 10, ymax = 20) +
+  
+  annotation_custom(ggplotGrob(P1_1), xmin = 0, xmax = 10, ymin = 0, ymax = 10)+
+  geom_segment(aes(x =  5.5, xend = 0.9775   , y = 15    , yend =9.7 ), color = "grey64", size = .666) +
+  geom_segment(aes(x =  8.5, xend = 9.6775, y = 15      , yend =9.7 ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  8.5, xend = 5.5 , y = 15      , yend =15  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  8.5, xend = 5.5 , y = 18      , yend =18  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  8.5, xend = 8.5 , y = 18.03  , yend =15  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  5.5, xend = 5.5 , y = 18.03  , yend =15  ), color = "grey64", size = .666)+
+  
+  
+  
+  annotation_custom(ggplotGrob(P1_2), xmin = 10, xmax = 20, ymin = 0, ymax = 10)+
+  geom_segment(aes(x =  14.65  , xend = 11  , y =11.2, yend =9.7 ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  17.5   , xend = 19.725 , y = 11.2 , yend =9.7 ), color = "grey64", size = .666)+ 
+  geom_segment(aes(x =  14.65  , xend =17.5   , y = 13   , yend =13  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  17.5   , xend =17.5   , y = 11.18 , yend =13.03  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  14.65  , xend =14.65  ,  y = 11.18 , yend =13.03  ), color = "grey64", size = .666)+
+  geom_segment(aes(x =  14.65  , xend =17.5  , y = 11.2 , yend =11.2  ), color = "grey64", size = .666)      
+
+
+
 Fig1 <- ggdraw() +
   draw_plot(mh_plot, x = 0, y = 0.8, width = 0.5, height = 0.2)+
-  draw_plot(P1, x = 0, y = 0.45, width = 0.5, height = 0.35) +
-  draw_plot(P1_1, x = 0, y = 0.05, width = .25, height = .4) +
-  draw_plot(P1_2, x = 0.25, y = 0.05, width = .25, height = .4) +
+  draw_plot(P1_all, x = 0, y = 0.05, width = 0.5, height = 0.75) +
+ # draw_plot(P1_1, x = 0, y = 0.05, width = .25, height = .4) +
+  #draw_plot(P1_2, x = 0.25, y = 0.05, width = .25, height = .4) +
   draw_plot(legend, x = 0.0, y = 0.0 , width = .5, height = .05) +
- 
-   draw_plot_label(label = c(" ", "A", "B"), size = 15,
-                   x = c(0, 0 , 0.25), y = c(1, 0.45, 0.45))+
 
   draw_plot(P01, x = 0.5, y = 0.8, width = 0.25, height = 0.2)+
 
@@ -553,7 +577,11 @@ Fig1 <- ggdraw() +
   draw_plot(P04, x = 0.5,  y = 0.2, width = 0.25, height = 0.2)+
   draw_plot(P41, x = 0.75, y = 0.2, width = 0.25, height = 0.2)+
   draw_plot(P05, x = 0.5,  y = 0.0, width = 0.25, height = 0.2)+
-  draw_plot(P51, x = 0.75, y = 0.0, width = 0.25, height = 0.2)
+  draw_plot(P51, x = 0.75, y = 0.0, width = 0.25, height = 0.2)+
+  
+  draw_plot_label(label = c("A ", "B", "C",  "D" , "E",   "F",  "G"), size = 12,
+                  x = c(0,     0 , 0.5 , 0.5 ,  0.5 ,  0.5 , 0.5 ), 
+                  y = c(1,  0.775,  1,    0.8,   0.6,   0.4,  0.2))
 
 library(gridExtra)
 library(grid)
