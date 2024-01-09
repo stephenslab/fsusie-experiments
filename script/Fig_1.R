@@ -208,15 +208,15 @@ ggplot( )+
   geom_point(df_effect,  mapping=aes(x=x, y=y))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
-             col="red",
+             col="lightblue3",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==2),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="red",
+             col="lightblue3",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==3),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="red",
+             col="lightblue3",
              size=1.3)+
   
   xlab("")+
@@ -227,15 +227,15 @@ P05 <-  ggplot( )+
   geom_point(df_effect,  mapping=aes(x=x, y=y))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
-             col="red",
+             col="lightblue3",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==2),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="red",
+             col="lightblue3",
              size=1.3)+
   geom_line( df_est_f[which(df_est_f$type==3),],
              mapping=aes(x=x, y=y,linetype="solid"),
-             col="red",
+             col="lightblue3",
              size=1.3)+
   
   xlab("CpG")+
