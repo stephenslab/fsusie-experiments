@@ -166,10 +166,9 @@ P1 <- ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   xlim( c(0,0.05))+
   theme(legend.position = "none")+
   theme_linedraw()+
-  ggtitle("Gaussian functional effect ")+
+  ggtitle("Gaussian functional")+
   scale_color_manual(values = colors)
 P1
-
 
 
 
@@ -490,20 +489,18 @@ df_cs_purity <- data.frame( scenario= factor(
   method= factor( rep(c("fSuSiE SPS","SuSiE","fSuSiE IS"),3))
 )
 P4 <- ggplot( df_cs_purity, aes(x= scenario, y=cs_size, col=method))+
-  geom_point(size=2)+ scale_x_discrete(guide = guide_axis(angle = 0)) +
+  geom_point(size=3)+ scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
   ylab("CS size")+
   scale_color_manual(values = colors)
 P5  <-ggplot( df_cs_purity, aes(x= scenario, y=purity, col=method))+
-  geom_point(size=2)+
-  scale_x_discrete(guide = guide_axis(angle = 0)) +
+  geom_point(size=3)+
+  scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
   ylab("Purity")+
   scale_color_manual(values = colors)
-
-
 
 
 
@@ -565,11 +562,14 @@ df_overlapp <- data.frame( scenario= factor(
   method= factor( rep(c("fSuSiE SPS","SuSiE","fSuSiE IS"),3))
 )
 P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
-  geom_point(size=2)+
-  scale_x_discrete(guide = guide_axis(angle = 0)) +
+  geom_point(size=3)+
+  scale_x_discrete(guide = guide_axis(angle = 30)) +
   theme_linedraw() +
   xlab("")+
-  ylab("Probability of overlapp")+scale_y_continuous(labels = scales::percent)+
+  
+  ylab("Probability of overlapp")+
+  scale_y_continuous(labels = scales::percent,
+                     limits =c(0.65,1.0))+
   scale_color_manual(values = colors)
 
 
