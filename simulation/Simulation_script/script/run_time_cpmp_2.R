@@ -19,6 +19,7 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/run_time_comp_p500.RData")){
 
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
+  set.seed(o)
 
   L <- sample(1:5, size =1)#actual number of effect
   lf <-  list()
@@ -51,12 +52,12 @@ for (o  in (length(res)+1):10000) {
 
   PCA <- svd(Y)
 
-  m1 <-susiF(Y=Y, X=G,L=5  ,nullweight=10,  maxit=10,
+  m1 <-susiF(Y=Y, X=G,L=20  ,nullweight=10,  maxit=10,
              post_processing="none")
 
 
 
-  m11 <-susiF(Y=Y, X=G,L=5  ,nullweight=10,  maxit=10,
+  m11 <-susiF(Y=Y, X=G,L=20  ,nullweight=10,  maxit=10,
               prior="mixture_normal",
               post_processing="none")
 
