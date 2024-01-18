@@ -530,7 +530,7 @@ saveRDS(mat, file = "data/fig_2_data/fitted_weight_data.rds")
 
 mat2 <- do.call( rbind, out$est_pi[[2]])
 row.names(mat2) <- paste("scale", 0:(nrow(mat)-1))
-saveRDS(mat2, file = "data/fig_2_data/fitted_weight_data2.rds")
+saveRDS(mat2, file = "data/fig_1_data/fitted_weight_data2.rds")
 
 F_mat <- Reduce ("+",lapply( 1: length(out$cs), function(l) {
   return(sweep(out$fitted_wc[[l]],
@@ -546,3 +546,6 @@ image(as.matrix(F_mat) )
 
  
 saveRDS(F_mat, file = "data/fig_2_data/B_mat.rds")
+
+Fitted_func <- do.call(rbind, out$fitted_func)
+plot( Fitted_func[1,])

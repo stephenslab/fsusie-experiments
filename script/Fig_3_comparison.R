@@ -804,6 +804,7 @@ p_run_time2 <- ggplot(df_run_time[ which( df_run_time$ncs <6 ),], aes(runtime ,y
   scale_color_manual(values = colors)
 p_run_time2
 library(susiF.alpha)
+library(cowplot)
 source(paste( path ,"/script/plot_effect_benchmark.R", sep=""), echo=FALSE)
 grid_plot <- ggdraw()+
   
@@ -858,7 +859,7 @@ legend <- get_legend(
 P_out <- plot_grid(grid_plot, legend , ncol=1,rel_heights = c(0.9, .1))
 
 
-ggsave(P_out , file="plot/Fig3.png",
+ggsave(P_out , file="plot/Fig3.pdf",
        width = 29.7,
        height = 21,
        units = "cm"

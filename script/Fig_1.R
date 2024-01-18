@@ -595,7 +595,7 @@ id = c(1, 1    ,1  )
 grid.polygon(x , y , id=id)
 
 
-ggsave(Fig1 , file="plot/Fig1.png",
+ggsave(Fig1 , file="plot/Fig1.pdf",
        width = 29.7,
        height = 21,
        units = "cm"
