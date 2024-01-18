@@ -1,4 +1,4 @@
-effect <-   0.8*cos( (1:128)/128 * 3*pi )
+effect <-   0.2*cos( (1:128)/128 * 3*pi )
 effect[which(effect<0)]<- 0
 effect[1:40]<- 0
 
@@ -91,20 +91,54 @@ for ( i in idx){
 df <- do.call(rbind, tl) 
 
 
+table(df$Genotype)
+lst_pos <-list()
+for ( i in 1:30){
+  lst_pos[[i]] <- 1*rep( unique(df$x)[i],3)+ c(0,0.05,0.1)
+}
+
+ 
+myplot <- boxplot(y ~ as.factor(Genotype)*x , data=df  , 
+                  boxwex=0.2 , ylab="sickness",
+                  at= do.call( c,lst_pos),
+                  col=c("slateblue1" , "tomato","green") ,  
+                  xaxt="n")
+lines(x=1:length(50:120)*(35/(120-50)), y=effect[50:120])
+lines(x=1:length(50:120)*(35/(120-50)), y=2*effect[50:120]) 
+lines(x=1:length(50:120)*(35/(120-50)), y=0*effect[50:120])
+
+
+myplot <- boxplot(y ~ as.factor(Genotype)*x , data=df  , 
+                  boxwex=0.2 , ylab="sickness",
+                  at= c(-6,-3,3:90),
+                  col=c("slateblue1" , "tomato","green") ,  
+                  xaxt="n")
+
+
+
 ggplot(df , aes(x =   x  ,  y =y  ,
-                group=x*(Genotype+1) , 
-                fill= as.factor(Genotype),
-                col=as.factor(Genotype)))+ 
+                group=x *(Genotype +1)
+               ))+ 
   geom_boxplot( position=position_dodge(2 ),
                 width = 0.2,
-                alpha = 0.5,coef = 8)  + xlab("")+
+                alpha = 0.5,coef = 8)  + xlab("")
   ylab("")+theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
                   axis.text.y=element_blank(),
                   axis.ticks.y=element_blank(),
                   axis.text.x=element_blank(),
                   axis.ticks.x=element_blank())+
+  geom_line( aes(x =   x  ,  y =y  ,  
+                 col=as.factor(Genotype)))
   theme_classic()
 
+  df0 <-  data.frame (y = effect[50:120], 
+                      x= 1:length(50:120), 
+                      Genotype= rep( 1, length(50:120)))
+  
+  
+  ggplot(df , aes(x =   x  ,  y =y  ,col = as.factor (Genotype )
+  ))+geom_line() 
+  
 ggplot(df , aes(x =   x  ,  y =y  ,group = as.factor (Genotype )
 ))+
   stat_summary(fun=median,
@@ -119,4 +153,4 @@ ggplot(df , aes(x =   x  ,  y =y  ,group = as.factor (Genotype )
          axis.text.x=element_blank(),
          axis.ticks.x=element_blank())
 
-
+boxplot( df$y~df$x*df$Genotype)
