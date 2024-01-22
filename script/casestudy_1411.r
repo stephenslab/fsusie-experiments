@@ -117,12 +117,12 @@ rel_heights = c(4,4,6),labels  = c("A","B","C"),label_size = 10
 ) -> result_plot
 result_plot
 
-result_plot%>%ggsave(filename = "../plot/casestudy_highlight.pdf", device = "pdf",
+result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.pdf", device = "pdf",
        width = 29.7,
        height = 21,
        units = "cm"
 )
-result_plot%>%ggsave(filename = "../plot/casestudy_highlight.png",device = "png",
+result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.png",device = "png",
        width = 29.7,
        height = 21,
        units = "cm"
