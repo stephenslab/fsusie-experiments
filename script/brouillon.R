@@ -47,10 +47,10 @@ set.seed(12345)
 pos <- cumsum( runif(n=length(50:120)))
 
 idx <-  sample (1:length(50:120), size=30)
-idx <- idx[order(idx)]
-
+idx0 <- idx[order(idx)]
+idx  <-idx0 
 plot(pos[idx],effect[50:120][idx])
-
+ 
 susie_est <- list()
 h=1
 pips <- list()
@@ -68,9 +68,9 @@ susie_est
 
 colnames(X) <- 1:ncol(X)
 
-susif_res <- susiF(y[,idx] , X, L=1 ,pos=pos[idx] )
+susif_res <- susiF(y[,idx0] , X, L=1 ,pos=pos[idx0] )
 susif_res$cs
-plot(pos[idx],effect[50:120][idx])
+plot(pos[idx0],effect[50:120][idx0])
 
 lines(x=susif_res$outing_grid , y=susif_res$fitted_func[[1]])
 
@@ -118,12 +118,13 @@ ggplot(df, aes(x=x, y=y, col=as.factor(Genotype)))+
   geom_smooth(se = FALSE)
 
 
-df1 <- data.frame ( y=effect[50:120]+0.25, x= .5+1:length(50:120)*(35/(120-50)))
 
-df2 <- data.frame ( y=2*effect[50:120]+0.25, x= .5+1:length(50:120)*(35/(120-50)))
+df1 <- data.frame ( y=effect[50:120][idx0]+0.25, x= .5+pos[idx0])
+
+df2 <- data.frame ( y=2*effect[50:120][idx0]+0.25, x= .5+pos[idx0])
 
 
-df3 <- data.frame ( y=0*effect[50:120]+0.25, x= .5+1:length(50:120)*(35/(120-50)))
+df3 <- data.frame ( y=0*effect[50:120][idx0]+0.25, x= .5+pos[idx0])
 
 pos
 which ( effect[50:120]>0)
@@ -275,18 +276,17 @@ P13 <- ggplot( )+
 P13
 
 
-df_est_f<- data.frame(y=c(  susif_res$fitted_func[[1]],
-                            susif_res$cred_band[[1]][1,],
-                            susif_res$cred_band[[1]][2,]
+df_est_f<- data.frame(y=c(   (susif_res$fitted_func[[1]]),
+                             (susif_res$cred_band[[1]][1,]),
+                             (susif_res$cred_band[[1]][2,])
                                                     ),
                       x= rep( susif_res$outing_grid, 3),
                       type=factor(rep(1:3, each=32)))
  
 
-df_effect <- data.frame ( y=  effect[50:120] , 
-                    x=  1:length(50:120)*(35/(120-50)))
-
-
+df_effect <- data.frame ( y=  effect[50:120][idx0], 
+                    x=  pos[idx0])
+ 
 
 P21 <-ggplot( )+
   geom_line(df_effect,  mapping=aes(x=x, y=y))+
