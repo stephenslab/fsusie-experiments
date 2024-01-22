@@ -20,6 +20,8 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/overlap_check_distdecay_sd1.RData
 
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
+  set.seed(o)
+
   L <- sample(1:1, size =1)#actual number of effect
   lf <-  list()
 
@@ -196,32 +198,30 @@ for (o  in (length(res)+1):10000) {
               y=PCA$u[,1],
               L=2
   )
+  out <-   list(   is_overlap_susif  =       ifelse(length( which(m1$cs[[1]] %in% m12$cs[[1]]   )) >0,
+                                                    1,
+                                                    0),
+                   m1$pip,
 
+                   is_overlap_susif_sp  =       ifelse(length( which(m11$cs[[1]] %in% m01$cs[[1]]    )) >0,
+                                                       1,
+                                                       0),
 
-  out <-  list(   is_overlap_susif  =       ifelse(length( which(m1$cs[[1]] %in% m12$cs[[1]] )) >0,
-                                                   1,
-                                                   0),
-                  m1$pip,
+                   susie_rss_pip= m2$pip,
+                   is_overlap_susie=  ifelse(length( which(m2$sets$cs$L1 %in% m22$sets$cs$L1  )) >0,
+                                             1,
+                                             0) ,
+                   susiF_pip = m1$pip,
 
-                  is_overlap_susif_sp  =       ifelse(length( which(m11$cs[[1]] %in% m01$cs[[1]] )) >0,
-                                                      1,
-                                                      0),
+                   susiF_sp_pip = m11$pip,
 
-                  susie_rss_pip= m2$pip,
-                  is_overlap_susie=  ifelse(length( which(m2$sets$cs$L1 %in% m22$sets$cs$L1 )) >0,
-                                            1,
-                                            0) ,
-                  susiF_pip = m1$pip,
+                   susie_rss_pip= m2$pip,
+                   susiF_cs= m1$cs,
+                   susiF_sp_cs= m11$cs,
 
-                  susiF_sp_pip = m11$pip,
-
-                  susie_rss_pip= m2$pip,
-                  susiF_cs= m1$cs,
-                  susiF_sp_cs= m11$cs,
-
-                  susie_cs= m2$sets,
-                  fsusie_purity = cal_purity(m1$cs,G  ),
-                  true_pos=true_pos)
+                   susie_cs= m2$sets,
+                   fsusie_purity = cal_purity(m1$cs,G  ),
+                   true_pos=true_pos)
   res[[o ]] <- out
   save(res, file="/home/wdenault/fsusi_simu/sim3/overlap_check_distdecay_sd1.RData")
   print(o)

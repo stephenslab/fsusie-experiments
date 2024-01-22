@@ -20,6 +20,7 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/overlap_check_gaussian.RData")){
 
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
+  set.seed(o)
 
   L <- sample(1, size =1)#actual number of effect
   lf <-  list()
@@ -55,7 +56,6 @@ for (o  in (length(res)+1):10000) {
 
 
   Y <-Y+matrix(rnorm((2^7)*N ,sd=sd(c(Y))/sqrt(0.5)), nrow = N)
-
   PCA <- svd(Y)
   m1 <-susiF(Y=Y, X=G,L=2  ,nullweight=10,  maxit=10)
   ### buidling zscore
@@ -99,19 +99,19 @@ for (o  in (length(res)+1):10000) {
 
 
   m22 <-susie(X=G,
-             y=PCA$u[,1],
-             L=2
+              y=PCA$u[,1],
+              L=2
   )
 
 
-  out <-  list(   is_overlap_susif  =       ifelse(length( which(m1$cs[[1]] %in% m12$cs[[1]] )) >0,
-                                               1,
-                                               0),
-                  m1$pip,
-
-                  is_overlap_susif_sp  =       ifelse(length( which(m11$cs[[1]] %in% m01$cs[[1]] )) >0,
+  out <-  list(   is_overlap_susif  =       ifelse(length( which(m1$cs[[1]] %in% m12$cs[[1]]    )) >0,
                                                    1,
                                                    0),
+                  m1$pip,
+
+                  is_overlap_susif_sp  =       ifelse(length( which(m11$cs[[1]] %in% m01$cs[[1]]    )) >0,
+                                                      1,
+                                                      0),
 
                   susie_rss_pip= m2$pip,
                   is_overlap_susie=  ifelse(length( which(m2$sets$cs$L1 %in% m22$sets$cs$L1 )) >0,

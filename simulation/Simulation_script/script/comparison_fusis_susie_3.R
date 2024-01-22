@@ -5,10 +5,12 @@ geno_info = readRDS("/home/wdenault/fsusi_simu/sim/Yuqi_data/geno_list_MWE.rds")
 data(N3finemapping)
 X <- N3finemapping$X
 N=50
-genotype <-X[1:N,]
-
+genotype <-X[1:N,1:300]
 idx <- which( apply( genotype,2, var ) <1e-15)
-genotype <- genotype [, -idx]
+if ( length( idx )>0){
+
+  genotype <- genotype [, -idx]
+}
 library(gplots)
 if(file.exists("/home/wdenault/fsusi_simu/sim3/comparison_susie_fusie_block_sd1.RData")){
   load("/home/wdenault/fsusi_simu/sim3/comparison_susie_fusie_block_sd1.RData")
@@ -18,7 +20,7 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/comparison_susie_fusie_block_sd1.
 }
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
-
+  set.seed (o)
   L <- sample(1:5, size=1)#actual number of effect
   lf <-  list()
 
@@ -80,7 +82,7 @@ for (o  in (length(res)+1):10000) {
   }
 
 
-  Y <-Y+matrix(rnorm((2^7)*N ,sd=sd(c(Y))), nrow = N)
+  Y <-Y+matrix(rnorm((2^7)*N ,sd=sd(c(Y))/sqrt(1)), nrow = N)
 
 
   sigmoid <- function( x)
@@ -127,6 +129,7 @@ for (o  in (length(res)+1):10000) {
 
 
 
+
   out <-  list( susiF_pip = m1$pip,
                 susiF_sp_pip = m11$pip,
 
@@ -134,10 +137,7 @@ for (o  in (length(res)+1):10000) {
                 susiF_cs= m1$cs,
                 susiF_sp_cs = m11$cs,
                 susie_cs= m2$sets,
-                susiF_time = m1$runtime,
-                susiF_sp_time = m11$runtime,
 
-                susie_time =  susie_time ,
                 fsusie_purity = cal_purity(m1$cs,G ),
                 fsusie_sp_purity = cal_purity(m11$cs,G ),
                 true_pos=true_pos)

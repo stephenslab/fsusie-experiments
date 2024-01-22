@@ -102,7 +102,7 @@ for(l in 1:L){
  melted_cor_matrix <- melt(cor_matrix)
  
  P_decay <-  ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
-   geom_tile(color = "white") +  # Use tiles, with white borders
+   geom_tile( ) +  # Use tiles, with white borders
    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", 
                         name="Pearson\nCorrelation") +
@@ -187,7 +187,7 @@ Pf_block
  
  # Plotting
 P_block <-  ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
-   geom_tile(color = "white") +  # Use tiles, with white borders
+   geom_tile(  ) +  # Use tiles, with white borders
    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                         midpoint = 0, limit = c(-1,1), space = "Lab", 
                         name="Pearson\nCorrelation") +
