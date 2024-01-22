@@ -275,10 +275,10 @@ P13 <- ggplot( )+
 
 P13
 
-
+diff_bot <- susif_res$cred_band[[1]][2,]- susif_res$fitted_func[[1]]
 df_est_f<- data.frame(y=c(   (susif_res$fitted_func[[1]]),
-                             (susif_res$cred_band[[1]][1,]),
-                             (susif_res$cred_band[[1]][2,])
+                             (susif_res$cred_band[[1]][1,]-diff_bot),
+                             (susif_res$cred_band[[1]][2,]+diff_bot)
                                                     ),
                       x= rep( susif_res$outing_grid, 3),
                       type=factor(rep(1:3, each=32)))
@@ -302,7 +302,7 @@ P21 <-ggplot( )+
              mapping=aes(x=x, y=y,linetype="solid"),
              col="lightblue3",
              size=1.3)+
-  
+  ggtitle("FSuSiE effect estimate")+
   xlab("")+
   ylab("")+
   theme_classic()+
