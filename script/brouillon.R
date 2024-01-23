@@ -191,10 +191,12 @@ P0 <- ggplot()+
   scale_colour_manual(values= c( "1"= "green2",
                                  "2"="slateblue1",
                                  "0"="tomato"))+
+  ylab("methylation level")+
   theme_classic()+
   theme(legend.position = "none",
         panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
+        
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -311,12 +313,17 @@ type=factor(rep(1:3, each=32)))
 
 df_effect <- data.frame ( y=  effect[50:120][idx0], 
                           x=  pos[idx0])
-
+df_label <- data.frame(lab= letters[1:15],
+                       x= unique(df$x)[which(idx >16 & idx <57)], 
+                       y=rep(-0.00, 15),
+                       
+                       col=  c(rep( "lightblue4",14),
+                                   "orange4"))
 
 P21 <-ggplot( )+
   geom_line(df_effect,  mapping=aes(x=x, y=y), size=1.1, col="green2")+
   
-  geom_segment(data=df_pos_CpG, aes (x=x, xend=x,  y =-0.061,yend =-0.041))+
+  geom_segment(data=df_pos_CpG, aes (x=x, xend=x,  y =-0.02,yend = 0.02))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
              col="lightblue3",
@@ -332,10 +339,10 @@ P21 <-ggplot( )+
   ggtitle("FSuSiE effect estimate")+
   xlab("")+
   ylab("")+
-  geom_segment(  aes( x= min(df$x),xend= max(df$x), y =-0.051,yend =-0.051))+ 
+  geom_segment(  aes( x= min(df$x),xend= max(df$x), y =-0.0 ,yend =-0.0 ))+ 
   geom_label (data=df_label, aes (x=x,y=y, label=lab,fill=col))+
   scale_fill_manual(values = c("lightblue4"= "white",
-                               "orange4"="white"))+
+                               "orange4"="orange4"))+
   theme_classic()+
   theme(legend.position = "none",
         panel.border = element_rect(colour = "black", fill=NA, size=1.2),
@@ -365,7 +372,7 @@ P22 <- ggplot( )+
   xlab("")+
   ylab("PIP")+
   
-  ggtitle("Fine mapping with FSuSiE")+
+  ggtitle("Fine mapping with fSuSiE")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
@@ -381,7 +388,7 @@ library(gridExtra)
 library(cowplot)
 dummyPlot <-ggplot()+
   geom_point(data=df, aes(x=x, y= y-min(y) , col=as.factor(Genotype)),alpha=.4)+
- 
+  
   scale_colour_manual(values= c( "1"= "green2",
                                  "2"="slateblue1",
                                  "0"="tomato")) +theme_classic( )+
@@ -395,20 +402,23 @@ legend <- cowplot::get_legend(dummyPlot)
 grid_plot <- ggdraw()+
   
   draw_plot(P0,  x = 0.01 , y = .55, width = .99, height = .45)+
+  draw_label("A", x = 0.01, y = 0.98, vjust = 1  )+
   draw_plot(legend ,  x = 0.01 , y = .52, width = .99, height = .03)+
   
   draw_plot(P11,  x = 0.01 , y = .32, width = .49, height = .163 )+
+  draw_label("B", x = 0.01, y = 0.48, vjust = 1  )+
   draw_plot(P12,  x = 0.01 , y = .16, width = .49, height = .16 )+
+  draw_label("C", x = 0.01, y = 0.32, vjust = 1  )+
   draw_plot(P13,  x = 0.01 , y = .0, width = .49, height = .16)+
-  
-  draw_plot(P21,  x = 0.5 , y = .24, width = .49, height = .24)+
-  
-  draw_plot(P22,  x = 0.5 , y = .0, width = .49, height = .24)
-
+  draw_label("D", x = 0.01, y = 0.16, vjust = 1  )+
+  draw_plot(P22,  x = 0.5 , y = .24, width = .49, height = .24)+
+  draw_label("E", x = 0.51, y = 0.48, vjust = 1  )+
+  draw_plot(P21,  x = 0.5 , y = .0, width = .49, height = .24)+
+  draw_label("F", x = 0.51, y = 0.24, vjust = 1  )
 grid_plot
 
 
-ggsave(grid_plot , file="plot/testfig2.pdf",
+ggsave(grid_plot , file="plot/Fig2.pdf",
        width = 29.7,
        height = 21,
        units = "cm"

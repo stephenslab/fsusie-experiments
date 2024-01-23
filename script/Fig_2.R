@@ -191,10 +191,12 @@ P0 <- ggplot()+
   scale_colour_manual(values= c( "1"= "green2",
                                  "2"="slateblue1",
                                  "0"="tomato"))+
+  ylab("methylation level")+
   theme_classic()+
   theme(legend.position = "none",
         panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
+    
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
@@ -365,7 +367,7 @@ P22 <- ggplot( )+
   xlab("")+
   ylab("PIP")+
   
-  ggtitle("Fine mapping with FSuSiE")+
+  ggtitle("Fine mapping with fSuSiE")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
@@ -395,16 +397,19 @@ legend <- cowplot::get_legend(dummyPlot)
 grid_plot <- ggdraw()+
   
   draw_plot(P0,  x = 0.01 , y = .55, width = .99, height = .45)+
+  draw_label("A", x = 0.01, y = 0.98, vjust = 1  )+
   draw_plot(legend ,  x = 0.01 , y = .52, width = .99, height = .03)+
   
   draw_plot(P11,  x = 0.01 , y = .32, width = .49, height = .163 )+
+  draw_label("B", x = 0.01, y = 0.48, vjust = 1  )+
   draw_plot(P12,  x = 0.01 , y = .16, width = .49, height = .16 )+
+  draw_label("C", x = 0.01, y = 0.32, vjust = 1  )+
   draw_plot(P13,  x = 0.01 , y = .0, width = .49, height = .16)+
-  
-  draw_plot(P21,  x = 0.5 , y = .24, width = .49, height = .24)+
-  
-  draw_plot(P22,  x = 0.5 , y = .0, width = .49, height = .24)
-
+  draw_label("D", x = 0.01, y = 0.16, vjust = 1  )+
+  draw_plot(P22,  x = 0.5 , y = .24, width = .49, height = .24)+
+  draw_label("E", x = 0.51, y = 0.48, vjust = 1  )+
+  draw_plot(P21,  x = 0.5 , y = .0, width = .49, height = .24)+
+draw_label("F", x = 0.51, y = 0.24, vjust = 1  )
 grid_plot
 
 
