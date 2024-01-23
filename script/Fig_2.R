@@ -1,4 +1,4 @@
-effect <-   1.2*cos( (1:128)/128 * 3*pi )
+effect <-   0.2*cos( (1:128)/128 * 3*pi )
 effect[which(effect<0)]<- 0
 effect[1:40]<- 0
 
@@ -8,74 +8,223 @@ library(susieR)
 library(wavethresh)
 set.seed(2)
 data(N3finemapping)
-X <- N3finemapping$X[1:100,]
+X <- N3finemapping$X[1:60,]
 
 set.seed(1)
 
 obs <- list()
 
-true_pos <- 440
+true_pos <- 350
 
-
-for (i in 1:100 ){
-  obs[[i]] <- X[i,true_pos]*effect+ rnorm(length(effect))
+table (X[,true_pos])
+X[,true_pos] <- (X[,true_pos] - min(X[,true_pos] ))
+table (X[,true_pos])
+for (i in 1:60 ){
+  obs[[i]] <- X[i,true_pos]*effect+ rnorm(length(effect), sd=0.2 )
 }
 
 y <- do.call(rbind, obs)
-
-table (X[,true_pos])
-
+y <- y[, 50:120]
 
 susie_est <- list()
 
-for (i in which( effect>0)){
+for (i in 1:ncol(y)){
   
   
   susie_est [[i]]<- susie( X=X,y=y[,i], L=1)$sets
 }
 
 susie_est
-#88
-#91
-#94
-#100
+#48
+#45
+#44
+#43
+#42
+#41
 library(ggplot2)
 #88
-df_effect <-data.frame(x=1:128,
-                       y=effect)
-P00 <- ggplot( df_effect, aes(x=x, y=y))+
-  geom_point()+
+set.seed(12345)
+pos <- cumsum( runif(n=length(50:120)))
+
+idx <-  sample (1:length(50:120), size=30)
+idx0 <- idx[order(idx)]
+idx  <-idx0 
+plot(pos[idx],effect[50:120][idx])
+
+susie_est <- list()
+h=1
+pips <- list()
+y <- do.call(rbind, obs)
+y <- y[, 50:120]
+for (i in idx){
   
-  ylim(c(-0.1,1.3))+
+  
+  susie_est [[h]]<- susie( X=X,y=y[,i], L=1)$sets
+  pips [[h]]    <-susie( X=X,y=y[,i], L=1)$pip
+  h=h+1
+}
+
+susie_est
+
+colnames(X) <- 1:ncol(X)
+
+susif_res <- susiF(y[,idx0] , X, L=1 ,pos=pos[idx0] )
+susif_res$cs
+plot(pos[idx0],effect[50:120][idx0])
+
+lines(x=susif_res$outing_grid , y=susif_res$fitted_func[[1]])
+
+lines(x=susif_res$outing_grid , y=susif_res$cred_band[[1]][1,])
+lines(x=susif_res$outing_grid , y=susif_res$cred_band[[1]][2,])
+
+p <- ggplot()
+to_remove <- which(X[,true_pos]==0.39892578125)
+tl <- list()
+h <- 1
+for ( i in idx){
+  
+  tl[[h]]  <- data.frame(y =  y[-to_remove,i],
+                         x =rep( pos[i ] , nrow(y)-1),
+                         Genotype=  X[-to_remove ,true_pos]
+  )
+  h <- h+1
+  
+}
+df <- do.call(rbind, tl) 
+
+
+table(df$Genotype)
+lst_pos <-list()
+for ( i in 1:30){
+  lst_pos[[i]] <- 1*rep( unique(df$x)[i],3)+ c(0,0.05,0.1)
+}
+
+
+SNP_idx <-  unique (do.call ( c, lapply( 1:length(susie_est), function (i){
+  susie_est[[i]]$cs$L1
+}
+
+)))
+
+SNP_idx  <- SNP_idx[order(SNP_idx )]
+
+image( abs(cor(X[,SNP_idx])))
+
+
+
+library(ggplot2)
+ggplot(df, aes(x=x, y=y, col=as.factor(Genotype)))+
+  geom_point(alpha=.2)+
+  geom_smooth(se = FALSE)
+
+
+
+df1 <- data.frame ( y=effect[50:120][idx0]+0.65, x=  pos[idx0])
+
+df2 <- data.frame ( y=2*effect[50:120][idx0]+0.65, x=  pos[idx0])
+
+
+df3 <- data.frame ( y=0*effect[50:120][idx0]+0.65, x=  pos[idx0])
+
+pos
+which ( effect[50:120]>0)
+
+
+is.detected <- !do.call(c,lapply(1:length(susie_est), function (i){
+  is.null(susie_est[[i]]$cs)
+}))
+
+df_label <- data.frame(lab= letters[1:15],
+                       x= unique(df$x)[which(idx >16 & idx <57)], 
+                       y=rep(-0.051, 15),
+                       
+                       col= ifelse(is.detected[which(idx >16 & idx <57)] ==TRUE, "lightblue4",
+                                   "orange4"))
+df_pos_CpG <- data.frame( 
+  x= unique(df$x) , 
+  y=rep(-0.051, length(unique(df$x))) )
+
+
+
+pos_SNP_plot <-seq(0,max ( unique(df$x)),
+                   length.out=length(SNP_idx))
+
+df_SNP_pos <- data.frame( x= pos_SNP_plot,
+                          lab = factor(1:length(SNP_idx)),
+                          y=rep(-0.12, length(SNP_idx))
+)
+
+idx_causal_SNP <- which(SNP_idx==350)
+df_seg_CpG <- data.frame( x1= min(df$x),x2= max(df$x), y1 =-0.12,y2 =-0.12)
+
+
+
+sigmoid <- function( x)
+{
+  out <- 1/(1+exp(-x))
+  return(out)
+}
+
+
+library(ggplot2)
+library(ggrepel)
+P0 <- ggplot()+
+  geom_point(data=df, aes(x=x, y= y-min(y) , col=as.factor(Genotype)),alpha=.4)+
+  geom_line (data=df1 , aes ( x=x, y=y ),col="green2",size=1.5,alpha=.4)+
+  geom_line (data=df2 , aes ( x=x, y=y ),col="slateblue1",size=1.5,alpha=.4)+
+  geom_line (data=df3 , aes ( x=x, y=y ),col="tomato",size=1.5,alpha=.4)+
+  geom_segment(data=df_pos_CpG, aes (x=x, xend=x,  y =-0.071,yend =-0.031))+
+  geom_segment(  aes( x= min(df$x),xend= max(df$x), y =-0.051,yend =-0.051))+
+  geom_segment(  aes( x= min(df_SNP_pos$x),xend= max(df_SNP_pos$x), y =-0.12,yend =-0.12))+
+  geom_label (data=df_label, aes (x=x,y=y, label=lab,fill=col))+
+  
+  geom_text(aes( x=(min(df$x)-1) ,y =-0.05 , label="CpG") )+
+  
+  geom_text(aes( x=(min(df_SNP_pos$x)-1) ,y =-0.11 , label="SNP") )+
+  scale_fill_manual(values = c("lightblue4"= "white",
+                               "orange4"="orange4"))+
+  geom_point  (data=df_SNP_pos, aes (x=x,y=y ), size=3)+
+  geom_point(  aes( x=df_SNP_pos$x[idx_causal_SNP] ,
+                    y=df_SNP_pos$y[idx_causal_SNP] ) , 
+               col="red", size=3) +
+  xlab("")+ylab("")+
+  scale_colour_manual(values= c( "1"= "green2",
+                                 "2"="slateblue1",
+                                 "0"="tomato"))+
   theme_classic()+
-  theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())
-P01 <- P00+geom_point(x=88,y=effect[88], col="red", shape=21,size=3)+
-  
-  geom_hline(yintercept = 0)+
-  xlab("CpG")+
-  ylab("Effect ") 
+  theme(legend.position = "none",
+        panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 
-tt <- susie( X=X,y=y[,88], L=1)
+P0 
 
-df_pip1 <-data.frame(x=1:length(tt$pip),
-                     y=tt$pip)
-df2   <-data.frame(x= tt$sets$cs$L1,
-                   y=tt$pip[tt$sets$cs$L1])
-df3   <-data.frame(x= true_pos,y=tt$pip[true_pos])
+tt <- susie_est [[14]] 
+tt0 <- pips[[14]][SNP_idx ]
+
+
+
+df_pip1 <-data.frame(x=pos_SNP_plot,
+                     y=tt0)
+df2   <-data.frame(x= pos_SNP_plot [ which ( SNP_idx %in% tt$cs$L1)] ,
+                   y=tt0[which ( SNP_idx %in% tt$cs$L1)])
+df3   <-data.frame(x= pos_SNP_plot[idx_causal_SNP],
+                   y=tt0[idx_causal_SNP])
 
 P11 <- ggplot( )+
   geom_point(df_pip1, mapping=aes(x=x, y=y))+
-  xlab("SNP index")+
+  xlab("")+
   ylab("PIP")+
+  ggtitle("Fine mapping on f")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
+  ylim(c(-0.05, .5))+
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
@@ -84,25 +233,26 @@ P11
 
 
 
-P02 <- P00+geom_point(x=91,y=effect[91], col="red", shape=21,size=3)+
-  ylab("")+
-  xlab("CpG")+
-  ylab("Effect ")+
-  geom_hline(yintercept = 0)+
-  theme( axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())
-tt <- susie( X=X,y=y[,91], L=1)
 
-df_pip2 <-data.frame(x=1:length(tt$pip),
-                     y=tt$pip)
-df2   <-data.frame(x= tt$sets$cs$L1,
-                   y=tt$pip[tt$sets$cs$L1])
-df3   <-data.frame(x= true_pos,y=tt$pip[true_pos])
-P21 <- ggplot( )+
-  geom_point(df_pip2, mapping=aes(x=x, y=y))+
-  xlab("SNP index")+
+
+
+tt <- susie_est [[15]] 
+tt0 <- pips[[15]][SNP_idx ]
+
+
+
+df_pip1 <-data.frame(x=pos_SNP_plot,
+                     y=tt0)
+df2   <-data.frame(x= pos_SNP_plot [ which ( SNP_idx %in% tt$cs$L1)] ,
+                   y=tt0[which ( SNP_idx %in% tt$cs$L1)])
+df3   <-data.frame(x= pos_SNP_plot[idx_causal_SNP],
+                   y=tt0[idx_causal_SNP])
+
+P12 <- ggplot( )+
+  geom_point(df_pip1, mapping=aes(x=x, y=y))+
+  xlab("")+
+  
+  ggtitle("Fine mapping on g")+
   ylab("PIP")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
@@ -110,104 +260,63 @@ P21 <- ggplot( )+
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
-  
+  ylim(c(-0.05, .8))+
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
+P12
 
-P03 <- P00+geom_point(x=94,y=effect[94], col="red", shape=21,size=3)+
+
+
+
+
+
+
+tt <- susie_est [[18]] 
+tt0 <- pips[[18]][SNP_idx ]
+
+df_pip1 <-data.frame(x=pos_SNP_plot,
+                     y=tt0)
+df2   <-data.frame(x= pos_SNP_plot [ which ( SNP_idx %in% tt$cs$L1)] ,
+                   y=tt0[which ( SNP_idx %in% tt$cs$L1)])
+df3   <-data.frame(x= pos_SNP_plot[idx_causal_SNP],
+                   y=tt0[idx_causal_SNP])
+
+P13 <- ggplot( )+
+  geom_point(df_pip1, mapping=aes(x=x, y=y))+
+  xlab("")+
+  ylab("PIP")+
+  
+  ggtitle("Fine mapping on j")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())+
-  
-  geom_hline(yintercept = 0)+
-  xlab("CpG")+
-  ylab("Effect ") 
-
-tt <- susie( X=X,y=y[,94], L=1)
-
-df_pip3 <-data.frame(x=1:length(tt$pip),
-                     y=tt$pip)
-df2   <-data.frame(x= tt$sets$cs$L1,
-                   y=tt$pip[tt$sets$cs$L1])
-df3   <-data.frame(x= true_pos,y=tt$pip[true_pos])
-P31 <-ggplot( )+
-  geom_point(df_pip3, mapping=aes(x=x, y=y))+
-  xlab("SNP index")+
-  ylab("PIP")+
-  theme_classic()+
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-  
+  ylim(c(-0.05, .4))+
   geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
   geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
 
-P04 <- P00+geom_point(x=100,y=effect[100], col="red", shape=21,size=3)+
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-  
-  geom_hline(yintercept = 0)+
-  xlab("CpG")+
-  ylab("Effect ") 
+P13
 
-tt <- susie( X=X,y=y[,100], L=1)
-
-df_pip4 <-data.frame(x=1:length(tt$pip),
-                     y=tt$pip)
-df2   <-data.frame(x= tt$sets$cs$L1,
-                   y=tt$pip[tt$sets$cs$L1])
-df3   <-data.frame(x= true_pos,y=tt$pip[true_pos])
-P41 <-  ggplot( )+ theme_classic()+
-  geom_point(df_pip4, mapping=aes(x=x, y=y))+
-  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())+
-  xlab("SNP index")+
-  ylab("PIP")+
-  
-  
-  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
-  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
-
-
-tt <- susiF(y, X, L=1)
-tt$cs
-#ten column where removed so we need to remake the plot for the explanation (other t)
-tt$pip <- rep( 0,length(tt$pip))
-tt$pip[true_pos] <-1
-
-df_pip5 <-data.frame(x=1:length(tt$pip),
-                     y=tt$pip)
-df_est_f<- data.frame(y=c( tt$fitted_func[[1]],
-                           tt$cred_band[[1]][1,],
-                           tt$cred_band[[1]][2,]
+diff_bot <- susif_res$cred_band[[1]][2,]- susif_res$fitted_func[[1]]
+df_est_f<- data.frame(y=c(   (susif_res$fitted_func[[1]]),
+                             (susif_res$cred_band[[1]][1,]-diff_bot),
+                             (susif_res$cred_band[[1]][2,]+diff_bot)
 ),
-x= rep( 1:128, 3),
-type=factor(rep(1:3, each=128)))
+x= rep( susif_res$outing_grid, 3),
+type=factor(rep(1:3, each=32)))
 
 
-
-df_est_f<- data.frame(y=c( tt$fitted_func[[1]],
-                           tt$cred_band[[1]][1,],
-                           tt$cred_band[[1]][2,]
-),
-x= rep( 1:128, 3),
-type=factor(rep(1:3, each=128)))
+df_effect <- data.frame ( y=  effect[50:120][idx0], 
+                          x=  pos[idx0])
 
 
-ggplot( )+
-  geom_point(df_effect,  mapping=aes(x=x, y=y))+
+P21 <-ggplot( )+
+  geom_line(df_effect,  mapping=aes(x=x, y=y), size=1.1, col="green2")+
+  
+  geom_segment(data=df_pos_CpG, aes (x=x, xend=x,  y =-0.061,yend =-0.041))+
   geom_line( df_est_f[which(df_est_f$type==1),],
              mapping=aes(x=x, y=y,linetype="longdash"), 
              col="lightblue3",
@@ -220,54 +329,87 @@ ggplot( )+
              mapping=aes(x=x, y=y,linetype="solid"),
              col="lightblue3",
              size=1.3)+
-  
+  ggtitle("FSuSiE effect estimate")+
   xlab("")+
   ylab("")+
-  theme_classic()
-
-P05 <-  ggplot( )+
-  geom_point(df_effect,  mapping=aes(x=x, y=y))+
-  geom_line( df_est_f[which(df_est_f$type==1),],
-             mapping=aes(x=x, y=y,linetype="longdash"), 
-             col="lightblue3",
-             size=1.3)+
-  geom_line( df_est_f[which(df_est_f$type==2),],
-             mapping=aes(x=x, y=y,linetype="solid"),
-             col="lightblue3",
-             size=1.3)+
-  geom_line( df_est_f[which(df_est_f$type==3),],
-             mapping=aes(x=x, y=y,linetype="solid"),
-             col="lightblue3",
-             size=1.3)+
-  
-  xlab("CpG")+
-  ylab("Effect ")+
+  geom_segment(  aes( x= min(df$x),xend= max(df$x), y =-0.051,yend =-0.051))+ 
+  geom_label (data=df_label, aes (x=x,y=y, label=lab,fill=col))+
+  scale_fill_manual(values = c("lightblue4"= "white",
+                               "orange4"="white"))+
   theme_classic()+
-  geom_hline(yintercept = 0)+
   theme(legend.position = "none",
         panel.border = element_rect(colour = "black", fill=NA, size=1.2),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
-P51 <- ggplot( df_pip5, aes(x=x, y=y))+
-  geom_point()+
-  xlab("SNP index")+
-  ylab("PIP")+
-  theme_classic()+
-  geom_point(x= true_pos,y=tt$pip[true_pos], col="lightblue3",size=3)+
-  theme( panel.border = element_rect(colour = "black", fill=NA, size=1.2),
-         axis.text.y=element_blank(),
-         axis.ticks.y=element_blank(),
-         axis.text.x=element_blank(),
-         axis.ticks.x=element_blank())+
-  
-  geom_point(x= true_pos,y=tt$pip[true_pos], col="red", shape=21,size=3)
+P21 
 
-library(cowplot)
+
+
+
+
+tt <- susif_res  
+tt0 <- rep(0,length( SNP_idx  ))
+# susif reindex the ouptut so given that 42 columns are excluded a bit annoying to reindex
+tt0[9]<-1
+#anyhow check in susif_res$cs you will see that full weight in the causal part
+df_pip1 <-data.frame(x=pos_SNP_plot,
+                     y=tt0)
+df2   <-data.frame(x= pos_SNP_plot [9] ,
+                   y=tt0[9])
+df3   <-data.frame(x= pos_SNP_plot[idx_causal_SNP],
+                   y=tt0[idx_causal_SNP])
+P22 <- ggplot( )+
+  geom_point(df_pip1, mapping=aes(x=x, y=y))+
+  xlab("")+
+  ylab("PIP")+
+  
+  ggtitle("Fine mapping with FSuSiE")+
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())+
+  geom_point(df2 ,  mapping=aes(x=x,y=y), col="lightblue3",size=3)+
+  geom_point(df3 ,  mapping=aes(x=x,y=y), col="red", shape=21,size=3)
+
+P22
+
 library(gridExtra)
-grid.arrange(#P01, P11,
-             P02,P21,
-              P03, P31,
-              #P04,P41,
-             P05,P51, ncol=2)
+library(cowplot)
+dummyPlot <-ggplot()+
+  geom_point(data=df, aes(x=x, y= y-min(y) , col=as.factor(Genotype)),alpha=.4)+
+  
+  scale_colour_manual(values= c( "1"= "green2",
+                                 "2"="slateblue1",
+                                 "0"="tomato")) +theme_classic( )+
+  guides(color = guide_legend(title = "Causal SNP")) +
+  theme( 
+    legend.position = "bottom" )
+
+
+
+legend <- cowplot::get_legend(dummyPlot)
+grid_plot <- ggdraw()+
+  
+  draw_plot(P0,  x = 0.01 , y = .55, width = .99, height = .45)+
+  draw_plot(legend ,  x = 0.01 , y = .52, width = .99, height = .03)+
+  
+  draw_plot(P11,  x = 0.01 , y = .32, width = .49, height = .163 )+
+  draw_plot(P12,  x = 0.01 , y = .16, width = .49, height = .16 )+
+  draw_plot(P13,  x = 0.01 , y = .0, width = .49, height = .16)+
+  
+  draw_plot(P21,  x = 0.5 , y = .24, width = .49, height = .24)+
+  
+  draw_plot(P22,  x = 0.5 , y = .0, width = .49, height = .24)
+
+grid_plot
+
+
+ggsave(grid_plot , file="plot/Fig2.pdf",
+       width = 29.7,
+       height = 21,
+       units = "cm"
+)
