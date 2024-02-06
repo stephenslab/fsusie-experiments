@@ -1,3 +1,4 @@
+rm(list=ls())
 library("dplyr")
 library("readr")
 library("stringr")
@@ -23,7 +24,7 @@ color2 = c("black", "dodgerblue2","#FF7F00", "#6A3D9A","skyblue2",
 
 ### Effect plot
 n = c(1,2,3,4)
-
+nn = 0.9
 refine_effect_plot_plot<-  ggplot( effect  )+
   geom_line(aes(x = pos, y = mid,color = effect), size=1.4)+
   geom_ribbon(aes(x = pos,
@@ -117,12 +118,12 @@ rel_heights = c(4,4,6),labels  = c("A","B","C"),label_size = 10
 ) -> result_plot
 result_plot
 
-result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.pdf", device = "pdf",
+result_plot%>%ggsave(filename = "../plot/casestudy_highlight.pdf", device = "pdf",
        width = 29.7,
        height = 21,
        units = "cm"
 )
-result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.png",device = "png",
+result_plot%>%ggsave(filename = "../plot/casestudy_highlight.png",device = "png",
        width = 29.7,
        height = 21,
        units = "cm"
