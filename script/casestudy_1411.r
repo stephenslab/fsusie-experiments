@@ -57,7 +57,7 @@ refine_effect_plot_plot<-  ggplot( effect  )+
     axis.text.y = element_text(size = 10),
     panel.border = element_rect(colour = "black", fill=NA, size=1.2),
     strip.background =element_rect(fill="white"),
-    
+    axis.ticks.x = element_blank() ,
     panel.spacing=unit(0.7, "lines")
   )+ xlim(plot_range) 
  
@@ -73,6 +73,7 @@ refine_plot$molecular_trait_id <- factor(refine_plot$molecular_trait_id , levels
                                                                                     "Inh APOL2",
                                                                                     "Neu eQTL APOL2" 
 ))
+refine_plot$new_CS[which(refine_plot$new_CS ==2 & refine_plot$molecular_trait_id == "Neu eQTL APOL2" )]<- 13
 
 refine_plot_plot  <-  ggplot2::ggplot(refine_plot,aes(y = y,
                                                  x = pos,
@@ -138,7 +139,7 @@ tf_plot = ggplot(data = annotation%>%arrange(start1)%>%filter(start2 > 36500000)
                     y = (nn-strand/100),
                     yend =(nn-strand/100)
                     ) ,
-                arrow = arrow(length = unit(0.5, "cm")),
+                arrow = arrow(length = unit(0.2, "cm")),
                 data = gene_plot # arrow gene
                 )+
   geom_text(aes(x = 35985000, 
