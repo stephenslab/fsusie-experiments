@@ -47,7 +47,7 @@ refine_effect_plot_plot<-  ggplot( effect  )+
   scale_fill_manual("Credible set",values = color2[n+1])+
   theme_bw()+
   xlab("") +
-  ylab("Estimated Effect")+
+  ylab("")+
   theme( 
     legend.position="none",
     plot.margin=unit(c(5,0,0,0),"mm"),
@@ -60,7 +60,7 @@ refine_effect_plot_plot<-  ggplot( effect  )+
     
     panel.spacing=unit(0.7, "lines")
   )+ xlim(plot_range) 
-
+ 
 
 refine_effect_plot_plot
 
@@ -100,25 +100,79 @@ refine_plot_plot  <-  ggplot2::ggplot(refine_plot,aes(y = y,
 refine_plot_plot
 ### TF plot
 
-tf_plot = ggplot(data = annotation%>%arrange(start1)%>%filter(start2 > 36500000))+geom_segment(aes(color = region ,x = start1,xend = end1, y = 0.87, yend =  0.87), alpha = 0.7,size = 5)+
-                                geom_segment(aes(x = start2,xend = end2, y = 0.87, yend =  0.87), alpha = 0.7,size = 5,color = "green")+scale_color_manual("region",values = c("orange","red","yellow","purple") )+
-                                    geom_segment(aes( x = start1,xend = (start1+start2)/2, y = 0.87 , yend = 0.835 ))+
-                                    geom_segment(aes( x = (start1+start2)/2 ,xend = start2, y = 0.835 , yend = 0.87 ))+
-                                    geom_segment(data = tf_candidates%>%filter() ,aes(x = X2,xend = X3, y = 1.1-X7/30,yend = 1.1-X7/30),size = 15)+
-                                    geom_segment( aes(x = start,xend = end, y = (nn-strand/100), yend =(nn-strand/100) ) ,
-                                    arrow = arrow(length = unit(0.5, "cm")), data = gene_plot )+
-                                    geom_text(aes(x = 35985000, y = 1.1-X7/30, label = X4 ),size = 7,data =tf_candidates%>%filter()  )+
-                                    geom_text(data = gene_plot,aes(x = x_label,y = 0.885, label = gene_name, vjust=-1), size = 7)+theme_bw()+theme(text = element_text(size = 7))+ylab("")+xlim(plot_range[1],plot_range[2])
-
+tf_plot = ggplot(data = annotation%>%arrange(start1)%>%filter(start2 > 36500000))+
+  geom_segment(aes(color = region ,
+                   x = start1,
+                   xend = end1,
+                   y = 0.87,
+                   yend =  0.87),
+               alpha = 0.7,
+               size = 5)+
+  geom_segment(aes(x = start2,
+                   xend = end2,
+                   y = 0.87, 
+                   yend =  0.87),
+               alpha = 0.7,
+               size = 5,
+               color = "green")+
+  geom_segment(aes( x = start1,
+                    xend = (start1+start2)/2,
+                    y = 0.87 , 
+                    yend = 0.835 )
+               )+
+  geom_segment(aes( x = (start1+start2)/2 ,
+                    xend = start2, 
+                    y = 0.835 , 
+                    yend = 0.87 )
+               )+
+  geom_segment(data = tf_candidates%>%
+                      filter() ,
+               aes(x = X2,
+                  xend = X3,
+                   y = 1.1-X7/30,
+                  yend = 1.1-X7/30),# bars
+               size = 2
+               )+
+  geom_segment( aes(x = start,
+                    xend = end, 
+                    y = (nn-strand/100),
+                    yend =(nn-strand/100)
+                    ) ,
+                arrow = arrow(length = unit(0.5, "cm")),
+                data = gene_plot # arrow gene
+                )+
+  geom_text(aes(x = 35985000, 
+                y = 1.1-X7/30,
+                label = X4 ),
+            size = 5,check_overlap = TRUE,
+            data =tf_candidates%>%filter() # names of the TF
+            )+
+  geom_text(data = gene_plot,
+            aes(x = (x_label+30000),
+                y = 0.885, 
+                label = gene_name,
+                vjust=-1),#name gene
+            size = 5
+            )+
+  scale_color_manual("region",
+                     values = c("orange",
+                                "red",
+                                "yellow",
+                                "purple") 
+                     )+
+  theme_bw()+
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank() ,
+        axis.ticks.y = element_blank() )+
+  ylab("")+
+  xlim(plot_range[1],plot_range[2])
+tf_plot
 
 ### Combined:
 
-cowplot::plot_grid(plotlist = list(refine_effect_plot_plot+theme(strip.text.y.right = element_text(angle = 0,size = 10),panel.spacing=unit(0.7, "lines"),axis.text.y = element_text(size = 10))+
-                                     xlim(plot_range)+
-                                     theme(text = element_text(size = 10)),
-                                    tf_plot +
-                                   
-                                     theme(text = element_text(size = 10)),
+cowplot::plot_grid(plotlist = list(refine_effect_plot_plot,
+                                    tf_plot  ,
                                    refine_plot_plot 
                                    
 ) ,

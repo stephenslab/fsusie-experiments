@@ -127,19 +127,94 @@ gene_plot_plot <-ggplot(gene_plot,aes()) +
   geom_text(aes(x = x_label,y = 0.885, label = gene_name))+
   ylab("")+
   xlab("")+
-  xlim(plot_range)+theme_bw()+ 
-                                     theme(strip.text.y.right = element_text(angle = 0))+
-  geom_point( aes(x = X4, y = 0.88 ),size = 2, color  = "#6A3D9A", data = annotated%>%count(X3,X4,X5)%>%filter(X3 %in% c("transcript")))+
-  geom_point( aes(x = X4, y = 0.88  ),size = 2, color  = "blue", data = annotated%>%count(X3,X4,X5)%>%filter(X3 %in% c("transcript"), X4 ==153601955 |X4 ==153632364  ))+
-  geom_segment( aes(x = start,xend = end, y = 0.87, yend = 0.87 ),alpha = 0.7,size = 5, color  = "#6A3D9A", data = annotation%>%select(start = start1, end = end1, chr = chr1)%>%filter(chr == "chr4", start %in% c(153333848,153343848)  )  ) +
-  geom_segment( aes(x = start,xend = end, y = 0.87, yend = 0.87 ),alpha = 0.7,size = 5, color  = "#6A3D9A", data = annotation%>%select(start = start2, end = end2, chr = chr2,start1)%>%filter(chr == "chr4", start1  %in% c(153333848,153343848) )  ) +
-  geom_segment( aes(x = start1,xend = (start1+start2)/2, y = 0.87, yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "#6A3D9A", data = annotation%>%filter(chr1 == "chr4", start1  == 153333848    )  ) +
-  geom_segment( aes(x = (start1+start2)/2,xend = start2, y = 0.835, yend = 0.87 ),alpha = 0.6,size = 0.5, color  = "#6A3D9A", data = annotation%>%filter(chr1 == "chr4", start1  == 153333848   )  ) +
-  geom_segment( aes(x = start1,xend = (start1+start2)/2, y = 0.87, yend = 0.835 ),alpha = 0.6,size = 0.5, color  = "#6A3D9A", data = annotation%>%filter(chr1 == "chr4", start1  == 153343848   )  ) +
-  geom_segment( aes(x = (start1+start2)/2,xend = start2, y = 0.835, yend = 0.87 ),alpha = 0.6,size = 0.5, color  = "#6A3D9A", data = annotation%>%filter(chr1 == "chr4", start1  == 153343848  )  ) +
+  xlim(plot_range)+theme_bw()+  
+  geom_point( aes(x = X4, y = 0.88 ),
+              size = 2, 
+              color  = "#6A3D9A",
+              data = annotated%>%
+                count(X3,X4,X5)%>%
+                filter(X3 %in% c("transcript"))
+              )+
+  geom_point( aes(x = X4, y = 0.88  ),
+              size = 2,
+              color  = "blue", 
+              data = annotated%>%
+                count(X3,X4,X5)%>%
+                filter(X3 %in% c("transcript"),
+                       X4 ==153601955 |X4 ==153632364  )
+              )+
+  geom_segment( aes(x = start,
+                    xend = end, 
+                    y = 0.87, 
+                    yend = 0.87 ),
+                alpha = 0.7,
+                size = 5,
+                color  = "#6A3D9A", 
+                data = annotation%>%
+                  select(start = start1,
+                         end = end1, 
+                         chr = chr1)%>%
+                  filter(chr == "chr4", 
+                         start %in% c(153333848,153343848)  ) 
+                ) +
+  geom_segment( aes(x = start,
+                    xend = end, 
+                    y = 0.87, 
+                    yend = 0.87 ),
+                alpha = 0.7,
+                size = 5, 
+                color  = "#6A3D9A", 
+                data = annotation%>%
+                  select(start = start2,
+                         end = end2,
+                         chr = chr2,start1)%>%
+                  filter(chr == "chr4", start1  %in% c(153333848,153343848) )
+                ) +
+  geom_segment( aes(x = start1,
+                    xend = (start1+start2)/2,
+                    y = 0.87, 
+                    yend = 0.835 ),
+                alpha = 0.6,
+                size = 0.5,
+                color  = "#6A3D9A",
+                data = annotation%>%filter(chr1 == "chr4",
+                                           start1  == 153333848    )  
+                ) +
+  geom_segment( aes(x = (start1+start2)/2,
+                    xend = start2,
+                    y = 0.835,
+                    yend = 0.87 ),
+                alpha = 0.6,
+                size = 0.5, 
+                color  = "#6A3D9A",
+                data = annotation%>%filter(chr1 == "chr4", 
+                                           start1  == 153333848   )
+                ) +
+  geom_segment( aes(x = start1,
+                    xend = (start1+start2)/2,
+                    y = 0.87,
+                    yend = 0.835 ),
+                alpha = 0.6,
+                size = 0.5, 
+                color  = "#6A3D9A",
+                data = annotation%>%filter(chr1 == "chr4",
+                                           start1  == 153343848   )
+                ) +
+  geom_segment( aes(x = (start1+start2)/2,
+                    xend = start2,
+                    y = 0.835,
+                    yend = 0.87 ),
+                alpha = 0.6,
+                size = 0.5,
+                color  = "#6A3D9A",
+                data = annotation%>%
+                  filter(chr1 == "chr4", 
+                         start1  == 153343848  )
+                ) +
  #geom_segment(data = remap%>%filter( )%>%filter(TF %in% c("SIN3A","REST")),size = 10, aes(color = TF,x =  X2, xend = X3, y = 0.9, yend = 0.9 ) )+
   xlab("")+
   theme(legend.position="none",
+        strip.text.y.right = element_text(angle = 0),
         axis.text.x = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.x = element_blank() ,
