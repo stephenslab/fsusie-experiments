@@ -7,7 +7,8 @@ library("tidyr")
 library("ggplot2")
 library("cowplot")
 library("ComplexUpset")
-data_list = readRDS("../data/Case1411.rds")
+path <- getwd()
+data_list =  readRDS(paste(path, "/data/Case1411.rds", sep=""))
 effect = data_list$effect
 refine_plot = data_list$refine_plot
 gene_plot = data_list$gene_plot 
@@ -47,21 +48,31 @@ refine_effect_plot_plot<-  ggplot( effect  )+
   theme_bw()+
   xlab("") +
   ylab("Estimated Effect")+
-  theme(text = element_text(size = 10),
-        legend.position="none")+
-  theme(plot.margin=unit(c(5,0,0,0),"mm"),
-        strip.text.y.right = element_text(angle = 0,
-                                          size = 10),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size = 10)
-  )+xlim(plot_range[1],plot_range[2])
+  theme( 
+    legend.position="none",
+    plot.margin=unit(c(5,0,0,0),"mm"),
+    strip.text.y.right = element_text(angle = 0,
+                                      size = 10),
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(size = 10),
+    panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+    strip.background =element_rect(fill="white"),
+    
+    panel.spacing=unit(0.7, "lines")
+  )+ xlim(plot_range) 
 
 
 refine_effect_plot_plot
 
 ### PIP plot
 
-
+refine_plot$molecular_trait_id <- factor(refine_plot$molecular_trait_id , levels= c("DNAm",
+                                                                                    "H3K9ac",
+                                                                                    "eQTL APOL2",
+                                                                                    "pQTL APOL2",
+                                                                                    "Inh APOL2",
+                                                                                    "Neu eQTL APOL2" 
+))
 
 refine_plot_plot  <-  ggplot2::ggplot(refine_plot,aes(y = y,
                                                  x = pos,
@@ -71,16 +82,22 @@ refine_plot_plot  <-  ggplot2::ggplot(refine_plot,aes(y = y,
   facet_grid(molecular_trait_id ~.)+
   geom_point(size = 4) +
   scale_color_manual("CS",values = color2) +
+  theme_bw()+ 
+  ylab("")+
+  xlim(plot_range)+ 
   theme_bw()+
-  theme(axis.ticks.x = element_blank()) +
-  ylab("Posterior Inclusion Probability (PIP)")+
-  xlim(plot_range)+
-  theme(axis.ticks.x = element_blank() ) +
-  theme(strip.text.y.right = element_text(angle = 0))+
-  xlab("") +
-  theme(text = element_text(size = 10),legend.position = "bottom")
-
-
+  theme(axis.ticks.x = element_blank() ,
+        axis.text.x = element_text(size = 10),
+        axis.text.y = element_text(size = 10), 
+        panel.spacing=unit(0.7, "lines") , 
+        panel.border = element_rect(colour = "black", fill=NA, size=1.2),
+        strip.background =element_rect(fill="white"),
+        legend.position = "none",
+        strip.text.y.right = element_text(angle = 0,size = 10),
+        text = element_text(size = 10) )+
+  xlab("") +ylim(c(0,1))+  
+  scale_y_continuous(breaks = c(0, 1), limits =c(0,1.25) )   
+refine_plot_plot
 ### TF plot
 
 tf_plot = ggplot(data = annotation%>%arrange(start1)%>%filter(start2 > 36500000))+geom_segment(aes(color = region ,x = start1,xend = end1, y = 0.87, yend =  0.87), alpha = 0.7,size = 5)+
@@ -102,13 +119,7 @@ cowplot::plot_grid(plotlist = list(refine_effect_plot_plot+theme(strip.text.y.ri
                                     tf_plot +
                                    
                                      theme(text = element_text(size = 10)),
-                                   refine_plot_plot+
-                                     theme_bw()+
-                                     theme(axis.ticks.x = element_blank()) +
-                                     theme(strip.text.y.right = element_text(angle = 0,size = 10))+
-                                     xlab("") +ylim(c(0,1))+
-                                     theme(text = element_text(size = 10),axis.text.x = element_text(size = 10), axis.text.y = element_text(size = 10), 
-                                           panel.spacing=unit(0.7, "lines"),legend.position = "none")+scale_y_continuous(breaks = c(0,0.5,1))
+                                   refine_plot_plot 
                                    
 ) ,
 ncol = 1,
@@ -118,13 +129,9 @@ rel_heights = c(4,4,6),labels  = c("A","B","C"),label_size = 10
 ) -> result_plot
 result_plot
 
-result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.pdf", device = "pdf",
+result_plot%>%ggsave(filename = paste(path, "/plot/casestudy_1411_highlight.pdf",sep=""), device = "pdf",
        width = 29.7,
        height = 21,
        units = "cm"
 )
-result_plot%>%ggsave(filename = "../plot/casestudy_1411_highlight.png",device = "png",
-       width = 29.7,
-       height = 21,
-       units = "cm"
-)
+ 
