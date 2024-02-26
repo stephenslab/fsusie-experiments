@@ -7,9 +7,11 @@ library(grid)
 library(dplyr)
 library(susieR)
 library(ggpubr)
+#D41159  
+#1A85FF
+#40B0A6
 
-
-colors <- c("gold1","green4","blue1" )
+colors <- c("#D41159","#1A85FF","#40B0A6" )
 ### For PVE=10% ---- 
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_128_sd1.RData", 
@@ -573,10 +575,8 @@ P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
   scale_color_manual(values = colors)
 
 
-
-
 #####
-colors <- c( "green4","blue1" )
+colors <- c( "#D41159","#1A85FF" )
 
 library(dplR)
 ### For PVE=10% ----
@@ -706,7 +706,7 @@ P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
   geom_errorbar(aes(ymin=t1_er_low, ymax=t1_er_up), width=.2,
                 position=position_dodge(.9) )+
-  geom_hline(yintercept = 0.95)+
+  geom_hline(yintercept = 0.95, color="red")+
   ylim(c(0.8,1.01))+
   ylab("Coverage")+
   #ggtitle("Coverage PVE=10%") +
