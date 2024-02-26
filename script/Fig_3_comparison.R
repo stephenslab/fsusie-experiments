@@ -325,7 +325,7 @@ P2 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   xlim( c(0,0.05))+
   theme(legend.position = "none")+
   theme_linedraw()+
-  ggtitle("WGBS block effect ")+
+  ggtitle("WGBS block")+
   scale_color_manual(values = colors)
 
 
@@ -474,7 +474,7 @@ P3 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   geom_line(size=1.2)+
   xlim( c(0,0.05))+
   theme_linedraw()+
-  ggtitle("WGBS distance decay effect ")+
+  ggtitle("WGBS distance decay")+
   scale_color_manual(values = colors)
 P3
 
@@ -699,7 +699,9 @@ P1_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   ylim(c(0 ,1))+
   ylab("Power")+
   theme_linedraw()+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors) +
+  scale_x_discrete(labels =c(1,"",3,"",5,"",7,"",9,"",11,"",13,"",15,"",17,"",19,""))
+ 
 P1_p
 
 P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
@@ -711,7 +713,8 @@ P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   ylab("Coverage")+
   #ggtitle("Coverage PVE=10%") +
   theme_linedraw()+
-  scale_color_manual(values = colors)
+  scale_color_manual(values = colors)+
+  scale_x_discrete(labels =c(1,"",3,"",5,"",7,"",9,"",11,"",13,"",15,"",17,"",19,""))
 
 P1_t1
 
@@ -824,11 +827,14 @@ grid_plot <- ggdraw()+
   
   
   
-  draw_plot(P1         + theme(legend.position = "none"),
+  draw_plot(P1         + theme(legend.position = "none", 
+                               title = element_text( size=10 )),
             x = 0.0 , y = .33, width = .2, height = .33)+
-  draw_plot(P2         + theme(legend.position = "none"),
+  draw_plot(P2         + theme(legend.position = "none", 
+                               title = element_text( size=10 )),
             x = .2, y = .33, width = .2, height = .33)+
-  draw_plot(P3         + theme(legend.position = "none"),
+  draw_plot(P3         + theme(legend.position = "none", 
+                               title = element_text( size=10 )),
             x = .4, y = .33, width = .2, height = .33)+
   draw_plot(P4         + theme(legend.position = "none"),
             x = 0 , y = .0, width = .2, height = .33)+
@@ -836,9 +842,14 @@ grid_plot <- ggdraw()+
             x = .2, y = .0, width = .2, height = .33)+
   draw_plot(P6         + theme(legend.position = "none"),
             x = .4, y = .0, width = .2, height = .33)+
-  draw_plot(P1_p       + theme(legend.position = "none"),
+  draw_plot(P1_p       + theme(legend.position = "none",
+                               panel.grid.major = element_line(color = "grey"),
+                               panel.grid.minor = element_blank() 
+                               ),
             x = .6, y = .6, width = .2, height = .35)+
-  draw_plot(P1_t1      + theme(legend.position = "none"),
+  draw_plot(P1_t1      + theme(legend.position = "none",
+                               panel.grid.major = element_line(color = "grey"),
+                               panel.grid.minor = element_blank()),
             x = .8, y = .6, width = .2, height = .35)+
   draw_plot(p_run_time2 + theme(legend.position = "none"),
             x = .6, y = .1, width = .4, height = .4)+
@@ -864,3 +875,4 @@ ggsave(P_out , file="plot/Fig3.pdf",
        height = 21,
        units = "cm"
 )
+
