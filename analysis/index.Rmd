@@ -1,11 +1,8 @@
 ---
-title: "Home"
+title: Code and data for fsusie paper
+author: William Denault, Gao Wang, Hao Sun, Peter Carbonetto
 site: workflowr::wflow_site
-output:
-  workflowr::wflow_html:
-    toc: false
-editor_options:
-  chunk_output_type: console
+output: workflowr::wflow_html
 ---
 
-Welcome to my research website.
+*Links to the analyses will go here.*
