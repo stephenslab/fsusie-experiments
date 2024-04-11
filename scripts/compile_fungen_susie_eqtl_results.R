@@ -26,7 +26,8 @@ susie_rnaseq <-
                             grange_chr   = rep(0,n),
                             grange_start = rep(0,n),
                             grange_end   = rep(0,n),
-                            snps         = rep(0,n),
+                            num_snps     = rep(0,n),
+                            num_cs       = rep(0,n),
                             stringsAsFactors = FALSE))
 
 # Repeat for each of the files to process.
@@ -45,7 +46,8 @@ for (i in 3372) {
   susie_rnaseq$regions[i,"grange_chr"]   <- dat$region_info$grange$chrom
   susie_rnaseq$regions[i,"grange_start"] <- dat$region_info$grange$start
   susie_rnaseq$regions[i,"grange_end"]   <- dat$region_info$grange$end
-  susie_rnaseq$regions[i,"snps"]         <- m
+  susie_rnaseq$regions[i,"num_snps"]     <- m
+  susie_rnaseq$regions[i,"num_cs"]       <- max(dat$top_loci$cs_coverage_0.95)
 
   # Get the PIPs.
   susie_rnaseq$pips[[i]] <-
@@ -55,22 +57,17 @@ for (i in 3372) {
                pip    = dat$pip,
                stringsAsFactors = FALSE)
   rownames(susie_rnaseq$pips[[i]]) <- NULL
-  
-  stop()
+
+  # Get the credible sets. The CSs are obtain using susie_get_cs()
+  # with coverage = 0.95, then filtering out CSs with min_abs_corr <
+  # 0.5 and median_abs_corr < 0.8.
+  cs <- data.frame(region    = dat$region_info$region_name,
+                   id        = dat$top_loci$variant_id,
+                   betahat   = dat$top_loci$betahat,
+                   sebetahat = dat$top_loci$sebetahat,
+                   maf       = dat$top_loci$maf,
+                   pip       = dat$top_loci$pip,
+                   cs        = dat$top_loci$cs_coverage_0.95)
+  cs$cs[cs$cs == 0] <- NA
+  susie_rnaseq$cs[[i]] <- cs
 }
-
-# susie_get_cs with coverage = 0.95
-# min_abs_corr > 0.5 OR median_abs_corr > 0.8
-
-# > dat$region_info$region_name
-# [1] "ENSG00000105369" "ENSG00000105369"
-# > dat$region_info$region_coord
-#   chrom    start      end
-# 1    19 41877278 41877279
-# > dat$region_info$grange
-#   chrom    start      end
-# 1    19 35640000 45640000
-# > head(dat$pip,n = 3)
-#    chr19:35641273:C:T chr19:35641582:ACTC:A    chr19:35642020:T:C
-#             0.0003640             0.0002389             0.0002920
-
