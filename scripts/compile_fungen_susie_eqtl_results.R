@@ -1,6 +1,8 @@
 # TO DO: Explain here what this script is for, and how to use it.
 
+# sinteractive -c 4 --mem=16G --time=24:00:00
 # module load R/3.6.1
+# R
 # > .libPaths()[1]
 # [1] "/home/pcarbo/R_libs_3_6"
 
@@ -31,13 +33,22 @@ susie_rnaseq <-
                             stringsAsFactors = FALSE))
 
 # Repeat for each of the files to process.
-# for (i in 1:n) {
-for (i in 3372) {
-  cat(susie_files[i],"\n")
+for (i in 1:n) {
+  cat(i,"")
   dat <- readRDS(susie_files[i])
   dat <- dat[[1]][[analysis]]
-  m   <- length(dat$pip)
+  if (is.null(dat$pip))
+    next
 
+  # Get the number of SNPs.
+  m <- length(dat$pip)
+  
+  # Get the number of credible sets (CSs).
+  if (nrow(dat$top_loci) > 0)
+    num_cs <- max(dat$top_loci$cs_coverage_0.95)
+  else
+    num_cs <- 0
+  
   # Get the region info.
   susie_rnaseq$regions[i,"region_name"]  <- dat$region_info$region_name
   susie_rnaseq$regions[i,"chr"]          <- dat$region_info$region_coord$chrom
@@ -47,7 +58,7 @@ for (i in 3372) {
   susie_rnaseq$regions[i,"grange_start"] <- dat$region_info$grange$start
   susie_rnaseq$regions[i,"grange_end"]   <- dat$region_info$grange$end
   susie_rnaseq$regions[i,"num_snps"]     <- m
-  susie_rnaseq$regions[i,"num_cs"]       <- max(dat$top_loci$cs_coverage_0.95)
+  susie_rnaseq$regions[i,"num_cs"]       <- num_cs
 
   # Get the PIPs.
   susie_rnaseq$pips[[i]] <-
@@ -58,16 +69,20 @@ for (i in 3372) {
                stringsAsFactors = FALSE)
   rownames(susie_rnaseq$pips[[i]]) <- NULL
 
-  # Get the credible sets. The CSs are obtain using susie_get_cs()
+  # Get the credible sets (CSs). The CSs are obtain using susie_get_cs()
   # with coverage = 0.95, then filtering out CSs with min_abs_corr <
   # 0.5 and median_abs_corr < 0.8.
-  cs <- data.frame(region    = dat$region_info$region_name,
-                   id        = dat$top_loci$variant_id,
-                   betahat   = dat$top_loci$betahat,
-                   sebetahat = dat$top_loci$sebetahat,
-                   maf       = dat$top_loci$maf,
-                   pip       = dat$top_loci$pip,
-                   cs        = dat$top_loci$cs_coverage_0.95)
-  cs$cs[cs$cs == 0] <- NA
+  if (num_cs == 0)
+    cs <- as.character(NA)
+  else {
+    cs <- data.frame(region    = dat$region_info$region_name,
+                     id        = dat$top_loci$variant_id,
+                     betahat   = dat$top_loci$betahat,
+                     sebetahat = dat$top_loci$sebetahat,
+                     maf       = dat$top_loci$maf,
+                     pip       = dat$top_loci$pip,
+                     cs        = dat$top_loci$cs_coverage_0.95)
+    cs$cs[cs$cs == 0] <- NA
+  }
   susie_rnaseq$cs[[i]] <- cs
 }
