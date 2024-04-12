@@ -20,6 +20,13 @@ fsusie_files <-
 
 # Set up the data structures for storing the compiled results.
 n <- length(fsusie_files)
+regions <- data.frame(region_name  = rep("",n),
+                      chr          = rep(0,n),
+                      coord_start  = rep(0,n),
+                      coord_end    = rep(0,n),
+                      grange_chr   = rep(0,n),
+                      grange_start = rep(0,n),
+                      grange_end   = rep(0,n))
 
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
@@ -27,6 +34,15 @@ for (i in 1:n) {
   cat(i,"")
   dat <- readRDS(fsusie_files[i])
   dat <- dat[[1]][[analysis]]
+
+  # Get the region info.
+  regions[i,"region_name"]  <- dat$region_info$region_name
+  regions[i,"chr"]          <- dat$region_info$region_coord$chrom
+  regions[i,"coord_start"]  <- dat$region_info$region_coord$start
+  regions[i,"coord_end"]    <- dat$region_info$region_coord$end
+  regions[i,"grange_chr"]   <- dat$region_info$grange$chrom
+  regions[i,"grange_start"] <- dat$region_info$grange$start
+  regions[i,"grange_end"]   <- dat$region_info$grange$end
 }
 cat("\n")
 
