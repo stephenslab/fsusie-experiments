@@ -92,4 +92,26 @@ for (i in 1:n) {
   susie_rnaseq$cs[[i]] <- cs
 }
 
+susie_rnaseq$regions <- transform(susie_rnaseq$regions,
+                                  chr        = as.numeric(chr),
+                                  grange_chr = as.numeric(grange_chr))
+
+# Remove the regions that have no SNPs.
+i <- which(susie_rnaseq$regions$num_snps > 0)
+susie_rnaseq$regions <- susie_rnaseq$regions[i,]
+susie_rnaseq$pips    <- susie_rnaseq$pips[i]
+susie_rnaseq$cs      <- susie_rnaseq$cs[i]
+
+# Sort the regions by chromosome and by position along the chromosome.
+i <- with(susie_rnaseq$regions,order(chr,coord_start))
+susie_rnaseq$regions <- susie_rnaseq$regions[i,]
+susie_rnaseq$pips    <- susie_rnaseq$pips[i]
+susie_rnaseq$cs      <- susie_rnaseq$cs[i]
+
+# Combine the PIPs into a single data frame.
+susie_rnaseq$pips <- do.call(rbind,susie_rnaseq$pips)
+
+# Combine the CS results into a single data frame.
+susie_rnaseq$cs <- do.call(rbind,susie_rnaseq$cs)
+
 saveRDS(susie_rnaseq,"susie_rnaseq_AC_DeJager_eQTL.rds",compress = "gzip")
