@@ -9,8 +9,11 @@ options(stringsAsFactors = FALSE)
 
 # This is one of the QTL results that Gao suggested to prioritize.
 # (Does Hao agree?)
-analysis <- "AC_DeJager_eQTL"
-
+#
+# Also I want this to match up these results with the fsusie results
+# on methylation ("ROSMAP_DLPFC_mQTL").
+analysis <- "DLPFC_DeJager_eQTL"
+outfile <- "susie_DLPFC_DeJager_eQTL.RData"
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas",
                      "susie_twas_export_new")
@@ -89,7 +92,7 @@ for (i in 1:n) {
   }
   cs[[i]] <- cs
 }
-
+cat("\n")
 regions <- transform(regions,
                      chr        = as.numeric(chr),
                      grange_chr = as.numeric(grange_chr))
