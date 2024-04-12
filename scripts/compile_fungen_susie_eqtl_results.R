@@ -1,10 +1,11 @@
 # TO DO: Explain here what this script is for, and how to use it.
 #
-# sinteractive -c 4 --mem=16G --time=24:00:00
+# sinteractive -c 4 --mem=16G --time=120:00:00
 # module load R/3.6.1
 # R
 # > .libPaths()[1]
 # [1] "/home/pcarbo/R_libs_3_6"
+options(stringsAsFactors = FALSE)
 
 # This is one of the QTL results that Gao suggested to prioritize.
 # (Does Hao agree?)
@@ -17,20 +18,18 @@ susie_files <-
   Sys.glob(file.path(datadir,"Fungen_xQTL.ENSG*.cis_results_db.export.rds"))
 
 # Set up the data structures for storing the compiled results.
-n <- length(susie_files)
-susie_rnaseq <-
-  list(pips = vector("list",n),
-       cs   = vector("list",n),
-       regions = data.frame(region_name  = rep("",n),
-                            chr          = rep(0,n),
-                            coord_start  = rep(0,n),
-                            coord_end    = rep(0,n),
-                            grange_chr   = rep(0,n),
-                            grange_start = rep(0,n),
-                            grange_end   = rep(0,n),
-                            num_snps     = rep(0,n),
-                            num_cs       = rep(0,n),
-                            stringsAsFactors = FALSE))
+n       <- length(susie_files)
+pips    <- vector("list",n)
+cs      <- vector("list",n)
+regions <- data.frame(region_name  = rep("",n),
+                      chr          = rep(0,n),
+                      coord_start  = rep(0,n),
+                      coord_end    = rep(0,n),
+                      grange_chr   = rep(0,n),
+                      grange_start = rep(0,n),
+                      grange_end   = rep(0,n),
+                      num_snps     = rep(0,n),
+                      num_cs       = rep(0,n))
 
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
@@ -55,24 +54,23 @@ for (i in 1:n) {
     num_cs <- max(dat$top_loci$cs_coverage_0.95)
   
   # Get the region info.
-  susie_rnaseq$regions[i,"region_name"]  <- dat$region_info$region_name
-  susie_rnaseq$regions[i,"chr"]          <- dat$region_info$region_coord$chrom
-  susie_rnaseq$regions[i,"coord_start"]  <- dat$region_info$region_coord$start
-  susie_rnaseq$regions[i,"coord_end"]    <- dat$region_info$region_coord$end
-  susie_rnaseq$regions[i,"grange_chr"]   <- dat$region_info$grange$chrom
-  susie_rnaseq$regions[i,"grange_start"] <- dat$region_info$grange$start
-  susie_rnaseq$regions[i,"grange_end"]   <- dat$region_info$grange$end
-  susie_rnaseq$regions[i,"num_snps"]     <- m
-  susie_rnaseq$regions[i,"num_cs"]       <- num_cs
+  regions[i,"region_name"]  <- dat$region_info$region_name
+  regions[i,"chr"]          <- dat$region_info$region_coord$chrom
+  regions[i,"coord_start"]  <- dat$region_info$region_coord$start
+  regions[i,"coord_end"]    <- dat$region_info$region_coord$end
+  regions[i,"grange_chr"]   <- dat$region_info$grange$chrom
+  regions[i,"grange_start"] <- dat$region_info$grange$start
+  regions[i,"grange_end"]   <- dat$region_info$grange$end
+  regions[i,"num_snps"]     <- m
+  regions[i,"num_cs"]       <- num_cs
 
   # Get the PIPs.
-  susie_rnaseq$pips[[i]] <-
+  pips[[i]] <-
     data.frame(region = dat$region_info$region_name,
                id     = names(dat$pip),
                pos    = sapply(strsplit(names(dat$pip),":"),"[",2),
-               pip    = dat$pip,
-               stringsAsFactors = FALSE)
-  rownames(susie_rnaseq$pips[[i]]) <- NULL
+               pip    = dat$pip)
+  rownames(pips[[i]]) <- NULL
 
   # Get the credible sets (CSs). The CSs are obtain using susie_get_cs()
   # with coverage = 0.95, then filtering out CSs with min_abs_corr <
@@ -89,29 +87,38 @@ for (i in 1:n) {
                      cs        = dat$top_loci$cs_coverage_0.95)
     cs$cs[cs$cs == 0] <- NA
   }
-  susie_rnaseq$cs[[i]] <- cs
+  cs[[i]] <- cs
 }
 
-susie_rnaseq$regions <- transform(susie_rnaseq$regions,
-                                  chr        = as.numeric(chr),
-                                  grange_chr = as.numeric(grange_chr))
+regions <- transform(regions,
+                     chr        = as.numeric(chr),
+                     grange_chr = as.numeric(grange_chr))
 
 # Remove the regions that have no SNPs.
-i <- which(susie_rnaseq$regions$num_snps > 0)
-susie_rnaseq$regions <- susie_rnaseq$regions[i,]
-susie_rnaseq$pips    <- susie_rnaseq$pips[i]
-susie_rnaseq$cs      <- susie_rnaseq$cs[i]
+i       <- which(regions$num_snps > 0)
+regions <- regions[i,]
+pips    <- pips[i]
+cs      <- cs[i]
 
 # Sort the regions by chromosome and by position along the chromosome.
-i <- with(susie_rnaseq$regions,order(chr,coord_start))
-susie_rnaseq$regions <- susie_rnaseq$regions[i,]
-susie_rnaseq$pips    <- susie_rnaseq$pips[i]
-susie_rnaseq$cs      <- susie_rnaseq$cs[i]
+i       <- with(regions,order(chr,coord_start))
+regions <- regions[i,]
+pips    <- pips[i]
+cs      <- cs[i]
 
-# Combine the PIPs into a single data frame.
-susie_rnaseq$pips <- do.call(rbind,susie_rnaseq$pips)
+stop()
 
 # Combine the CS results into a single data frame.
-susie_rnaseq$cs <- do.call(rbind,susie_rnaseq$cs)
+i  <- which(!is.na(cs))
+cs <- cs[i]
+cs <- do.call(rbind,cs)
+i  <- which(!is.na(cs$cs))
+cs <- cs[i,]
+# cs <- transform(cs)
 
-saveRDS(susie_rnaseq,"susie_rnaseq_AC_DeJager_eQTL.rds",compress = "gzip")
+# Combine the PIPs into a single data frame.
+pips <- do.call(rbind,pips)
+
+# Save the final data structure to an RDS file.
+save(file = "susie_rnaseq_AC_DeJager_eQTL.RData",
+     list = c("regions","pips","cs"))
