@@ -33,6 +33,7 @@ susie_rnaseq <-
                             stringsAsFactors = FALSE))
 
 # Repeat for each of the files to process.
+cat("Compiling data from",n,"files:\n")
 for (i in 1:n) {
   cat(i,"")
   dat <- readRDS(susie_files[i])
