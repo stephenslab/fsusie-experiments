@@ -1,5 +1,5 @@
 # TO DO: Explain here what this script is for, and how to use it.
-
+#
 # sinteractive -c 4 --mem=16G --time=24:00:00
 # module load R/3.6.1
 # R
@@ -37,6 +37,8 @@ for (i in 1:n) {
   cat(i,"")
   dat <- readRDS(susie_files[i])
   dat <- dat[[1]][[analysis]]
+
+  # If there are no SNPs, skip the region.
   if (is.null(dat$pip))
     next
 
@@ -44,10 +46,12 @@ for (i in 1:n) {
   m <- length(dat$pip)
   
   # Get the number of credible sets (CSs).
-  if (nrow(dat$top_loci) > 0)
-    num_cs <- max(dat$top_loci$cs_coverage_0.95)
-  else
+  if (is.null(dat$top_loci))
     num_cs <- 0
+  else if (nrow(dat$top_loci) == 0)
+    num_cs <- 0
+  else
+    num_cs <- max(dat$top_loci$cs_coverage_0.95)
   
   # Get the region info.
   susie_rnaseq$regions[i,"region_name"]  <- dat$region_info$region_name
@@ -86,3 +90,5 @@ for (i in 1:n) {
   }
   susie_rnaseq$cs[[i]] <- cs
 }
+
+saveRDS(susie_rnaseq,"susie_rnaseq_AC_DeJager_eQTL.rds",compress = "gzip")
