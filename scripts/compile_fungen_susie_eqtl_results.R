@@ -12,8 +12,8 @@ options(stringsAsFactors = FALSE)
 #
 # Also I want this to match up these results with the fsusie results
 # on methylation ("ROSMAP_DLPFC_mQTL").
-analysis <- "DLPFC_DeJager_eQTL"
-outfile <- "susie_DLPFC_DeJager_eQTL.RData"
+analysis <- "Inh_mega_eQTL"
+outfile <- "susie_Inh_mega_eQTL.RData"
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas",
                      "susie_twas_export_new")
@@ -109,6 +109,8 @@ regions <- regions[i,]
 pips    <- pips[i]
 cs      <- cs[i]
 
+save(file = outfile,list = c("regions","pips","cs"))
+
 stop()
 
 # Combine the CS results into a single data frame.
@@ -123,5 +125,4 @@ cs <- cs[i,]
 pips <- do.call(rbind,pips)
 
 # Save the final data structure to an RDS file.
-save(file = "susie_rnaseq_AC_DeJager_eQTL.RData",
-     list = c("regions","pips","cs"))
+save(file = outfile,list = c("regions","pips","cs"))
