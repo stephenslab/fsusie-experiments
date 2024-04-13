@@ -57,7 +57,7 @@ for (i in 1:n) {
     num_cs <- max(dat$top_loci$cs_coverage_0.95)
   
   # Get the region info.
-  regions[i,"region_name"]  <- dat$region_info$region_name
+  regions[i,"region_name"]  <- dat$region_info$region_name[1]
   regions[i,"chr"]          <- dat$region_info$region_coord$chrom
   regions[i,"coord_start"]  <- dat$region_info$region_coord$start
   regions[i,"coord_end"]    <- dat$region_info$region_coord$end
@@ -69,7 +69,7 @@ for (i in 1:n) {
 
   # Get the PIPs.
   pips[[i]] <-
-    data.frame(region = dat$region_info$region_name,
+    data.frame(region = dat$region_info$region_name[1],
                id     = names(dat$pip),
                pos    = sapply(strsplit(names(dat$pip),":"),"[",2),
                pip    = dat$pip)
@@ -81,7 +81,7 @@ for (i in 1:n) {
   if (num_cs == 0)
     cs <- as.character(NA)
   else {
-    cs <- data.frame(region    = dat$region_info$region_name,
+    cs <- data.frame(region    = dat$region_info$region_name[1],
                      id        = dat$top_loci$variant_id,
                      betahat   = dat$top_loci$betahat,
                      sebetahat = dat$top_loci$sebetahat,
