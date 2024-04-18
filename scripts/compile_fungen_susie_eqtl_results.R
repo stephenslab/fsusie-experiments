@@ -79,23 +79,30 @@ for (i in 1:n) {
   # with coverage = 0.95, then filtering out CSs with min_abs_corr <
   # 0.5 and median_abs_corr < 0.8.
   if (num_cs == 0)
-    cs <- as.character(NA)
+    res <- as.character(NA)
   else {
-    cs <- data.frame(region    = dat$region_info$region_name[1],
-                     id        = dat$top_loci$variant_id,
-                     betahat   = dat$top_loci$betahat,
-                     sebetahat = dat$top_loci$sebetahat,
-                     maf       = dat$top_loci$maf,
-                     pip       = dat$top_loci$pip,
-                     cs        = dat$top_loci$cs_coverage_0.95)
-    cs$cs[cs$cs == 0] <- NA
+    res <- data.frame(region    = dat$region_info$region_name[1],
+                          id        = dat$top_loci$variant_id,
+                          betahat   = dat$top_loci$betahat,
+                          sebetahat = dat$top_loci$sebetahat,
+                          maf       = dat$top_loci$maf,
+                          pip       = dat$top_loci$pip,
+                          cs        = dat$top_loci$cs_coverage_0.95)
+    res$cs[res$cs == 0] <- NA
   }
-  cs[[i]] <- cs
+  cs[[i]] <- res
 }
 cat("\n")
 regions <- transform(regions,
                      chr        = as.numeric(chr),
                      grange_chr = as.numeric(grange_chr))
+rm(datadir,susie_files)
+rm(n,m,i,dat,res,num_cs)
+
+# Save the final data structure to an RDS file.
+save(file = outfile,list = c("regions","pips","cs"))
+
+stop()
 
 # Remove the regions that have no SNPs.
 i       <- which(regions$num_snps > 0)
@@ -108,8 +115,6 @@ i       <- with(regions,order(chr,coord_start))
 regions <- regions[i,]
 pips    <- pips[i]
 cs      <- cs[i]
-
-save(file = outfile,list = c("regions","pips","cs"))
 
 stop()
 
