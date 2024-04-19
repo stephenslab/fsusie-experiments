@@ -1,4 +1,5 @@
-# TO DO: Explain here what this script is for, and how to use it.
+# This script compile the susie results into data structures for more
+# convenient exploratory analyses.
 #
 # sinteractive -c 4 --mem=16G --time=120:00:00
 # module load R/3.6.1
@@ -8,11 +9,10 @@
 library(tools)
 options(stringsAsFactors = FALSE)
 
-# This is one of the QTL results that Gao suggested to prioritize.
-# (Does Hao agree?)
-#
-# Also I want this to match up these results with the fsusie results
-# on methylation ("ROSMAP_DLPFC_mQTL").
+# After some discussion with Gao and Hao on Slack, I choose
+# Inh_mega_eQTL because these results (like the other *_mega_eQTL
+# results) are from ROSMAP and DLPFC like the fsusie results on
+# methylation ("ROSMAP_DLPFC_mQTL").
 analysis <- "Inh_mega_eQTL"
 outfile <- "susie_Inh_mega_eQTL.RData"
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
