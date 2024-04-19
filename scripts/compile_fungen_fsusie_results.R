@@ -1,6 +1,6 @@
 # TO DO: Explain here what this script is for, and how to use it.
 #
-# sinteractive -c 4 --mem=36G --time=120:00:00
+# sinteractive -c 4 --mem=64G --time=120:00:00
 # module load R/3.6.1
 # R
 # > .libPaths()[1]
