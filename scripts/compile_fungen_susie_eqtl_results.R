@@ -83,12 +83,12 @@ for (i in 1:n) {
     res <- as.character(NA)
   else {
     res <- data.frame(region    = dat$region_info$region_name[1],
-                          id        = dat$top_loci$variant_id,
-                          betahat   = dat$top_loci$betahat,
-                          sebetahat = dat$top_loci$sebetahat,
-                          maf       = dat$top_loci$maf,
-                          pip       = dat$top_loci$pip,
-                          cs        = dat$top_loci$cs_coverage_0.95)
+                      id        = dat$top_loci$variant_id,
+                      betahat   = dat$top_loci$betahat,
+                      sebetahat = dat$top_loci$sebetahat,
+                      maf       = dat$top_loci$maf,
+                      pip       = dat$top_loci$pip,
+                      cs        = dat$top_loci$cs_coverage_0.95)
     res$cs[res$cs == 0] <- NA
   }
   cs[[i]] <- res

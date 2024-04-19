@@ -1,10 +1,11 @@
 # TO DO: Explain here what this script is for, and how to use it.
 #
-# sinteractive -c 4 --mem=24G --time=120:00:00
+# sinteractive -c 4 --mem=36G --time=120:00:00
 # module load R/3.6.1
 # R
 # > .libPaths()[1]
 # [1] "/home/pcarbo/R_libs_3_6"
+library(tools)
 options(stringsAsFactors = FALSE)
 
 # TO DO: Add notes about these choices.
@@ -19,22 +20,42 @@ fsusie_files <-
            ".*.fsusie_mixture_normal_top_pc_weights.rds")))
 
 # Set up the data structures for storing the compiled results.
-n <- length(fsusie_files)
+n       <- length(fsusie_files)
+pips    <- vector("list",n)
+cs      <- vector("list",n)
 regions <- data.frame(region_name  = rep("",n),
                       chr          = rep(0,n),
                       coord_start  = rep(0,n),
                       coord_end    = rep(0,n),
                       grange_chr   = rep(0,n),
                       grange_start = rep(0,n),
-                      grange_end   = rep(0,n))
+                      grange_end   = rep(0,n),
+                      num_snps     = rep(0,n),
+                      num_cs       = rep(0,n))
 
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
-for (i in 1:n) {
+# for (i in 1:n) {
+for (i in 100) {
   cat(i,"")
   dat <- readRDS(fsusie_files[i])
   dat <- dat[[1]][[analysis]]
 
+  # Get the number of SNPs.
+  # If there are no SNPs, skip the region.
+  num_snps <- length(dat$fsusie_summary$variant_names)
+  if (num_snps == 0)
+    next
+  
+  # Get the number of credible sets (CSs).
+  top_loci <- dat$fsusie_summary$top_loci
+  if (is.null(top_loci))
+    num_cs <- 0
+  else if (nrow(top_loci) == 0)
+    num_cs <- 0
+  else
+    num_cs <- max(top_loci$cs_coverage_0.95)
+  
   # Get the region info.
   regions[i,"region_name"]  <- dat$region_info$region_name
   regions[i,"chr"]          <- dat$region_info$region_coord$chrom
@@ -43,26 +64,34 @@ for (i in 1:n) {
   regions[i,"grange_chr"]   <- dat$region_info$grange$chrom
   regions[i,"grange_start"] <- dat$region_info$grange$start
   regions[i,"grange_end"]   <- dat$region_info$grange$end
+  regions[i,"num_snps"]     <- num_snps
+  regions[i,"num_cs"]       <- num_cs
+  
+  # Get the credible sets (CSs). The CSs are obtain using susie_get_cs()
+  # with coverage = 0.95, then filtering out CSs with min_abs_corr <
+  # 0.5 and median_abs_corr < 0.8.
+  if (num_cs == 0)
+    res <- as.character(NA)
+  else {
+    res <- data.frame(region    = dat$region_info$region_name[1],
+                      id        = top_loci$variant_id,
+                      maf       = top_loci$maf,
+                      pip       = top_loci$pip,
+                      cs        = top_loci$cs_coverage_0.95)
+    res$cs[res$cs == 0] <- NA
+  }
+  cs[[i]] <- res
+  
+  # Fields to use:
+  # 
+  # dat$fsusie_summary$variant_names
+  # dat$fsusie_summary$top_loci
 }
 cat("\n")
 
 stop()
 
-i <- 100
-dat <- readRDS(rds_files[i])
-dat <- dat[[1]]$ROSMAP_DLPFC_mQTL
-# 
-# > dat$region_info
-# $grange
-#   chrom    start      end
-# 1    11 64525075 68955803
-# 
-# $region_name
-# [1] "TADB_906"
-#
-# > head(dat$susie <- on <- top <- pc$variant <- names,n=3)
-# [1] "chr11:64525133:G:A" "chr11:64525398:C:T" "chr11:64525649:T:G"
-#
+
 # dat$fsusie_result
 #   $L_max
 #   $L
