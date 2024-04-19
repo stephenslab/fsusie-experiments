@@ -31,12 +31,15 @@ regions <- data.frame(region_name  = rep("",n),
                       grange_start = rep(0,n),
                       grange_end   = rep(0,n),
                       num_snps     = rep(0,n),
-                      num_cs       = rep(0,n))
+                      num_cs       = rep(0,n),
+                      L            = rep(0,n),
+                      Lmax         = rep(0,n))
 
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
-# for (i in 1:n) {
-for (i in 100) {
+# *** TESTING ***
+n <- 10
+for (i in 1:n) {
   cat(i,"")
   dat <- readRDS(fsusie_files[i])
   dat <- dat[[1]][[analysis]]
@@ -66,6 +69,16 @@ for (i in 100) {
   regions[i,"grange_end"]   <- dat$region_info$grange$end
   regions[i,"num_snps"]     <- num_snps
   regions[i,"num_cs"]       <- num_cs
+  regions[i,"L"]            <- dat$fsusie_result$L
+  regions[i,"Lmax"]         <- dat$fsusie_result$L_max
+  
+  # Get the PIPs.
+  pips[[i]] <-
+    data.frame(region = dat$region_info$region_name[1],
+               id = names(dat$fsusie_result$pip),
+               pos = sapply(strsplit(names(dat$fsusie_result$pip),":"),"[",2),
+               pip = dat$fsusie_result$pip)
+  rownames(pips[[i]]) <- NULL
   
   # Get the credible sets (CSs). The CSs are obtain using susie_get_cs()
   # with coverage = 0.95, then filtering out CSs with min_abs_corr <
@@ -81,26 +94,12 @@ for (i in 100) {
     res$cs[res$cs == 0] <- NA
   }
   cs[[i]] <- res
-  
-  # Fields to use:
-  # 
-  # dat$fsusie_summary$variant_names
-  # dat$fsusie_summary$top_loci
 }
 cat("\n")
 
-stop()
-
-
-# dat$fsusie_result
-#   $L_max
-#   $L
 #
-# > dat$fsusie_result$N
-# [1] 636
-# > dat$fsusie_result$P
-# [1] 17162
-# 
-# > dim(dat$fsusie_result$fitted_wc[[1]])
-# [1] 17162  1024
+# dat$fsusie_result$fitted_wc
+#   $fitted_wc
+#   $cred_band
+#   $est_pi
 #
