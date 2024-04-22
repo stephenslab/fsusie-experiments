@@ -8,7 +8,7 @@
 library(tools)
 options(stringsAsFactors = FALSE)
 
-# TO DO: Add notes about these choices.
+# TO DO: Add notes here about these choices.
 molecular_trait <- "mQTL"
 analysis <- "ROSMAP_DLPFC_mQTL"
 outfile <- "fsusie_ROSMAP_DLPFC_mQTL.RData"
@@ -20,7 +20,8 @@ fsusie_files <-
            ".*.fsusie_mixture_normal_top_pc_weights.rds")))
 
 # Set up the data structures for storing the compiled results.
-n       <- length(fsusie_files)
+# n       <- length(fsusie_files)
+n <- 100
 pips    <- vector("list",n)
 cs      <- vector("list",n)
 regions <- data.frame(region_name  = rep("",n),
@@ -37,8 +38,6 @@ regions <- data.frame(region_name  = rep("",n),
 
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
-# *** TESTING ***
-n <- 10
 for (i in 1:n) {
   cat(i,"")
   dat <- readRDS(fsusie_files[i])
@@ -96,6 +95,11 @@ for (i in 1:n) {
   cs[[i]] <- res
 }
 cat("\n")
+regions <- transform(regions,
+                     chr        = as.numeric(chr),
+                     grange_chr = as.numeric(grange_chr))
+rm(datadir,fsusie_files)
+rm(n,i)
 
 #
 # dat$fsusie_result$fitted_wc
@@ -103,3 +107,32 @@ cat("\n")
 #   $cred_band
 #   $est_pi
 #
+
+# Remove the regions that have no SNPs.
+i       <- which(regions$num_snps > 0)
+regions <- regions[i,]
+pips    <- pips[i]
+cs      <- cs[i]
+
+# Sort the regions by chromosome and by position along the chromosome.
+i       <- with(regions,order(chr,coord_start))
+regions <- regions[i,]
+pips    <- pips[i]
+cs      <- cs[i]
+
+# Combine the CS results into a single data frame.
+i  <- which(!is.na(cs))
+cs <- cs[i]
+cs <- do.call(rbind,cs)
+i  <- which(!is.na(cs$cs))
+cs <- cs[i,]
+cs <- transform(cs,
+                region = factor(region),
+                cs     = factor(cs))
+
+# Add the region names to the PIPs data structure for easier lookup.
+names(pips) <- regions$region_name
+
+# Save the final data structure to an RDS file.
+save(file = outfile,list = c("regions","pips","cs"))
+resaveRdaFiles(outfile)

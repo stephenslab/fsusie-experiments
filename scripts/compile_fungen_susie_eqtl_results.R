@@ -1,7 +1,7 @@
 # This script compile the susie results into data structures for more
 # convenient exploratory analyses.
 #
-# sinteractive -c 4 --mem=16G --time=120:00:00
+# sinteractive -c 4 --mem=24G --time=120:00:00
 # module load R/3.6.1
 # R
 # > .libPaths()[1]
