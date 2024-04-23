@@ -36,6 +36,14 @@ regions <- data.frame(region_name  = rep("",n),
                       L            = rep(0,n),
                       Lmax         = rep(0,n))
 
+# *** TESTING ***
+for (i in 1:n) {
+  cat(i,"")
+  dat <- readRDS(fsusie_files[i])
+}
+
+stop()
+
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
 for (i in 1:n) {
