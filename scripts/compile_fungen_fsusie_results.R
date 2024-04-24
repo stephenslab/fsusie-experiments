@@ -1,6 +1,6 @@
 # TO DO: Explain here what this script is for, and how to use it.
 #
-# sinteractive -c 4 --mem=64G --time=120:00:00
+# sinteractive -c 4 --mem=96G --time=120:00:00
 # module load R/3.6.1
 # R
 # > .libPaths()[1]
@@ -79,7 +79,7 @@ for (i in 1:n) {
     data.frame(region = dat$region_info$region_name[1],
                id = names(dat$fsusie_result$pip),
                pos = sapply(strsplit(names(dat$fsusie_result$pip),":"),"[",2),
-               pip = dat$fsusie_result$pip)
+               pip = as.numeric(dat$fsusie_result$pip))
   rownames(pips[[i]]) <- NULL
   
   # Get the credible sets (CSs). The CSs are obtain using susie_get_cs()

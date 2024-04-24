@@ -1,3 +1,6 @@
+# sinteractive -c 4 --mem=96G --time=120:00:00
+# module load R/3.6.1
+# R
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas/fsusie")
 molecular_trait <- "mQTL"
