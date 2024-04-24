@@ -20,8 +20,7 @@ fsusie_files <-
            ".*.fsusie_mixture_normal_top_pc_weights.rds")))
 
 # Set up the data structures for storing the compiled results.
-# n       <- length(fsusie_files)
-n <- 100
+n       <- length(fsusie_files)
 pips    <- vector("list",n)
 cs      <- vector("list",n)
 regions <- data.frame(region_name  = rep("",n),
@@ -36,19 +35,15 @@ regions <- data.frame(region_name  = rep("",n),
                       L            = rep(0,n),
                       Lmax         = rep(0,n))
 
-# *** TESTING ***
-for (i in 1:n) {
-  cat(i,"")
-  dat <- readRDS(fsusie_files[i])
-}
-
-stop()
-
 # Repeat for each of the files to process.
 cat("Compiling data from",n,"files:\n")
 for (i in 1:n) {
   cat(i,"")
-  dat <- readRDS(fsusie_files[i])
+  tryCatch
+  dat <- tryCatch(readRDS(fsusie_files[i]),
+                  error = function (e) NULL)
+  if (is.null(dat))
+    next
   dat <- dat[[1]][[analysis]]
 
   # Get the number of SNPs.

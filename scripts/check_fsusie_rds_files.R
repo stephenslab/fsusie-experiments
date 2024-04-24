@@ -5,15 +5,16 @@ fsusie_files <-
   Sys.glob(file.path(datadir,
     paste0("ROSMAP_",molecular_trait,
            ".*.fsusie_mixture_normal_top_pc_weights.rds")))
-# *** TESTING ***
-fsusie_files <- fsusie_files[1:100]
 n <- length(fsusie_files)
 corrupted <- rep(FALSE,n)
 cat("Checking",n,"files:\n")
 for (i in 1:n) {
-  cat(i,"")
+  cat("",i)
   dat <- tryCatch(readRDS(fsusie_files[i]),
-                  error = function (e) 123)
-  if (is.null(dat))
+                  error = function (e) NULL)
+  if (is.null(dat)) {
+    cat("*")
     corrupted[i] <- TRUE
+  }
 }
+cat("\n")
