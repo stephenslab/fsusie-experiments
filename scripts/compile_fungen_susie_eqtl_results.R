@@ -1,4 +1,4 @@
-# This script compile the susie results into data structures for more
+# This script compiles the susie results into data structures for more
 # convenient exploratory analyses.
 #
 # sinteractive -c 4 --mem=24G --time=120:00:00

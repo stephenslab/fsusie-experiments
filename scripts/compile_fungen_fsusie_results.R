@@ -1,4 +1,5 @@
-# TO DO: Explain here what this script is for, and how to use it.
+# This script compiles the fsusie results into data structures for
+# more convenient exploratory analyses.
 #
 # sinteractive -c 4 --mem=96G --time=120:00:00
 # module load R/3.6.1
@@ -7,8 +8,6 @@
 # [1] "/home/pcarbo/R_libs_3_6"
 library(tools)
 options(stringsAsFactors = FALSE)
-
-# TO DO: Add notes here about these choices.
 molecular_trait <- "mQTL"
 analysis <- "ROSMAP_DLPFC_mQTL"
 outfile <- "fsusie_ROSMAP_DLPFC_mQTL.RData"
@@ -101,14 +100,13 @@ cat("\n")
 regions <- transform(regions,
                      chr        = as.numeric(chr),
                      grange_chr = as.numeric(grange_chr))
-rm(datadir,fsusie_files)
-rm(n,i)
 
+# Consider using these results later:
 #
-# dat$fsusie_result$fitted_wc
-#   $fitted_wc
-#   $cred_band
-#   $est_pi
+#   dat$fsusie_result$fitted_wc
+#     $fitted_wc
+#     $cred_band
+#     $est_pi
 #
 
 # Remove the regions that have no SNPs.
