@@ -5,4 +5,4 @@ site: workflowr::wflow_site
 output: workflowr::wflow_html
 ---
 
-*Links to the analyses will go here.*
++ [Summaries of susie and fsusie results on ROSMAP data.](rosmap.html)
