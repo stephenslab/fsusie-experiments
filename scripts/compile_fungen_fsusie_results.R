@@ -134,6 +134,12 @@ cs <- transform(cs,
 # Add the region names to the PIPs data structure for easier lookup.
 names(pips) <- regions$region_name
 
+# Convert the SNP base-pair positions into numbers.
+n <- length(pips)
+for (i in 1:n) {
+  pips[[i]] <- transform(pips[[i]],pos = as.numeric(pos))
+}
+
 # Save the final data structure to an RDS file.
 save(file = outfile,list = c("regions","pips","cs"))
 resaveRdaFiles(outfile)
