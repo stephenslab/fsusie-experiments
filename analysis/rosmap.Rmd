@@ -16,6 +16,8 @@ the analysis below,
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
+library(ggplot2)
+library(cowplot)
 source("code/rosmap_functions.R")
 setDTthreads(1)
 ```
@@ -48,5 +50,35 @@ gene_file <-
   file.path("data/genome_annotations",
     "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
 genes <- get_gene_annotations(gene_file)
+```
+
+SuSiE fine-mapping of RNA-seq
+-----------------------------
+
+Size of regions in base-pairs and SNPs:
+
+```{r susie-region-sizes, fig.height=3, fig.width=6}
+susie$regions$pos_min <- sapply(susie$pips,function (x) min(x$pos))
+susie$regions$pos_max <- sapply(susie$pips,function (x) max(x$pos))
+susie$regions <- transform(susie$regions,size_bp = pos_max - pos_min)
+p1 <- ggplot(susie$regions,aes(size_bp/1e6)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  scale_x_continuous(breaks = seq(0,50,5)) +
+  labs(x = "size of region (Mb)",
+       y = "number of regions") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(susie$regions,aes(num_snps)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  scale_x_continuous(breaks = seq(0,1e5,1e4)) +
+  labs(x = "number of SNPs",
+       y = "number of regions") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2)
+```
+
+Number of CSs per region:
+
+```{r susie-num-cs}
+table(CSs = susie$regions$num_cs)
 ```
 
