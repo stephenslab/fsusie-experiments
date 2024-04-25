@@ -1,0 +1,28 @@
+---
+title: "Analysis of some susie and fsusie results on the ROSMAP data"
+author: William Denault, Hao Sun, Peter Carbonetto, Gao Wang
+output: workflowr::wflow_html
+---
+
+TO DO: GIVE OVERVIEW HERE.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the susie results:
+
+```{r load-susie-results}
+```
+
+Load the fsusie results:
+
+```{r load-fsusie-results}
+```
+
+Load the gene annotations:
+
+```{r load-gene-annotations}
+```
+
