@@ -100,3 +100,17 @@ ggplot(pdat,aes(cs_size)) +
        y = "number of CSs") +
   theme_cowplot(font_size = 10)
 ```
+
+NEXT: Create a plot showing the distance between the susie SNP and the
+gene's TSS.
+
+```{r susie-tss}
+region_names <- susie$regions$region_name
+rownames(susie$regions) <- region_names
+susie$regions$tss <- as.numeric(NA)
+for (i in region_names) {
+  j <- which(genes$ensembl == i)
+  if (length(j) == 1)
+    susie$regions[i,"tss"] <- genes[j,"start"]
+}
+```
