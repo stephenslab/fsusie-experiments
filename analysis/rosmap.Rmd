@@ -11,18 +11,61 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
-Load the susie results:
+Load the packages used in the analysis below.
+
+```{r load-pkgs}
+library(data.table)
+setDTthreads(1)
+```
+
+Load the susie fine-mapping results on the "Inh_mega_eQTL" RNA-seq
+data.
 
 ```{r load-susie-results}
+datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
+                     "analysis_result/finemapping_twas/prepared_results")
+load(file.path(datadir,"susie_Inh_mega_eQTL.RData"))					 
+susie <- list(regions = regions,cs = cs,pips = pips)
+rm(regions,cs,pips)
 ```
 
-Load the fsusie results:
+Load the fsusie fine-mapping results on the DLPFC methylation data.
 
 ```{r load-fsusie-results}
+load(file.path(datadir,"fsusie_ROSMAP_DLPFC_mQTL.RData"))
+fsusie <- list(regions = regions,cs = cs,pips = pips)
+rm(regions,cs,pips)
 ```
 
-Load the gene annotations:
+Load the gene annotations.
 
 ```{r load-gene-annotations}
+gene_file <-
+  file.path("data/genome_annotations",
+    "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
+genes <- fread(file = gene_file,sep = "\t",header = FALSE,skip = 1)
+class(genes) <- "data.frame"
+names(genes) <- c("chromosome","source","feature","start","end","score",
+                  "strand","frame","attributes")
+genes <- genes[c("chromosome","source","feature","start","end","strand",
+                 "attributes")]
+genes <- transform(genes,
+                   chromosome = factor(chromosome),
+                   source     = factor(source),
+                   feature    = factor(feature),
+                   strand     = factor(strand))
+genes <- subset(genes,source == "ensembl_havana" & feature == "transcript")
+genes <-
+  transform(genes,
+            ensembl = sapply(strsplit(attributes,";"),
+                             function (x) substr(x[[1]],10,24)),
+            gene_type = sapply(strsplit(attributes,";"),
+ 	                           function (x) substr(x[[3]],13,nchar(x[[3]])-1)),
+		    gene_name = sapply(strsplit(attributes,";"),
+                               function (x) substr(x[[4]],13,nchar(x[[4]])-1)))
+genes <- genes[-7]
+genes <- transform(genes,gene_type = factor(gene_type))
+genes <- subset(genes,gene_type == "protein_coding")
+rownames(genes) <- NULL
 ```
 
