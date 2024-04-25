@@ -82,3 +82,21 @@ Number of CSs per region:
 table(CSs = susie$regions$num_cs)
 ```
 
+CS sizes:
+
+```{r susie-cs-sizes, fig.height=3, fig.width=3}
+n <- nlevels(susie$cs$region)
+cs_sizes <- vector("list",n)
+region_names <- levels(susie$cs$region)
+names(cs_sizes) <- region_names
+for (i in region_names)
+  cs_sizes[[i]] <- as.vector(table(factor(subset(susie$cs,region == i)$cs)))
+cs_sizes <- unlist(cs_sizes)
+pdat <- data.frame(cs_size = cs_sizes)
+ggplot(pdat,aes(cs_size)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  scale_x_continuous(trans = "log10",breaks = c(1:5,10,100,1000)) +
+  labs(x = "number of SNPs",
+       y = "number of CSs") +
+  theme_cowplot(font_size = 10)
+```
