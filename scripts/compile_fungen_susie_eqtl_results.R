@@ -14,7 +14,16 @@ options(stringsAsFactors = FALSE)
 # results) are from ROSMAP and DLPFC like the fsusie results on
 # methylation ("ROSMAP_DLPFC_mQTL").
 analysis <- "Inh_mega_eQTL"
-outfile <- "susie_Inh_mega_eQTL.RData"
+outfile  <- "susie_Inh_mega_eQTL.RData"
+#
+# analysis <- "DLPFC_DeJager_eQTL"
+# outfile  <- "susie_dlpfc_dejager_eQTL.RData"
+#
+# analysis <- "monocyte_ROSMAP_eQTL"
+# outfile  <- "susie_monocyte_rosmap_eQTL.RData"
+#
+print(analysis)
+print(outfile)
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas",
                      "susie_twas_export_new")
