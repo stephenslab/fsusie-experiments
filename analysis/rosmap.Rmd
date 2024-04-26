@@ -170,3 +170,9 @@ ggplot(pdat,aes(x = pos,y = count)) +
   labs(x = "distance from TSS",y = "SNPs weighted by PIPs") +
   theme_cowplot(font_size = 10)
 ```
+
+TO DO NEXT:
+
++ Load fsusie haQTL results.
+
++ 
