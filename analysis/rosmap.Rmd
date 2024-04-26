@@ -4,6 +4,18 @@ author: William Denault, Hao Sun, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
 
+To build the workflowr page, I run this:
+
+```
+sinteractive -c 4 --mem=24G --time=20:00:00 -p mstephens
+module load R/4.1.0-no-openblas
+module load pandoc/3.0.1
+R
+> .libPaths()[1]
+# [1] "/home/pcarbo/R_libs_4_10_no_openblas"
+> workflowr::wflow_build("rosmap.Rmd",verbose = TRUE)
+```
+
 TO DO: GIVE OVERVIEW HERE.
 
 ```{r knitr-opts, include=FALSE}
@@ -18,7 +30,7 @@ the analysis below,
 library(data.table)
 library(ggplot2)
 library(cowplot)
-source("code/rosmap_functions.R")
+source("../code/rosmap_functions.R")
 setDTthreads(1)
 ```
 
@@ -47,7 +59,7 @@ Ensembl/Havana database.
 
 ```{r load-gene-annotations}
 gene_file <-
-  file.path("data/genome_annotations",
+  file.path("../data/genome_annotations",
     "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
 genes <- get_gene_annotations(gene_file)
 ```
@@ -102,20 +114,26 @@ ggplot(pdat,aes(cs_size)) +
 ```
 
 NEXT: Create a plot showing the distance between the susie SNP and the
-gene's TSS. First get the TSS for each gene/region.
-
-TO DO: Fix this based on "gtf_to_tss_bed" in
-https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py
+gene's TSS. First get the TSS for each gene/region. Note: this code is
+based on function "gtf_to_tss_bed"
+[here](https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py).
 
 ```{r get-gene-tss}
 region_names <- susie$regions$region_name
 rownames(susie$regions) <- region_names
-susie$regions$tss <- as.numeric(NA)
+susie$regions$tss       <- as.numeric(NA)
+susie$regions$strand    <- as.character(NA)
 for (i in region_names) {
   j <- which(genes$ensembl == i)
-  if (length(j) == 1)
-    susie$regions[i,"tss"] <- genes[j,"start"]
+  if (length(j) == 1) {
+    susie$regions[i,"strand"] <- as.character(genes[j,"strand"])
+    if (genes[j,"strand"] == "+")
+      susie$regions[i,"tss"] <- genes[j,"start"]
+    else
+	  susie$regions[i,"tss"] <- genes[j,"end"]
+  }
 }
+susie$regions <- transform(susie$regions,strand = factor(strand))
 ```
 
 Now compute the distance to the TSS weighted by the PIPs:
@@ -125,26 +143,30 @@ n      <- length(susie$pips)
 bins   <- c(-Inf,seq(-1e6,1e6,5e4),Inf)
 counts <- rep(0,length(bins) - 1)
 for (i in 1:n) {
-  pips <- susie$pips[[i]]
-  dist_to_tss <- susie$regions[i,"tss"] - pips$pos
-  dist_to_tss <- cut(dist_to_tss,bins)
-  res <- tapply(pips$pip,dist_to_tss,sum)
-  res[is.na(res)] <- 0
-  counts <- counts + res
-} 
+  if (!is.na(susie$regions[i,"tss"])) {
+    pips <- susie$pips[[i]]
+    dist_to_tss <- susie$regions[i,"tss"] - pips$pos
+    if (susie$regions[i,"strand"] == "-") 
+	  dist_to_tss <- -dist_to_tss
+    dist_to_tss <- cut(dist_to_tss,bins)
+    res <- tapply(pips$pip,dist_to_tss,sum)
+    res[is.na(res)] <- 0
+    counts <- counts + res
+  }
+}
 ```
 
 Plot the result:
 
-```{r plot-dist-to-tss}
+```{r plot-dist-to-tss, fig.height=3, fig.width=3}
 n      <- length(counts)
 bins   <- bins[seq(2,n-1)]
 counts <- counts[seq(2,n-1)]
 pdat <- data.frame(pos = bins + 2.5e4,count = counts)
 ggplot(pdat,aes(x = pos,y = count)) +
-  geom_col(color = "white",fill = "darkblue") +
+  geom_point(color = "darkblue") +
+  geom_line(color = "darkblue") +
+  scale_y_continuous(limits = c(0,2000)) +
   labs(x = "distance from TSS",y = "SNPs weighted by PIPs") +
   theme_cowplot(font_size = 12)
 ```
-
-TO DO: Switch from bar chart to lines + dots.
