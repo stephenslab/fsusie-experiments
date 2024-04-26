@@ -43,12 +43,14 @@ regions <- data.frame(region_name  = rep("",n),
 cat("Compiling data from",n,"files:\n")
 for (i in 1:n) {
   cat(i,"")
-  tryCatch
   dat <- tryCatch(readRDS(fsusie_files[i]),
                   error = function (e) NULL)
   if (is.null(dat))
     next
-  dat <- dat[[1]][[analysis]]
+  dat <- dat[[1]]
+  if (!is.list(dat))
+    next
+  dat <- dat[[analysis]]
 
   # Get the number of SNPs.
   # If there are no SNPs, skip the region.
