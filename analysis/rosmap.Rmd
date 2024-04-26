@@ -102,9 +102,9 @@ ggplot(pdat,aes(cs_size)) +
 ```
 
 NEXT: Create a plot showing the distance between the susie SNP and the
-gene's TSS.
+gene's TSS. First get the TSS for each gene/region.
 
-```{r susie-tss}
+```{r get-gene-tss}
 region_names <- susie$regions$region_name
 rownames(susie$regions) <- region_names
 susie$regions$tss <- as.numeric(NA)
@@ -113,4 +113,33 @@ for (i in region_names) {
   if (length(j) == 1)
     susie$regions[i,"tss"] <- genes[j,"start"]
 }
+```
+
+Now compute the distance to the TSS weighted by the PIPs:
+
+```{r dist-to-tss}
+n      <- length(susie$pips)
+bins   <- c(-Inf,seq(-1e6,1e6,5e4),Inf)
+counts <- rep(0,length(bins) - 1)
+for (i in 1:n) {
+  pips <- susie$pips[[i]]
+  dist_to_tss <- susie$regions[i,"tss"] - pips$pos
+  dist_to_tss <- cut(dist_to_tss,bins)
+  res <- tapply(pips$pip,dist_to_tss,sum)
+  res[is.na(res)] <- 0
+  counts <- counts + res
+} 
+```
+
+Plot the result:
+
+```{r plot-dist-to-tss}
+n      <- length(counts)
+bins   <- bins[seq(2,n-1)]
+counts <- counts[seq(2,n-1)]
+pdat <- data.frame(pos = bins + 2.5e4,count = counts)
+ggplot(pdat,aes(x = pos,y = count)) +
+  geom_col(color = "white",fill = "darkblue") +
+  labs(x = "distance from TSS",y = "SNPs weighted by PIPs") +
+  theme_cowplot(font_size = 12)
 ```
