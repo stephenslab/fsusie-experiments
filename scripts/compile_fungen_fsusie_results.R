@@ -8,9 +8,14 @@
 # [1] "/home/pcarbo/R_libs_3_6"
 library(tools)
 options(stringsAsFactors = FALSE)
-molecular_trait <- "mQTL"
-analysis <- "ROSMAP_DLPFC_mQTL"
-outfile <- "fsusie_ROSMAP_DLPFC_mQTL.RData"
+#
+# molecular_trait <- "mQTL"
+# analysis <- "ROSMAP_DLPFC_mQTL"
+# outfile <- "fsusie_ROSMAP_DLPFC_mQTL.RData"
+#
+molecular_trait <- "haQTL"
+analysis <- "ROSMAP_DLPFC_haQTL"
+outfile <- "fsusie_ROSMAP_DLPFC_haQTL.RData"
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas/fsusie")
 fsusie_files <-

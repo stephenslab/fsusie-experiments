@@ -3,7 +3,8 @@
 # R
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas/fsusie")
-molecular_trait <- "mQTL"
+# molecular_trait <- "mQTL"
+molecular_trait <- "haQTL"
 fsusie_files <-
   Sys.glob(file.path(datadir,
     paste0("ROSMAP_",molecular_trait,
