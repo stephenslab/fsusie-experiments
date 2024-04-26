@@ -104,6 +104,9 @@ ggplot(pdat,aes(cs_size)) +
 NEXT: Create a plot showing the distance between the susie SNP and the
 gene's TSS. First get the TSS for each gene/region.
 
+TO DO: Fix this based on "gtf_to_tss_bed" in
+https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py
+
 ```{r get-gene-tss}
 region_names <- susie$regions$region_name
 rownames(susie$regions) <- region_names
@@ -143,3 +146,5 @@ ggplot(pdat,aes(x = pos,y = count)) +
   labs(x = "distance from TSS",y = "SNPs weighted by PIPs") +
   theme_cowplot(font_size = 12)
 ```
+
+TO DO: Switch from bar chart to lines + dots.
