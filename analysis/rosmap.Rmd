@@ -175,4 +175,7 @@ TO DO NEXT:
 
 + Load fsusie haQTL results.
 
-+ 
++ Start examining the fsusie mQTL results.
+
++ Start examining the fsusie haQTL results.
+
