@@ -47,9 +47,19 @@ rm(regions,cs,pips)
 
 Load the fsusie fine-mapping results on the DLPFC methylation data.
 
-```{r load-fsusie-results}
+```{r load-fsusie-mqtl-results}
 load(file.path(datadir,"fsusie_ROSMAP_DLPFC_mQTL.RData"))
-fsusie <- list(regions = regions,cs = cs,pips = pips)
+fsusie_mqtl <- list(regions = regions,cs = cs,pips = pips)
+rm(regions,cs,pips)
+```
+
+Load the fsusie fine-mappign results on the DLPFC histone acetylation
+(H3K9ac ChIP-seq) data.
+
+
+```{r load-fsusie-haqtl-results}
+load(file.path(datadir,"fsusie_ROSMAP_DLPFC_haQTL.RData"))
+fsusie_haqtl <- list(regions = regions,cs = cs,pips = pips)
 rm(regions,cs,pips)
 ```
 
@@ -70,8 +80,10 @@ SuSiE fine-mapping of RNA-seq
 Size of regions in base-pairs and SNPs:
 
 ```{r susie-region-sizes, fig.height=3, fig.width=6.25}
-susie$regions$pos_min <- sapply(susie$pips,function (x) min(x$pos))
-susie$regions$pos_max <- sapply(susie$pips,function (x) max(x$pos))
+susie$regions$pos_min <- sapply(susie$pips,
+                                function (x) min(x$pos,na.rm = TRUE))
+susie$regions$pos_max <- sapply(susie$pips,
+                                function (x) max(x$pos,na.rm = TRUE))
 susie$regions <- transform(susie$regions,size_bp = pos_max - pos_min)
 p1 <- ggplot(susie$regions,aes(size_bp/1e6)) +
   geom_histogram(color = "white",fill = "darkblue",bins = 64) +
@@ -171,11 +183,42 @@ ggplot(pdat,aes(x = pos,y = count)) +
   theme_cowplot(font_size = 10)
 ```
 
+fSuSiE fine-mapping of methylation
+----------------------------------
+
+Size of regions in base-pairs and SNPs:
+
+```{r fsusie-mqtl-region-sizes, fig.height=3, fig.width=6.25}
+fsusie_mqtl$regions$pos_min <- sapply(fsusie_mqtl$pips,
+                                      function (x) min(x$pos,na.rm = TRUE))
+fsusie_mqtl$regions$pos_max <- sapply(fsusie_mqtl$pips,
+                                      function (x) max(x$pos,na.rm = TRUE))
+fsusie_mqtl$regions <- transform(fsusie_mqtl$regions,
+                                 size_bp = pos_max - pos_min)
+p1 <- ggplot(fsusie_mqtl$regions,aes(size_bp/1e6)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  scale_x_continuous(breaks = seq(0,50,5)) +
+  labs(x = "size of region (Mb)",
+       y = "number of regions") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(fsusie_mqtl$regions,aes(num_snps)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  scale_x_continuous(breaks = seq(0,1e5,1e4)) +
+  labs(x = "number of SNPs",
+       y = "number of regions") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2)
+```
+
+fSuSiE fine-mapping of H3K9ac ChIP-seq
+--------------------------------------
+
 TO DO NEXT:
 
-+ Load fsusie haQTL results.
++ Examine fsusie mQTL results.
 
-+ Start examining the fsusie mQTL results.
++ Examine fsusie haQTL results.
 
-+ Start examining the fsusie haQTL results.
++ Examine overlap between susie eQTL and fsusie mQTL results.
 
++ Examine overlap between susie eQTL and fsusie mQTL results.
