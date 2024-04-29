@@ -31,6 +31,21 @@ get_gene_annotations <- function (gene_file) {
   return(out)
 }
 
+# From a "CS" data frame containing the information about the credible
+# sets by region, generate a summary of the CS sizes by region.
+get_cs_sizes_by_region <- function (cs) {
+  n <- nlevels(cs$region)
+  out <- vector("list",n)
+  region_names <- levels(cs$region)
+  names(out) <- region_names
+  for (i in region_names) {
+    res <- table(factor(subset(cs,region == i)$cs))
+    names(res) <- paste0(i,"-CS",names(res))
+    out[[i]] <- res
+  }
+  return(out)
+}
+
 # Create a histogram of the region sizes in Megabases (Mb).
 region_sizes_histogram <- function (regions, pips, font_size = 10) {
   regions$pos_min <- sapply(pips,function (x) min(x$pos,na.rm = TRUE))
@@ -46,11 +61,23 @@ region_sizes_histogram <- function (regions, pips, font_size = 10) {
 
 # Create a histogram of the region sizes in number of SNPs.
 num_snps_histogram <- function (regions, font_size = 10) {
-  return(ggplot(susie$regions,aes(num_snps)) +
+  return(ggplot(regions,aes(num_snps)) +
          geom_histogram(color = "white",fill = "darkblue",bins = 64) +
          scale_x_continuous(breaks = seq(0,1e5,1e4)) +
          labs(x = "number of SNPs",
               y = "number of regions") +
          theme_cowplot(font_size = font_size))
 }
-         
+
+# Create a histogram of the CS sizes in which "cs_sizes" is an output
+# from function get_cs_sizes_by_region.
+cs_sizes_histogram <- function (cs_sizes, x_breaks = c(1,10,100,1000),
+                                font_size = 10) {
+  pdat <- data.frame(cs_size = unlist(cs_sizes))
+  return(ggplot(pdat,aes(cs_size)) +
+         geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+         scale_x_continuous(trans = "log10",breaks = x_breaks) +
+         labs(x = "number of SNPs",
+              y = "number of CSs") +
+         theme_cowplot(font_size = font_size))
+}

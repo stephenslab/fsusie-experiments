@@ -16,7 +16,9 @@ module load pandoc/3.0.1
 R
 > .libPaths()[1]
 # [1] "/home/pcarbo/R_libs_4_10_no_openblas"
-> workflowr::wflow_build("rosmap.Rmd",view = FALSE,verbose = TRUE)
+> getwd()
+# [1] "../analysis"
+> workflowr::wflow_build("rosmap.Rmd",local=TRUE,view=FALSE,verbose=TRUE)
 ```
 
 ```{r knitr-opts, include=FALSE}
@@ -95,20 +97,8 @@ table(CSs = susie$regions$num_cs)
 CS sizes:
 
 ```{r susie-cs-sizes, fig.height=3, fig.width=3}
-n <- nlevels(susie$cs$region)
-cs_sizes <- vector("list",n)
-region_names <- levels(susie$cs$region)
-names(cs_sizes) <- region_names
-for (i in region_names)
-  cs_sizes[[i]] <- as.vector(table(factor(subset(susie$cs,region == i)$cs)))
-cs_sizes <- unlist(cs_sizes)
-pdat <- data.frame(cs_size = cs_sizes)
-ggplot(pdat,aes(cs_size)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(trans = "log10",breaks = c(1:5,10,100,1000)) +
-  labs(x = "number of SNPs",
-       y = "number of CSs") +
-  theme_cowplot(font_size = 10)
+susie_cs_sizes <- get_cs_sizes_by_region(susie$cs)
+cs_sizes_histogram(susie_cs_sizes,x_breaks = c(1:5,10,100,1000))
 ```
 
 NEXT: Create a plot showing the distance between the susie SNP and the
@@ -169,8 +159,34 @@ ggplot(pdat,aes(x = pos,y = count)) +
   theme_cowplot(font_size = 10)
 ```
 
-fSuSiE fine-mapping of methylation and overlap with SNPs affecting expression
------------------------------------------------------------------------------
+
+fSuSiE fine-mapping of H3K9ac ChIP-seq and overlap with expression SNPs
+-----------------------------------------------------------------------
+
+Region sizes in base-pairs and SNPs:
+
+```{r fsusie-haqtl-region-sizes, fig.height=3, fig.width=6.25}
+p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips)
+p2 <- num_snps_histogram(fsusie_haqtl$regions)
+plot_grid(p1,p2)
+```
+
+Number of CSs per region:
+
+```{r fsusie-haqtl-num-cs}
+table(CSs = fsusie_haqtl$regions$num_cs)
+```
+
+CS sizes:
+
+```{r fsusie-haqtl-cs-sizes, fig.height=3, fig.width=3}
+fsusie_haqtl_cs_sizes <- get_cs_sizes_by_region(fsusie_haqtl$cs)
+cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
+  scale_y_continuous(trans = "log10")
+```
+
+fSuSiE fine-mapping of methylation and overlap with expression SNPs
+-------------------------------------------------------------------
 
 Region sizes in base-pairs and SNPs:
 
@@ -189,22 +205,9 @@ table(CSs = fsusie_mqtl$regions$num_cs)
 CS sizes:
 
 ```{r fsusie-mqtl-cs-sizes, fig.height=3, fig.width=3}
-n <- nlevels(fsusie_mqtl$cs$region)
-cs_sizes <- vector("list",n)
-region_names <- levels(fsusie_mqtl$cs$region)
-names(cs_sizes) <- region_names
-for (i in region_names)
-  cs_sizes[[i]] <-
-    as.vector(table(factor(subset(fsusie_mqtl$cs,region == i)$cs)))
-cs_sizes <- unlist(cs_sizes)
-pdat <- data.frame(cs_size = cs_sizes)
-ggplot(pdat,aes(cs_size)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(trans = "log10",breaks = c(1:5,10,100,1000)) +
-  scale_y_continuous(trans = "log10") +
-  labs(x = "number of SNPs",
-       y = "number of CSs") +
-  theme_cowplot(font_size = 10)
+fsusie_mqtl_cs_sizes <- get_cs_sizes_by_region(fsusie_mqtl$cs)
+cs_sizes_histogram(fsusie_mqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
+  scale_y_continuous(trans = "log10")
 ```
 
 Get CSs containing exactly 1 SNP in susie results:
@@ -245,17 +248,6 @@ cs1snp_fsusie_mqtl <- do.call(rbind,cs1snp_fsusie_mqtl)
 
 ```{r}
 intersect(cs1snp_susie$id,cs1snp_fsusie_mqtl$id)
-```
-
-fSuSiE fine-mapping of H3K9ac ChIP-seq
---------------------------------------
-
-Region sizes in base-pairs and SNPs:
-
-```{r fsusie-haqtl-region-sizes, fig.height=3, fig.width=6.25}
-p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips)
-p2 <- num_snps_histogram(fsusie_haqtl$regions)
-plot_grid(p1,p2)
 ```
 
 + Examine fsusie mQTL results.
