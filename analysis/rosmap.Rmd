@@ -1,10 +1,13 @@
 ---
-title: "Analysis of some susie and fsusie results on the ROSMAP data"
+title: "Examine susie and fsusie results on the ROSMAP data"
 author: William Denault, Hao Sun, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
 
-To build the workflowr page, I run this:
+Here we take a close look at a selection of the susie and fsusie
+fine-mapping results for the ROSMAP data.
+
+To build the workflowr page, I ran these commands on midway2:
 
 ```
 sinteractive -c 4 --mem=24G --time=20:00:00 -p mstephens
@@ -15,8 +18,6 @@ R
 # [1] "/home/pcarbo/R_libs_4_10_no_openblas"
 > workflowr::wflow_build("rosmap.Rmd",view = FALSE,verbose = TRUE)
 ```
-
-TO DO: GIVE OVERVIEW HERE.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -34,7 +35,7 @@ source("../code/rosmap_functions.R")
 setDTthreads(1)
 ```
 
-Load the susie fine-mapping results on the "Inh_mega_eQTL" RNA-seq
+Load the susie fine-mapping results on the "Inh mega eQTL" RNA-seq
 data.
 
 ```{r load-susie-results}
@@ -77,26 +78,11 @@ genes <- get_gene_annotations(gene_file)
 SuSiE fine-mapping of RNA-seq
 -----------------------------
 
-Size of regions in base-pairs and SNPs:
+Region sizes in base-pairs and SNPs:
 
 ```{r susie-region-sizes, fig.height=3, fig.width=6.25}
-susie$regions$pos_min <- sapply(susie$pips,
-                                function (x) min(x$pos,na.rm = TRUE))
-susie$regions$pos_max <- sapply(susie$pips,
-                                function (x) max(x$pos,na.rm = TRUE))
-susie$regions <- transform(susie$regions,size_bp = pos_max - pos_min)
-p1 <- ggplot(susie$regions,aes(size_bp/1e6)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(breaks = seq(0,50,5)) +
-  labs(x = "size of region (Mb)",
-       y = "number of regions") +
-  theme_cowplot(font_size = 10)
-p2 <- ggplot(susie$regions,aes(num_snps)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(breaks = seq(0,1e5,1e4)) +
-  labs(x = "number of SNPs",
-       y = "number of regions") +
-  theme_cowplot(font_size = 10)
+p1 <- region_sizes_histogram(susie$regions,susie$pips)
+p2 <- num_snps_histogram(susie$regions)
 plot_grid(p1,p2)
 ```
 
@@ -186,27 +172,11 @@ ggplot(pdat,aes(x = pos,y = count)) +
 fSuSiE fine-mapping of methylation
 ----------------------------------
 
-Size of regions in base-pairs and SNPs:
+Region sizes in base-pairs and SNPs:
 
 ```{r fsusie-mqtl-region-sizes, fig.height=3, fig.width=6.25}
-fsusie_mqtl$regions$pos_min <- sapply(fsusie_mqtl$pips,
-                                      function (x) min(x$pos,na.rm = TRUE))
-fsusie_mqtl$regions$pos_max <- sapply(fsusie_mqtl$pips,
-                                      function (x) max(x$pos,na.rm = TRUE))
-fsusie_mqtl$regions <- transform(fsusie_mqtl$regions,
-                                 size_bp = pos_max - pos_min)
-p1 <- ggplot(fsusie_mqtl$regions,aes(size_bp/1e6)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(breaks = seq(0,50,5)) +
-  labs(x = "size of region (Mb)",
-       y = "number of regions") +
-  theme_cowplot(font_size = 10)
-p2 <- ggplot(fsusie_mqtl$regions,aes(num_snps)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-  scale_x_continuous(breaks = seq(0,1e5,1e4)) +
-  labs(x = "number of SNPs",
-       y = "number of regions") +
-  theme_cowplot(font_size = 10)
+p1 <- region_sizes_histogram(fsusie_mqtl$regions,fsusie_mqtl$pips)
+p2 <- num_snps_histogram(fsusie_mqtl$regions)
 plot_grid(p1,p2)
 ```
 
@@ -240,7 +210,13 @@ ggplot(pdat,aes(cs_size)) +
 fSuSiE fine-mapping of H3K9ac ChIP-seq
 --------------------------------------
 
-TO DO NEXT:
+Region sizes in base-pairs and SNPs:
+
+```{r fsusie-haqtl-region-sizes, fig.height=3, fig.width=6.25}
+p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips)
+p2 <- num_snps_histogram(fsusie_haqtl$regions)
+plot_grid(p1,p2)
+```
 
 + Examine fsusie mQTL results.
 

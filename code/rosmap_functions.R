@@ -30,3 +30,27 @@ get_gene_annotations <- function (gene_file) {
   rownames(out) <- NULL
   return(out)
 }
+
+# Create a histogram of the region sizes in Megabases (Mb).
+region_sizes_histogram <- function (regions, pips, font_size = 10) {
+  regions$pos_min <- sapply(pips,function (x) min(x$pos,na.rm = TRUE))
+  regions$pos_max <- sapply(pips,function (x) max(x$pos,na.rm = TRUE))
+  regions <- transform(regions,size_bp = pos_max - pos_min)
+  return(ggplot(regions,aes(size_bp/1e6)) +
+         geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+         scale_x_continuous(breaks = seq(0,50,5)) +
+         labs(x = "size of region (Mb)",
+              y = "number of regions") +
+         theme_cowplot(font_size = font_size))
+}
+
+# Create a histogram of the region sizes in number of SNPs.
+num_snps_histogram <- function (regions, font_size = 10) {
+  return(ggplot(susie$regions,aes(num_snps)) +
+         geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+         scale_x_continuous(breaks = seq(0,1e5,1e4)) +
+         labs(x = "number of SNPs",
+              y = "number of regions") +
+         theme_cowplot(font_size = font_size))
+}
+         
