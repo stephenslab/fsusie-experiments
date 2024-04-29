@@ -169,8 +169,8 @@ ggplot(pdat,aes(x = pos,y = count)) +
   theme_cowplot(font_size = 10)
 ```
 
-fSuSiE fine-mapping of methylation
-----------------------------------
+fSuSiE fine-mapping of methylation and overlap with SNPs affecting expression
+-----------------------------------------------------------------------------
 
 Region sizes in base-pairs and SNPs:
 
@@ -205,6 +205,46 @@ ggplot(pdat,aes(cs_size)) +
   labs(x = "number of SNPs",
        y = "number of CSs") +
   theme_cowplot(font_size = 10)
+```
+
+Get CSs containing exactly 1 SNP in susie results:
+
+```{r cs1snp-susie}
+n <- nlevels(susie$cs$region)
+cs1snp_susie <- vector("list",n)
+region_names <- levels(susie$cs$region)
+names(cs1snp_susie) <- region_names
+for (i in region_names) {
+  dat <- subset(susie$cs,region == i)
+  x <- table(dat$cs)
+  x <- as.numeric(names(x)[x == 1])
+  if (length(x) > 0)
+   cs1snp_susie[[i]] <- subset(dat,is.element(cs,x))
+}
+cs1snp_susie <- do.call(rbind,cs1snp_susie)
+rownames(cs1snp_susie) <- NULL
+```
+
+Get CSs containing exactly 1 SNP in fsusie mQTL results:
+
+```{r cs1snp-fsusie-mqtl}
+n <- nlevels(fsusie_mqtl$cs$region)
+cs1snp_fsusie_mqtl <- vector("list",n)
+region_names <- levels(fsusie_mqtl$cs$region)
+names(cs1snp_fsusie_mqtl) <- region_names
+for (i in region_names) {
+  dat <- subset(fsusie_mqtl$cs,region == i)
+  x <- table(dat$cs)
+  x <- as.numeric(names(x)[x == 1])
+  if (length(x) > 0)
+   cs1snp_fsusie_mqtl[[i]] <- subset(dat,is.element(cs,x))
+}
+cs1snp_fsusie_mqtl <- do.call(rbind,cs1snp_fsusie_mqtl)
+```
+
+
+```{r}
+intersect(cs1snp_susie$id,cs1snp_fsusie_mqtl$id)
 ```
 
 fSuSiE fine-mapping of H3K9ac ChIP-seq
