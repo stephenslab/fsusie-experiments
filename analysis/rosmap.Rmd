@@ -27,7 +27,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 ```
 
 Load the packages as well as some additional custom functions used in
-the analysis below,
+the analysis below.
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
@@ -160,8 +160,8 @@ ggplot(pdat,aes(x = pos,y = count)) +
 ```
 
 
-fSuSiE fine-mapping of H3K9ac ChIP-seq and overlap with expression SNPs
------------------------------------------------------------------------
+fSuSiE fine-mapping of haQTLs and overlap with expression SNPs
+--------------------------------------------------------------
 
 Region sizes in base-pairs and SNPs:
 
@@ -179,14 +179,14 @@ table(CSs = fsusie_haqtl$regions$num_cs)
 
 CS sizes:
 
-```{r fsusie-haqtl-cs-sizes, fig.height=3, fig.width=3}
+```{r fsusie-haqtl-cs-sizes, fig.height=3, fig.width=3, warning=FALSE}
 fsusie_haqtl_cs_sizes <- get_cs_sizes_by_region(fsusie_haqtl$cs)
 cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
-fSuSiE fine-mapping of methylation and overlap with expression SNPs
--------------------------------------------------------------------
+fSuSiE fine-mapping of mQTLs and overlap with expression SNPs
+-------------------------------------------------------------
 
 Region sizes in base-pairs and SNPs:
 
@@ -204,7 +204,7 @@ table(CSs = fsusie_mqtl$regions$num_cs)
 
 CS sizes:
 
-```{r fsusie-mqtl-cs-sizes, fig.height=3, fig.width=3}
+```{r fsusie-mqtl-cs-sizes, fig.height=3, fig.width=3, warning=FALSE}
 fsusie_mqtl_cs_sizes <- get_cs_sizes_by_region(fsusie_mqtl$cs)
 cs_sizes_histogram(fsusie_mqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
