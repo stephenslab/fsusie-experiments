@@ -185,6 +185,35 @@ cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
+Steps to compute overlap with expression SNPs:
+
+1. Find 1-SNP CSs in fsusie results and the SNPs contained in those CSs.
+
+2. Sum up the susie PIPs for the SNPs identified in Step 1.
+
+```{r fsusie-haqtl-overlap-averaged}
+fsusie_haqtl_cs1snp <- get_cs1snp(fsusie_haqtl$cs)
+x <- get_pip_sum_overlap(susie$pips,fsusie_haqtl_cs1snp$id)
+cat("Number of expression SNPs:",get_pip_sum(susie$pips),"\n")
+cat("Number of acetylation SNPs:",nrow(fsusie_haqtl_cs1snp),"\n")
+cat("Number of expression SNPs overlapping with acetylation SNPs:",x,"\n")
+```
+
+```{r temp}
+x <- unlist(lapply(susie$pips,function (x) x$id))
+y <- unlist(lapply(fsusie_haqtl$pips,function (x) x$id))
+print(length(intersect(x,y)))
+```
+
+Separately, identify the SNPs in 1-SNP CSs that overlap with "high
+confidence" expression SNPs (say, SNPs with PIP > 0.75). 
+
+```{r fsusie-haqtl-overlap-high-conf}
+susie_highconf_snps <- get_highconf_snps(susie$pips,level = 0.75)
+ids <- intersect(susie_highconf_snps$id,fsusie_haqtl_cs1snp$id)
+print(ids)
+```
+
 fSuSiE fine-mapping of mQTLs and overlap with expression SNPs
 -------------------------------------------------------------
 

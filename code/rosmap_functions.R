@@ -46,6 +46,46 @@ get_cs_sizes_by_region <- function (cs) {
   return(out)
 }
 
+# TO DO: Explain here what this function is for, and how to use it.
+get_highconf_snps <- function (pips, level = 0.95) {
+  n <- length(pips)
+  out <- vector("list",n)
+  region_names <- names(pips)
+  names(out) <- region_names
+  for (i in region_names)
+    out[[i]] <- subset(pips[[i]],pip > level)
+  out <- do.call(rbind,out)
+  rownames(out) <- NULL
+  return(out)
+}
+
+# TO DO: Explain here what this function is for, and how to use it.
+get_pip_sum <- function (pips)
+  sum(sapply(pips,function (x) sum(x$pip)))
+
+# TO DO: Explain here what this function is for, and how to use it.
+get_pip_sum_overlap <- function (pips, ids)
+  sum(sapply(pips,function (x) sum(subset(x,is.element(id,ids))$pip)))
+
+# TO DO: Explain here what this function is for, and how to use it.
+get_cs1snp <- function (cs) {
+  n <- nlevels(cs$region)
+  out <- vector("list",n)
+  region_names <- levels(cs$region)
+  names(out) <- region_names
+  for (i in region_names) {
+    dat <- subset(cs,region == i)
+    x <- table(dat$cs)
+    x <- x[x == 1]
+    x <- as.numeric(names(x))
+    if (length(x) > 0)
+     out[[i]] <- subset(dat,is.element(cs,x))
+  }
+  out <- do.call(rbind,out)
+  rownames(out) <- NULL
+  return(out)
+}
+
 # Create a histogram of the region sizes in Megabases (Mb).
 region_sizes_histogram <- function (regions, pips, font_size = 10) {
   regions$pos_min <- sapply(pips,function (x) min(x$pos,na.rm = TRUE))
