@@ -192,7 +192,9 @@ Steps to compute overlap with expression SNPs:
 2. Sum up the susie PIPs for the SNPs identified in Step 1.
 
 ```{r fsusie-haqtl-overlap-averaged}
+susie_cs1snp        <- get_cs1snp(susie$cs)
 fsusie_haqtl_cs1snp <- get_cs1snp(fsusie_haqtl$cs)
+fsusie_mqtl_cs1snp  <- get_cs1snp(susie_mqtl$cs)
 x <- get_pip_sum_overlap(susie$pips,fsusie_haqtl_cs1snp$id)
 cat("Number of expression SNPs:",get_pip_sum(susie$pips),"\n")
 cat("Number of acetylation SNPs:",nrow(fsusie_haqtl_cs1snp),"\n")
