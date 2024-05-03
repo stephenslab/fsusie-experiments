@@ -146,39 +146,8 @@ cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
-Steps to compute overlap with expression SNPs:
-
-1. Find 1-SNP CSs in fsusie results and the SNPs contained in those CSs.
-
-2. Sum up the susie PIPs for the SNPs identified in Step 1.
-
-```{r fsusie-haqtl-overlap-averaged}
-susie_cs1snp        <- get_cs1snp(susie$cs)
-fsusie_haqtl_cs1snp <- get_cs1snp(fsusie_haqtl$cs)
-fsusie_mqtl_cs1snp  <- get_cs1snp(susie_mqtl$cs)
-x <- get_pip_sum_overlap(susie$pips,fsusie_haqtl_cs1snp$id)
-cat("Number of expression SNPs:",get_pip_sum(susie$pips),"\n")
-cat("Number of acetylation SNPs:",nrow(fsusie_haqtl_cs1snp),"\n")
-cat("Number of expression SNPs overlapping with acetylation SNPs:",x,"\n")
-```
-
-```{r temp}
-x <- unlist(lapply(susie$pips,function (x) x$id))
-y <- unlist(lapply(fsusie_haqtl$pips,function (x) x$id))
-print(length(intersect(x,y)))
-```
-
-Separately, identify the SNPs in 1-SNP CSs that overlap with "high
-confidence" expression SNPs (say, SNPs with PIP > 0.75). 
-
-```{r fsusie-haqtl-overlap-high-conf}
-susie_highconf_snps <- get_highconf_snps(susie$pips,level = 0.75)
-ids <- intersect(susie_highconf_snps$id,fsusie_haqtl_cs1snp$id)
-print(ids)
-```
-
-fSuSiE fine-mapping of mQTLs and overlap with expression SNPs
--------------------------------------------------------------
+fSuSiE fine-mapping of mQTLs
+----------------------------
 
 Region sizes in base-pairs and SNPs:
 
@@ -203,50 +172,23 @@ cs_sizes_histogram(fsusie_mqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
-Get CSs containing exactly 1 SNP in susie results:
+Examine overlap among expression, methylation and histone acetylation SNPs
+--------------------------------------------------------------------------
 
-```{r cs1snp-susie}
-n <- nlevels(susie$cs$region)
-cs1snp_susie <- vector("list",n)
-region_names <- levels(susie$cs$region)
-names(cs1snp_susie) <- region_names
-for (i in region_names) {
-  dat <- subset(susie$cs,region == i)
-  x <- table(dat$cs)
-  x <- as.numeric(names(x)[x == 1])
-  if (length(x) > 0)
-   cs1snp_susie[[i]] <- subset(dat,is.element(cs,x))
-}
-cs1snp_susie <- do.call(rbind,cs1snp_susie)
-rownames(cs1snp_susie) <- NULL
+TO DO: Determine overlap between expression, methylation and histone
+acetylation SNPs simply by extracting the SNPs with PIP > 0.75 that
+are also in CSs.
+
+```{r high-conf-snps-overlap}
+highconf_susie <- get_highconf_snps(susie$pips,level = 0.6)
+highconf_mqtl  <- get_highconf_snps(fsusie_mqtl$pips,level = 0.6)
+highconf_haqtl <- get_highconf_snps(fsusie_haqtl$pips,level = 0.6)
+ids <- unique(c(highconf_susie$id,highconf_mqtl$id,highconf_haqtl$id))
+dat <- data.frame(id = ids,
+                  eqtl  = is.element(ids,highconf_susie$id),
+				  mqtl  = is.element(ids,highconf_mqtl$id),
+				  haqtl = is.element(ids,highconf_haqtl$id))
+table(dat[c("eqtl","mqtl")])
+table(dat[c("eqtl","haqtl")])
+table(dat[c("mqtl","haqtl")])
 ```
-
-Get CSs containing exactly 1 SNP in fsusie mQTL results:
-
-```{r cs1snp-fsusie-mqtl}
-n <- nlevels(fsusie_mqtl$cs$region)
-cs1snp_fsusie_mqtl <- vector("list",n)
-region_names <- levels(fsusie_mqtl$cs$region)
-names(cs1snp_fsusie_mqtl) <- region_names
-for (i in region_names) {
-  dat <- subset(fsusie_mqtl$cs,region == i)
-  x <- table(dat$cs)
-  x <- as.numeric(names(x)[x == 1])
-  if (length(x) > 0)
-   cs1snp_fsusie_mqtl[[i]] <- subset(dat,is.element(cs,x))
-}
-cs1snp_fsusie_mqtl <- do.call(rbind,cs1snp_fsusie_mqtl)
-```
-
-
-```{r}
-intersect(cs1snp_susie$id,cs1snp_fsusie_mqtl$id)
-```
-
-+ Examine fsusie mQTL results.
-
-+ Examine fsusie haQTL results.
-
-+ Examine overlap between susie eQTL and fsusie mQTL results.
-
-+ Examine overlap between susie eQTL and fsusie mQTL results.
