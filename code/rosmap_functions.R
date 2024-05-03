@@ -71,14 +71,10 @@ get_cs_sizes_by_region <- function (cs) {
   return(out)
 }
 
-# Compute the distance to the TSS weighted by the PIPs.
-#
-# Note that TSS and strand information needs to be added first to
-# "regions" using function add_tss_to_regions.
-#
-compute_weighted_distance_to_tss <- function (regions, cs,
-                                              bins = c(-Inf,seq(-1e6,1e6,1e5),
-                                                       Inf)) {
+# Compute the distance to the TSS weighted by the PIPs, only for SNPs
+# that are in CSs. Note that TSS and strand information needs to be
+# added first to "regions" using function add_tss_to_regions.
+compute_weighted_distance_to_tss <- function (regions, cs, bins) {
   n <- nrow(regions)
   rownames(regions) <- regions$region_name
   total_counts      <- rep(0,length(bins) - 1)
