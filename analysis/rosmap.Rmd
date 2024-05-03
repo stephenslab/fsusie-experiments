@@ -37,13 +37,12 @@ source("../code/rosmap_functions.R")
 setDTthreads(1)
 ```
 
-Load the susie fine-mapping results on the "Inh mega eQTL" RNA-seq
-data.
+Load the susie fine-mapping results on the DLPFC bulk RNA-seq data.
 
 ```{r load-susie-results}
 datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas/prepared_results")
-load(file.path(datadir,"susie_Inh_mega_eQTL.RData"))					 
+load(file.path(datadir,"susie_dlpfc_dejager_eQTL.RData"))					 
 susie <- list(regions = regions,cs = cs,pips = pips)
 rm(regions,cs,pips)
 ```
@@ -56,7 +55,7 @@ fsusie_mqtl <- list(regions = regions,cs = cs,pips = pips)
 rm(regions,cs,pips)
 ```
 
-Load the fsusie fine-mappign results on the DLPFC histone acetylation
+Load the fsusie fine-mapping results on the DLPFC histone acetylation
 (H3K9ac ChIP-seq) data.
 
 
