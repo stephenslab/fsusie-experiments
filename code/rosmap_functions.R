@@ -31,6 +31,31 @@ get_gene_annotations <- function (gene_file) {
   return(out)
 }
 
+# Extract the base-pair positions from the SNP ids.
+get_pos_from_id <- function (ids)
+  as.numeric(sapply(strsplit(ids,":"),"[",2))
+
+# Get the TSS and strand (+/-) for each region (gene) from the "genes"
+# table. This code is based on the "gtf_to_tss_bed" function from
+# https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py.
+add_tss_to_regions <- function (regions, genes) {
+  rownames(regions) <- regions$region_name
+  regions$tss <- as.numeric(NA)
+  regions$strand <- as.character(NA)
+  for (i in regions$region_name) {
+    j <- which(genes$ensembl == i)
+    if (length(j) == 1) {
+      regions[i,"strand"] <- as.character(genes[j,"strand"])
+      if (genes[j,"strand"] == "+")
+        regions[i,"tss"] <- genes[j,"start"]
+      else
+        regions[i,"tss"] <- genes[j,"end"]
+    }
+  }
+  rownames(regions) <- NULL
+  return(transform(regions,strand = factor(strand)))
+}
+
 # From a "CS" data frame containing the information about the credible
 # sets by region, generate a summary of the CS sizes by region.
 get_cs_sizes_by_region <- function (cs) {
@@ -44,6 +69,37 @@ get_cs_sizes_by_region <- function (cs) {
     out[[i]] <- res
   }
   return(out)
+}
+
+# Compute the distance to the TSS weighted by the PIPs.
+#
+# Note that TSS and strand information needs to be added first to
+# "regions" using function add_tss_to_regions.
+#
+compute_weighted_distance_to_tss <- function (regions, cs,
+                                              bins = c(-Inf,seq(-1e6,1e6,1e5),
+                                                       Inf)) {
+  n <- nrow(regions)
+  rownames(regions) <- regions$region_name
+  total_counts      <- rep(0,length(bins) - 1)
+  
+  # Repeat for each region.
+  for (i in regions$region_name) {
+    tss    <- regions[i,"tss"]
+    strand <- regions[i,"strand"]
+    if (!is.na(tss)) {
+      dat <- subset(cs,region == i)
+      d   <- tss - dat$pos
+      if (strand == "-") 
+        d <- -d
+      d <- cut(d,bins)
+      counts <- tapply(dat$pip,d,function (x) sum(x,na.rm = TRUE))
+      counts[is.na(counts)] <- 0
+      total_counts <- total_counts + counts
+    }
+  }
+  
+  return(total_counts)
 }
 
 # TO DO: Explain here what this function is for, and how to use it.

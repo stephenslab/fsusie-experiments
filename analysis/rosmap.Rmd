@@ -44,6 +44,7 @@ datadir <- file.path("/project2/mstephens/fungen_xqtl/ftp_fgc_xqtl",
                      "analysis_result/finemapping_twas/prepared_results")
 load(file.path(datadir,"susie_dlpfc_dejager_eQTL.RData"))					 
 susie <- list(regions = regions,cs = cs,pips = pips)
+susie$cs <- transform(susie$cs,pos = get_pos_from_id(id))
 rm(regions,cs,pips)
 ```
 
@@ -100,61 +101,22 @@ susie_cs_sizes <- get_cs_sizes_by_region(susie$cs)
 cs_sizes_histogram(susie_cs_sizes,x_breaks = c(1:5,10,100,1000))
 ```
 
-NEXT: Create a plot showing the distance between the susie SNP and the
-gene's TSS. First get the TSS for each gene/region. Note: this code is
-based on function "gtf_to_tss_bed" from
-[here](https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py).
-
-```{r get-gene-tss}
-region_names <- susie$regions$region_name
-rownames(susie$regions) <- region_names
-susie$regions$tss       <- as.numeric(NA)
-susie$regions$strand    <- as.character(NA)
-for (i in region_names) {
-  j <- which(genes$ensembl == i)
-  if (length(j) == 1) {
-    susie$regions[i,"strand"] <- as.character(genes[j,"strand"])
-    if (genes[j,"strand"] == "+")
-      susie$regions[i,"tss"] <- genes[j,"start"]
-    else
-	  susie$regions[i,"tss"] <- genes[j,"end"]
-  }
-}
-susie$regions <- transform(susie$regions,strand = factor(strand))
-```
-
-Now compute the distance to the TSS weighted by the PIPs:
+Plot showing distance between the susie SNP and the gene's TSS, in
+which the distances are weighted by the PIPs (for SNPs in CSs only):
 
 ```{r dist-to-tss}
-n      <- length(susie$pips)
-bins   <- c(-Inf,seq(-1e6,1e6,5e4),Inf)
-counts <- rep(0,length(bins) - 1)
-for (i in 1:n) {
-  if (!is.na(susie$regions[i,"tss"])) {
-    pips <- susie$pips[[i]]
-    dist_to_tss <- susie$regions[i,"tss"] - pips$pos
-    if (susie$regions[i,"strand"] == "-") 
-	  dist_to_tss <- -dist_to_tss
-    dist_to_tss <- cut(dist_to_tss,bins)
-    res <- tapply(pips$pip,dist_to_tss,sum)
-    res[is.na(res)] <- 0
-    counts <- counts + res
-  }
-}
-```
-
-Plot the result:
-
-```{r plot-dist-to-tss, fig.height=3, fig.width=3.25}
-n      <- length(counts)
+susie$regions <- add_tss_to_regions(susie$regions,genes)
+bins   <- c(-Inf,seq(-1e6,1e6,50000),Inf)
+counts <- compute_weighted_distance_to_tss(susie$regions,susie$cs,bins)
+n      <- length(bins)
 bins   <- bins[seq(2,n-1)]
 counts <- counts[seq(2,n-1)]
-pdat <- data.frame(pos = bins + 2.5e4,count = counts)
+pdat <- data.frame(pos = (bins + 25000)/1e6,count = counts)
 ggplot(pdat,aes(x = pos,y = count)) +
   geom_point(color = "darkblue") +
   geom_line(color = "darkblue") +
-  scale_y_continuous(limits = c(0,2000)) +
-  labs(x = "distance from TSS",y = "SNPs weighted by PIPs") +
+  labs(x = "distance from TSS (Mb)",
+       y = "SNPs weighted by PIP") +
   theme_cowplot(font_size = 10)
 ```
 
