@@ -192,3 +192,6 @@ table(dat[c("eqtl","mqtl")])
 table(dat[c("eqtl","haqtl")])
 table(dat[c("mqtl","haqtl")])
 ```
+
+TO DO NEXT: Put together a data frame containing more information
+about these high-confidence, overlapping SNPs.
