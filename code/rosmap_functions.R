@@ -87,13 +87,18 @@ get_cs1snp <- function (cs) {
 }
 
 # Create a histogram of the region sizes in Megabases (Mb).
-region_sizes_histogram <- function (regions, pips, font_size = 10) {
+region_sizes_histogram <- function (regions, pips, max_mb = Inf,
+                                    font_size = 10) {
   regions$pos_min <- sapply(pips,function (x) min(x$pos,na.rm = TRUE))
   regions$pos_max <- sapply(pips,function (x) max(x$pos,na.rm = TRUE))
   regions <- transform(regions,size_bp = pos_max - pos_min)
+  if (is.finite(max_mb))
+    cat(sum(regions$size_bp > 1e6*max_mb),"regions are larger than",
+        max_mb,"Mb.\n")
+  regions <- subset(regions,size_bp <= 1e6*max_mb)
   return(ggplot(regions,aes(size_bp/1e6)) +
          geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-         scale_x_continuous(breaks = seq(0,50,5)) +
+         scale_x_continuous(breaks = seq(0,100,1)) +
          labs(x = "size of region (Mb)",
               y = "number of regions") +
          theme_cowplot(font_size = font_size))
@@ -101,10 +106,10 @@ region_sizes_histogram <- function (regions, pips, font_size = 10) {
 
 # Create a histogram of the region sizes in number of SNPs.
 num_snps_histogram <- function (regions, font_size = 10) {
-  return(ggplot(regions,aes(num_snps)) +
+  return(ggplot(regions,aes(num_snps/1000)) +
          geom_histogram(color = "white",fill = "darkblue",bins = 64) +
-         scale_x_continuous(breaks = seq(0,1e5,1e4)) +
-         labs(x = "number of SNPs",
+         scale_x_continuous(breaks = seq(0,100,10)) +
+         labs(x = "number of SNPs x 1,000",
               y = "number of regions") +
          theme_cowplot(font_size = font_size))
 }

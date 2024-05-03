@@ -10,7 +10,7 @@ fine-mapping results for the ROSMAP data.
 To build the workflowr page, I ran these commands on midway2:
 
 ```
-sinteractive -c 4 --mem=24G --time=20:00:00 -p mstephens
+sinteractive -c 4 --mem=24G --time=20:00:00
 module load R/4.1.0-no-openblas
 module load pandoc/3.0.1
 R
@@ -82,7 +82,7 @@ SuSiE fine-mapping of RNA-seq
 Region sizes in base-pairs and SNPs:
 
 ```{r susie-region-sizes, fig.height=3, fig.width=6.25}
-p1 <- region_sizes_histogram(susie$regions,susie$pips)
+p1 <- region_sizes_histogram(susie$regions,susie$pips,max_size = 12e6)
 p2 <- num_snps_histogram(susie$regions)
 plot_grid(p1,p2)
 ```
@@ -102,7 +102,7 @@ cs_sizes_histogram(susie_cs_sizes,x_breaks = c(1:5,10,100,1000))
 
 NEXT: Create a plot showing the distance between the susie SNP and the
 gene's TSS. First get the TSS for each gene/region. Note: this code is
-based on function "gtf_to_tss_bed"
+based on function "gtf_to_tss_bed" from
 [here](https://github.com/broadinstitute/pyqtl/blob/master/qtl/io.py).
 
 ```{r get-gene-tss}
