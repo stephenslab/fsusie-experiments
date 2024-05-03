@@ -98,7 +98,10 @@ compute_weighted_distance_to_tss <- function (regions, cs, bins) {
   return(total_counts)
 }
 
-# TO DO: Explain here what this function is for, and how to use it.
+# Put together a data frame, extracted from the "pips" data frame,
+# containing only the information about the SNPs with larger PIPs
+# according to some specified threshold (we'll call these
+# "high-confidence SNPs").
 get_highconf_snps <- function (pips, level = 0.95) {
   n <- length(pips)
   out <- vector("list",n)
