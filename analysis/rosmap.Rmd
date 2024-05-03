@@ -120,15 +120,15 @@ ggplot(pdat,aes(x = pos,y = count)) +
   theme_cowplot(font_size = 10)
 ```
 
-
-fSuSiE fine-mapping of haQTLs and overlap with expression SNPs
---------------------------------------------------------------
+fSuSiE fine-mapping of haQTLs
+-----------------------------
 
 Region sizes in base-pairs and SNPs:
 
 ```{r fsusie-haqtl-region-sizes, fig.height=3, fig.width=6.25}
-p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips)
-p2 <- num_snps_histogram(fsusie_haqtl$regions)
+p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips,
+                             max_mb = 10)
+p2 <- num_snps_histogram(fsusie_haqtl$regions,max_snps = 50000)
 plot_grid(p1,p2)
 ```
 
@@ -183,8 +183,9 @@ fSuSiE fine-mapping of mQTLs and overlap with expression SNPs
 Region sizes in base-pairs and SNPs:
 
 ```{r fsusie-mqtl-region-sizes, fig.height=3, fig.width=6.25}
-p1 <- region_sizes_histogram(fsusie_mqtl$regions,fsusie_mqtl$pips)
-p2 <- num_snps_histogram(fsusie_mqtl$regions)
+p1 <- region_sizes_histogram(fsusie_mqtl$regions,fsusie_mqtl$pips,
+                             max_mb = 10)
+p2 <- num_snps_histogram(fsusie_mqtl$regions,max_snps = 50000)
 plot_grid(p1,p2)
 ```
 

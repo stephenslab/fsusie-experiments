@@ -157,7 +157,11 @@ region_sizes_histogram <- function (regions, pips, max_mb = Inf,
 }
 
 # Create a histogram of the region sizes in number of SNPs.
-num_snps_histogram <- function (regions, font_size = 10) {
+num_snps_histogram <- function (regions, max_snps = Inf, font_size = 10) {
+  if (is.finite(max_snps))
+    cat(sum(regions$num_snps > max_snps),"regions have more than",max_snps,
+        "SNPs.\n")
+  regions <- subset(regions,num_snps <= max_snps)
   return(ggplot(regions,aes(num_snps/1000)) +
          geom_histogram(color = "white",fill = "darkblue",bins = 64) +
          scale_x_continuous(breaks = seq(0,100,10)) +
