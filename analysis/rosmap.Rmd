@@ -59,7 +59,6 @@ rm(regions,cs,pips)
 Load the fsusie fine-mapping results on the DLPFC histone acetylation
 (H3K9ac ChIP-seq) data.
 
-
 ```{r load-fsusie-haqtl-results}
 load(file.path(datadir,"fsusie_ROSMAP_DLPFC_haQTL.RData"))
 fsusie_haqtl <- list(regions = regions,cs = cs,pips = pips)
