@@ -85,13 +85,15 @@ compute_weighted_distance_to_tss <- function (regions, cs, bins) {
     strand <- regions[i,"strand"]
     if (!is.na(tss)) {
       dat <- subset(cs,region == i)
-      d   <- tss - dat$pos
-      if (strand == "-") 
-        d <- -d
-      d <- cut(d,bins)
-      counts <- tapply(dat$pip,d,function (x) sum(x,na.rm = TRUE))
-      counts[is.na(counts)] <- 0
-      total_counts <- total_counts + counts
+      if (nrow(dat) > 0) {
+        d <- tss - dat$pos
+        if (strand == "-") 
+          d <- -d
+        d <- cut(d,bins)
+        counts <- tapply(dat$pip,d,function (x) sum(x,na.rm = TRUE))
+        counts[is.na(counts)] <- 0
+        total_counts <- total_counts + counts
+      }
     }
   }
   

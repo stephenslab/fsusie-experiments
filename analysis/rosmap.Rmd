@@ -105,12 +105,13 @@ which the distances are weighted by the PIPs (for SNPs in CSs only):
 
 ```{r dist-to-tss}
 susie$regions <- add_tss_to_regions(susie$regions,genes)
-bins   <- c(-Inf,seq(-1e6,1e6,50000),Inf)
+bin_size <- 25000
+bins   <- c(-Inf,seq(-1e6,1e6,bin_size),Inf)
 counts <- compute_weighted_distance_to_tss(susie$regions,susie$cs,bins)
 n      <- length(bins)
-bins   <- bins[seq(2,n-1)]
-counts <- counts[seq(2,n-1)]
-pdat <- data.frame(pos = (bins + 25000)/1e6,count = counts)
+bins   <- bins[seq(2,n-2)]
+counts <- counts[seq(2,n-2)]
+pdat <- data.frame(pos = (bins + bin_size/2)/1e6,count = counts)
 ggplot(pdat,aes(x = pos,y = count)) +
   geom_point(color = "darkblue") +
   geom_line(color = "darkblue") +
