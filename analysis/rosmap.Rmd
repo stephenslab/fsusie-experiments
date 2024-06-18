@@ -115,7 +115,7 @@ pdat <- data.frame(pos = (bins + bin_size/2)/1e6,count = counts)
 ggplot(pdat,aes(x = pos,y = count)) +
   geom_point(color = "darkblue") +
   geom_line(color = "darkblue") +
-  labs(x = "distance from TSS (Mb)",
+  labs(x = "distance to TSS (Mb)",
        y = "SNPs weighted by PIP") +
   theme_cowplot(font_size = 10)
 ```
