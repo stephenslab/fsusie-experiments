@@ -121,7 +121,7 @@ region_sizes_histogram <- function (regions, pips, max_mb = Inf,
   regions$pos_max <- sapply(pips,function (x) max(x$pos,na.rm = TRUE))
   regions <- transform(regions,size_bp = pos_max - pos_min)
   if (is.finite(max_mb))
-    cat(sum(regions$size_bp > 1e6*max_mb),"regions are larger than",
+    cat(sum(regions$size_bp > 1e6 * max_mb),"regions are larger than",
         max_mb,"Mb.\n")
   regions <- subset(regions,size_bp <= 1e6*max_mb)
   return(ggplot(regions,aes(size_bp/1e6)) +

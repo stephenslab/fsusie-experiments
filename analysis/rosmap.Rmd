@@ -82,7 +82,7 @@ SuSiE fine-mapping of RNA-seq
 Region sizes in base-pairs and SNPs:
 
 ```{r susie-region-sizes, fig.height=3, fig.width=6.25}
-p1 <- region_sizes_histogram(susie$regions,susie$pips,max_size = 12e6)
+p1 <- region_sizes_histogram(susie$regions,susie$pips,max_mb = 12)
 p2 <- num_snps_histogram(susie$regions)
 plot_grid(p1,p2)
 ```
