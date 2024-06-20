@@ -113,7 +113,7 @@ which the distances are weighted by the PIPs (this is based only on
 SNPs that are in CSs). As expected, most of the predicted causal SNPs
 are very close to the nearest TSS.
 
-```{r dist-to-tss, fig.height=3, fig.width=3}
+```{r dist-to-tss, fig.height=2.5, fig.width=3}
 susie$regions <- add_tss_to_regions(susie$regions,genes)
 bin_size <- 25000
 bins   <- c(-Inf,seq(-1e6,1e6,bin_size),Inf)
