@@ -167,6 +167,26 @@ cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
+The HA SNPs are strongly concentrated near gene TSSs. I couldn't find
+any hard data showing a similar result, although this seems to be
+suggested by the [McVicker et al (2013) paper][mcvicker-science].
+
+```{r dist-to-tss-haqtl, fig.height=2.5, fig.width=3}
+bin_size <- 25000
+bins   <- c(-Inf,seq(-2e6,2e6,bin_size),Inf)
+counts <- compute_weighted_distance_to_tss_nogene(fsusie_haqtl$cs,genes,bins)
+n      <- length(bins)
+bins   <- bins[seq(2,n-2)]
+counts <- counts[seq(2,n-2)]
+pdat <- data.frame(pos = (bins + bin_size/2)/1e6,count = counts)
+ggplot(pdat,aes(x = pos,y = count)) +
+  geom_point(color = "darkblue") +
+  geom_line(color = "darkblue") +
+  labs(x = "distance to TSS (Mb)",
+       y = "SNPs weighted by PIP") +
+  theme_cowplot(font_size = 10)
+```
+
 fSuSiE fine-mapping of mQTLs
 ----------------------------
 
@@ -206,11 +226,14 @@ cs_sizes_histogram(fsusie_mqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
 ```
 
 The methylation SNPs are also strongly concentrated near the gene
-TSSs, in agreement with Fig. 3 of [Ng et al 2017][xqtl-nat-neurosci].
+TSSs, in agreement with Fig. 3 of [Ng et al 2017][xqtl-nat-neurosci]
+(noting that our result is more convincing because we actually
+fine-mapped the SNPs, whereas Ng et al simply chose the top SNP in
+each region).
 
 ```{r dist-to-tss-mqtl, fig.height=2.5, fig.width=3}
 bin_size <- 25000
-bins   <- c(-Inf,seq(-1e6,1e6,bin_size),Inf)
+bins   <- c(-Inf,seq(-2e6,2e6,bin_size),Inf)
 counts <- compute_weighted_distance_to_tss_nogene(fsusie_mqtl$cs,genes,bins)
 n      <- length(bins)
 bins   <- bins[seq(2,n-2)]
@@ -249,3 +272,4 @@ TO DO NEXT: Put together a data frame containing more information
 about these high-confidence, overlapping SNPs.
 
 [xqtl-nat-neurosci]: https://doi.org/10.1038/nn.4632
+[mcvicker-science]: https://doi.org/10.1126/science.1242429
