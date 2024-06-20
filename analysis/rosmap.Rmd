@@ -205,17 +205,36 @@ cs_sizes_histogram(fsusie_mqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
   scale_y_continuous(trans = "log10")
 ```
 
+The methylation SNPs are also strongly concentrated near the gene
+TSSs, in agreement with Fig. 3 of [Ng et al 2017][xqtl-nat-neurosci].
+
+```{r dist-to-tss-mqtl, fig.height=2.5, fig.width=3}
+bin_size <- 25000
+bins   <- c(-Inf,seq(-1e6,1e6,bin_size),Inf)
+counts <- compute_weighted_distance_to_tss_nogene(fsusie_mqtl$cs,genes,bins)
+n      <- length(bins)
+bins   <- bins[seq(2,n-2)]
+counts <- counts[seq(2,n-2)]
+pdat <- data.frame(pos = (bins + bin_size/2)/1e6,count = counts)
+ggplot(pdat,aes(x = pos,y = count)) +
+  geom_point(color = "darkblue") +
+  geom_line(color = "darkblue") +
+  labs(x = "distance to TSS (Mb)",
+       y = "SNPs weighted by PIP") +
+  theme_cowplot(font_size = 10)
+```
+
 Examine overlap among expression, methylation and histone acetylation SNPs
 --------------------------------------------------------------------------
 
 TO DO: Determine overlap between expression, methylation and histone
 acetylation SNPs simply by extracting the SNPs with PIP > 0.75 that
-are also in CSs.
+are also in a CS.
 
 ```{r high-conf-snps-overlap, eval=FALSE}
-highconf_susie <- get_highconf_snps(susie$pips,level = 0.6)
-highconf_mqtl  <- get_highconf_snps(fsusie_mqtl$pips,level = 0.6)
-highconf_haqtl <- get_highconf_snps(fsusie_haqtl$pips,level = 0.6)
+highconf_susie <- get_highconf_snps(susie$pips,level = 0.75)
+highconf_mqtl  <- get_highconf_snps(fsusie_mqtl$pips,level = 0.75)
+highconf_haqtl <- get_highconf_snps(fsusie_haqtl$pips,level = 0.75)
 ids <- unique(c(highconf_susie$id,highconf_mqtl$id,highconf_haqtl$id))
 dat <- data.frame(id = ids,
                   eqtl  = is.element(ids,highconf_susie$id),
@@ -228,3 +247,5 @@ table(dat[c("mqtl","haqtl")])
 
 TO DO NEXT: Put together a data frame containing more information
 about these high-confidence, overlapping SNPs.
+
+[xqtl-nat-neurosci]: https://doi.org/10.1038/nn.4632

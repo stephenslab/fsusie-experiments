@@ -31,6 +31,10 @@ get_gene_annotations <- function (gene_file) {
   return(out)
 }
 
+# Extract the chromosome numbers from the SNP ids.
+get_chr_from_id <- function (ids)
+  factor(sapply(strsplit(ids,":"),"[",1))
+
 # Extract the base-pair positions from the SNP ids.
 get_pos_from_id <- function (ids)
   as.numeric(sapply(strsplit(ids,":"),"[",2))
@@ -98,6 +102,42 @@ compute_weighted_distance_to_tss <- function (regions, cs, bins) {
   }
   
   return(total_counts)
+}
+
+# This function has a similar aim to compute_weighted_distance_to_tss,
+# but here we deal (efficiently) with the situation in which we don't
+# know in advance which is the relevant gene.
+compute_weighted_distance_to_tss_nogene <- function (cs, genes, bins) {
+    
+  # Split the genes by chromosome.
+  chromosomes         <- levels(genes$chromosome)
+  n                   <- length(chromosomes)
+  genes_by_chr        <- vector("list",n)
+  names(genes_by_chr) <- chromosomes
+  for (i in chromosomes)
+    genes_by_chr[[i]] <- subset(genes,chromosome == i)
+  
+  # Repeat for each SNP.
+  n       <- nrow(cs)
+  chr     <- get_chr_from_id(cs$id)
+  pos     <- get_pos_from_id(cs$id)
+  cs$dist <- 0
+  for (i in 1:n) {
+    k <- chr[i]
+    p <- pos[i]
+    gp <- which(genes_by_chr[[k]]$strand == "+")
+    gn <- which(genes_by_chr[[k]]$strand == "-")
+    d  <- p - c(genes_by_chr[[k]][gp,"start"],
+                genes_by_chr[[k]][gn,"end"])
+    j <- which.min(abs(d))
+    cs[i,"dist"] <- d[j]
+  }
+
+  # Compile the (weighted) histogram.
+  d      <- cut(cs$dist,bins)
+  counts <- tapply(cs$pip,d,function (x) sum(x,na.rm = TRUE))
+  counts[is.na(counts)] <- 0
+  return(counts)
 }
 
 # Put together a data frame, extracted from the "pips" data frame,
