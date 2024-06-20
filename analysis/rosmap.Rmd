@@ -7,7 +7,7 @@ output: workflowr::wflow_html
 Here we take a close look at a selection of the susie and fsusie
 fine-mapping results for the ROSMAP data.
 
-To build the workflowr page, I ran these commands on midway2:
+**Note:** build the workflowr page, I ran these commands on midway2:
 
 ```
 sinteractive -c 4 --mem=24G --time=20:00:00
@@ -87,7 +87,8 @@ p2 <- num_snps_histogram(susie$regions)
 plot_grid(p1,p2)
 ```
 
-Number of CSs per region:
+Most of the fine-mapping regions do not contain any CSs. Among the
+ones that have at least 1 CS, most contain 1 CS:
 
 ```{r susie-num-cs, fig.height=3, fig.width=3}
 num_cs <- susie$regions$num_cs
@@ -100,7 +101,7 @@ ggplot(pdat,aes(num_cs)) +
   theme_cowplot(font_size = 10)
 ```
 
-CS sizes:
+A large number of the CSs predict a single causal SNP:
 
 ```{r susie-cs-sizes, fig.height=3, fig.width=3}
 susie_cs_sizes <- get_cs_sizes_by_region(susie$cs)
@@ -108,9 +109,11 @@ cs_sizes_histogram(susie_cs_sizes,x_breaks = c(1:5,10,100,1000))
 ```
 
 Plot showing distance between the susie SNP and the gene's TSS, in
-which the distances are weighted by the PIPs (for SNPs in CSs only):
+which the distances are weighted by the PIPs (this is based only on
+SNPs that are in CSs). As expected, most of the predicted causal SNPs
+are very close to the nearest TSS.
 
-```{r dist-to-tss}
+```{r dist-to-tss, fig.height=3, fig.width=3}
 susie$regions <- add_tss_to_regions(susie$regions,genes)
 bin_size <- 25000
 bins   <- c(-Inf,seq(-1e6,1e6,bin_size),Inf)
@@ -130,7 +133,8 @@ ggplot(pdat,aes(x = pos,y = count)) +
 fSuSiE fine-mapping of haQTLs
 -----------------------------
 
-Region sizes in base-pairs and SNPs:
+Region sizes in base-pairs and SNPs. Similar but not exactly the same
+to the mQTL fine-mapping regions.
 
 ```{r fsusie-haqtl-region-sizes, fig.height=3, fig.width=6.25}
 p1 <- region_sizes_histogram(fsusie_haqtl$regions,fsusie_haqtl$pips,
@@ -163,7 +167,9 @@ cs_sizes_histogram(fsusie_haqtl_cs_sizes,x_breaks = c(1:5,10,100,1000)) +
 fSuSiE fine-mapping of mQTLs
 ----------------------------
 
-Region sizes in base-pairs and SNPs:
+The regions fine-mapped by fSuSiE are typically much larger than the
+SuSiE fine-mapping regions. They contain thousands of SNPs spanning
+several Mb:
 
 ```{r fsusie-mqtl-region-sizes, fig.height=3, fig.width=6.25}
 p1 <- region_sizes_histogram(fsusie_mqtl$regions,fsusie_mqtl$pips,
@@ -172,7 +178,8 @@ p2 <- num_snps_histogram(fsusie_mqtl$regions,max_snps = 50000)
 plot_grid(p1,p2)
 ```
 
-Number of CSs per region:
+fSuSiE usually identified at least one CS in a region, and most
+regions contain several CSs:
 
 ```{r fsusie-mqtl-num-cs, fig.height=3, fig.width=3}
 num_cs <- fsusie_mqtl$regions$num_cs
@@ -185,7 +192,8 @@ ggplot(pdat,aes(num_cs)) +
   theme_cowplot(font_size = 10)
 ```
 
-CS sizes:
+The majority of the CSs predict a single causal SNP (note both the X
+and Y axes are on the log-scale):
 
 ```{r fsusie-mqtl-cs-sizes, fig.height=3, fig.width=3, warning=FALSE}
 fsusie_mqtl_cs_sizes <- get_cs_sizes_by_region(fsusie_mqtl$cs)
