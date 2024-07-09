@@ -31,6 +31,29 @@ get_gene_annotations <- function (gene_file) {
   return(out)
 }
 
+# Read the ENCODE cCRE ("candidate cis-regulatory elements")
+# annotations stored as a BED file.
+#
+# See this link for details:
+# https://genome.ucsc.edu/cgi-bin/hgTables?db=mm10&
+# hgta_group=regulation&hgta_track=encodeCcreCombined&
+# hgta_table=encodeCcreCombined&hgta_doSchema=describe+table+schema
+#
+get_encode_ccre_annotations <- function (ccre_file) {
+  out <- fread(ccre_file,sep = "\t")
+  class(out) <- "data.frame"
+  names(out) <- c("chrom","chromStart","chromEnd","name","score",
+                  "strand","thickStart","thickEnd","reserved",
+                  "ccre","encodeLabel","zScore","ucscLabel",
+                  "accessionLabel","description")
+  return(transform(out,
+                   chrom       = factor(chrom),
+                   strand      = factor(strand),
+                   ccre        = factor(ccre),
+                   encodeLabel = factor(encodeLabel),
+                   ucscLabel   = factor(ucscLabel)))
+}
+
 # Extract the chromosome numbers from the SNP ids.
 get_chr_from_id <- function (ids)
   factor(sapply(strsplit(ids,":"),"[",1))

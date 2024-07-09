@@ -9,15 +9,14 @@
 library(tools)
 options(stringsAsFactors = FALSE)
 
-# After some discussion with Gao and Hao on Slack, I choose
-# Inh_mega_eQTL because these results (like the other *_mega_eQTL
-# results) are from ROSMAP and DLPFC like the fsusie results on
+# After some discussion with Gao and Hao on Slack, I chose these
+# results are from ROSMAP and DLPFC like the fsusie results on
 # methylation ("ROSMAP_DLPFC_mQTL").
-analysis <- "Inh_mega_eQTL"
-outfile  <- "susie_Inh_mega_eQTL.RData"
+analysis <- "DLPFC_DeJager_eQTL"
+outfile  <- "susie_dlpfc_dejager_eQTL.RData"
 #
-# analysis <- "DLPFC_DeJager_eQTL"
-# outfile  <- "susie_dlpfc_dejager_eQTL.RData"
+# analysis <- "Inh_mega_eQTL"
+# outfile  <- "susie_Inh_mega_eQTL.RData"
 #
 # analysis <- "monocyte_ROSMAP_eQTL"
 # outfile  <- "susie_monocyte_rosmap_eQTL.RData"
