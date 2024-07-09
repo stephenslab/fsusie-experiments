@@ -190,8 +190,8 @@ ggplot(pdat,aes(x = pos,y = count)) +
 fSuSiE fine-mapping of mQTLs
 ----------------------------
 
-Now let's examine the fSuSie methylation fine-mapping results. The
-regions are similar (but not exactly the same) to the fSuSiE analyses
+Now let's examine the fSuSiE methylation fine-mapping results. The
+regions are similar (but not exactly the same) as the fSuSiE analyses
 of HA:
 
 ```{r fsusie-mqtl-region-sizes, fig.height=3, fig.width=6.25}
@@ -250,26 +250,49 @@ ggplot(pdat,aes(x = pos,y = count)) +
 Examine overlap among expression, methylation and histone acetylation SNPs
 --------------------------------------------------------------------------
 
-TO DO: Determine overlap between expression, methylation and histone
-acetylation SNPs simply by extracting the SNPs with PIP > 0.75 that
+Let's now examine overlap between expression, methylation and histone
+acetylation SNPs simply by extracting the SNPs with PIP > 0.5 that
 are also in a CS.
 
-```{r high-conf-snps-overlap, eval=FALSE}
-highconf_susie <- get_highconf_snps(susie$pips,level = 0.75)
-highconf_mqtl  <- get_highconf_snps(fsusie_mqtl$pips,level = 0.75)
-highconf_haqtl <- get_highconf_snps(fsusie_haqtl$pips,level = 0.75)
+```{r high-conf-snps-overlap}
+highconf_susie <- get_highconf_snps(susie$pips,level = 0.5)
+highconf_haqtl <- get_highconf_snps(fsusie_haqtl$pips,level = 0.5)
+highconf_mqtl  <- get_highconf_snps(fsusie_mqtl$pips,level = 0.5)
 ids <- unique(c(highconf_susie$id,highconf_mqtl$id,highconf_haqtl$id))
 dat <- data.frame(id = ids,
                   eqtl  = is.element(ids,highconf_susie$id),
-				  mqtl  = is.element(ids,highconf_mqtl$id),
-				  haqtl = is.element(ids,highconf_haqtl$id))
-table(dat[c("eqtl","mqtl")])
-table(dat[c("eqtl","haqtl")])
-table(dat[c("mqtl","haqtl")])
+				  haqtl = is.element(ids,highconf_haqtl$id),
+				  mqtl  = is.element(ids,highconf_mqtl$id))
+table(dat[c("haqtl","mqtl","eqtl")])
 ```
 
-TO DO NEXT: Put together a data frame containing more information
-about these high-confidence, overlapping SNPs.
+Put this information together into a table, and save this as a CSV
+file for later use.
+
+```{r create-table-of-overlapping-snps}
+dat <- subset(dat,eqtl + haqtl + mqtl > 1)
+ids <- dat$id
+highconf_susie <- subset(highconf_susie,is.element(id,ids))
+highconf_haqtl <- subset(highconf_haqtl,is.element(id,ids))
+highconf_mqtl  <- subset(highconf_mqtl,is.element(id,ids))
+highconf_overlap <- merge(highconf_susie,highconf_haqtl,by = "id",all = TRUE)
+highconf_overlap <- merge(highconf_overlap,highconf_mqtl,by = "id",all = TRUE)
+names(highconf_overlap) <-
+  c("id","region_eqtl","pos_eqtl","pip_eqtl","region_haqtl","pos_haqtl",
+    "pip_haqtl","region_mqtl","pos_mqtl","pip_mqtl")
+highconf_overlap$chr <- get_chr_from_id(highconf_overlap$id)
+highconf_overlap$pos <- get_pos_from_id(highconf_overlap$id)
+highconf_overlap <-
+  highconf_overlap[c("id","chr","pos","region_eqtl","region_haqtl",
+                     "region_mqtl","pip_eqtl","pip_haqtl","pip_mqtl")]	
+highconf_overlap <- transform(highconf_overlap,
+                              pip_eqtl  = round(pip_eqtl,digits = 4),
+							  pip_haqtl = round(pip_haqtl,digits = 4),
+							  pip_mqtl  = round(pip_mqtl,digits = 4))
+write.csv(highconf_overlap,"rosmap_highconf_overlap.csv",
+          quote = FALSE,row.names = FALSE)
+```
 
 [xqtl-nat-neurosci]: https://doi.org/10.1038/nn.4632
 [mcvicker-science]: https://doi.org/10.1126/science.1242429
+[encode-schema-ucsc-browser]: https://genome.ucsc.edu/cgi-bin/hgTables?db=mm10&hgta_group=regulation&hgta_track=encodeCcreCombined&hgta_table=encodeCcreCombined&hgta_doSchema=describe+table+schema
