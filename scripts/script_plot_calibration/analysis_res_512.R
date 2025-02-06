@@ -318,7 +318,7 @@ P2_pur
  
 
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_s3.RData", 
+load(paste( path,"/simulation/Simulation_results/check_L_accuracy_512_sd3.RData", 
             sep=""))
 
 
