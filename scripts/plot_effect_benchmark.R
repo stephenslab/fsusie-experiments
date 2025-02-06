@@ -204,12 +204,12 @@ P_block <-  ggplot(data = melted_cor_matrix, aes(Var1, Var2, fill = value)) +
 P_block
 
 set.seed(1)
-f2 <-  simu_IBSS_per_level(7)$sim_func
+f2 <-  fsusieR:::simu_IBSS_per_level(7)$sim_func
 
-f3 <-  simu_IBSS_per_level(7)$sim_func
-f1 <-  simu_IBSS_per_level(7)$sim_func
+f3 <-  fsusieR:::simu_IBSS_per_level(7)$sim_func
+f1 <-  fsusieR:::simu_IBSS_per_level(7)$sim_func
 
-idx_lst <-  susiF.alpha:::gen_wavelet_indx(7)
+idx_lst <-  fsusieR:::gen_wavelet_indx(7)
 
 
 f1_list <- list()

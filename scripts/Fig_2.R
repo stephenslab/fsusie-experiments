@@ -3,7 +3,7 @@ effect[which(effect<0)]<- 0
 effect[1:40]<- 0
 
 plot( effect)
-library(susiF.alpha)
+library(fsusieR)
 library(susieR)
 library(wavethresh)
 set.seed(2)

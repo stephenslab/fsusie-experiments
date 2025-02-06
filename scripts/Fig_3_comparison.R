@@ -806,9 +806,10 @@ p_run_time2 <- ggplot(df_run_time[ which( df_run_time$ncs <6 ),], aes(runtime ,y
         strip.text = element_text(colour = 'black'))+
   scale_color_manual(values = colors)
 p_run_time2
-library(susiF.alpha)
+library(fsusieR)
 library(cowplot)
-source(paste( path ,"/script/plot_effect_benchmark.R", sep=""), echo=FALSE)
+library(ggplot2)
+source(paste( path ,"/scripts/plot_effect_benchmark.R", sep=""), echo=FALSE)
 grid_plot <- ggdraw()+
   
   draw_plot(Pf_wac       ,
