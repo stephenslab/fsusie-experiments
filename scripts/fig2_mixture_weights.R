@@ -1,6 +1,9 @@
 library(ggplot2)
 library(cowplot)
-dat <- readRDS("../data/fig_2_data/fitted_weight_data.rds")
+
+
+path= getwd()
+dat <- readRDS(paste(path,"/data/fitted_weight_data.rds",sep=''))
 pdat <- data.frame(scale = rep(0:7,times = 30),
                    k     = rep(1:30,each = 8),
                    x     = as.vector(dat))

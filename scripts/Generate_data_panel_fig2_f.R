@@ -1,7 +1,7 @@
 rm(list=ls())
 library(ashr)
 library(wavethresh)
-library(susiF.alpha)
+library(fsusieR)
 library(ggplot2)
 library(ggrepel)
 set.seed(1)
@@ -28,11 +28,11 @@ xwd1 <-list()
 ywd1 <-list()
 for (s in 1:log2(length(f1))){
   tt <- rep( 0, 128)
-
-
+  
+  
   tt_wd <- wd(tt)
   tt_wd$D[ idx_lst[[s]]]  <- wd(f1)$D[ idx_lst[[s]]]
-
+  
   wd1_list[ idx_lst[[s]]]  <- wd(f1)$D[ idx_lst[[s]]]
   xwd1[[s]] <- (idx_lst[[s]]-mean(idx_lst[[s]]))/length(idx_lst[[s]])
   ywd1[[s]] <- rep( s,length(idx_lst[[s]]))
@@ -41,9 +41,9 @@ for (s in 1:log2(length(f1))){
 
 
 df01 <- data.frame(func = c( f1 ),
-                  x=  ( 1:128 )
-
-                  )
+                   x=  ( 1:128 )
+                   
+)
 
 
 P01 <- ggplot( df01, aes(x=x, y=func))+
@@ -56,9 +56,9 @@ P01 <- ggplot( df01, aes(x=x, y=func))+
 df1 <- data.frame(func = c(  do.call(c, f1_list)),
                   x= rep( 1:128,  length(f1_list) ),
                   scale =  factor(
-                                     rep( 1:log2(128),
-                                          each =length(f1_list[[1]]))
-
+                    rep( 1:log2(128),
+                         each =length(f1_list[[1]]))
+                    
                   )
 )
 
@@ -68,13 +68,13 @@ P1 <- ggplot( df1, aes(x=x, y=func))+
   facet_wrap(.~scale, ncol=1,strip.position = "left")+
   xlab("")+
   theme_bw()+
-ggtitle("Function encoded ")+
+  ggtitle("Function encoded ")+
   theme(
-
-
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        strip.placement = "outside")
+    
+    
+    axis.text.x=element_blank(),
+    axis.ticks.x=element_blank(),
+    strip.placement = "outside")
 
 
 df1b <- data.frame(y= do.call(c,wd1_list),
@@ -88,7 +88,7 @@ P1b <- ggplot( df1b, aes(x=x, y=y, colour=color))+
   geom_hline(yintercept = 0)+
   facet_wrap(.~scale,scales = "free", ncol=1)+
   scale_color_manual(values= c( "#377eb8","#e41a1c") )+
-
+  
   ggtitle("Wavelet coefficients ")+
   xlab("")+
   ylab("")+
@@ -122,8 +122,8 @@ x <- seq(-3,3, length.out=n_rep)
 
 
 for ( i in 1:nrow(df_prior1)){
-
-
+  
+  
   tl[[ i]] <-  data.frame ( x=x,
                             y=df_prior1$pi_0[i]* dnorm(x,
                                                        sd=df_prior1$sigma[i]),
@@ -152,9 +152,9 @@ P1_prior <- ggplot( res_df, aes(x=x,y=y, colour=color))+
 
 
 WD_true_effect1 <- gridExtra::grid.arrange(P01,
-                        P1,P1b,P1_prior,
-                        layout_matrix = rbind(c(1,1,1),c(2,3,4)),
-                        heights=c(1,3))
+                                           P1,P1b,P1_prior,
+                                           layout_matrix = rbind(c(1,1,1),c(2,3,4)),
+                                           heights=c(1,3))
 
 
 WD_true_effect1
@@ -185,8 +185,8 @@ xwd2 <-list()
 ywd2 <-list()
 for (s in 1:log2(length(f2))){
   tt <- rep( 0, 128)
-
-
+  
+  
   tt_wd <- wd(tt)
   tt_wd$D[ idx_lst[[s]]]  <- wd(f2)$D[ idx_lst[[s]]]
   wd2_list[ idx_lst[[s]]]  <- wd(f2)$D[ idx_lst[[s]]]
@@ -225,8 +225,8 @@ P2 <- ggplot( df2, aes(x=x, y=func))+
   theme_bw()+
   ggtitle("Function encoded")+
   theme(
-
-
+    
+    
     axis.text.x=element_blank(),
     axis.ticks.x=element_blank(),
     strip.placement = "outside")
@@ -246,7 +246,7 @@ P2b<-  ggplot( df2b, aes(x=x, y=y, colour=color))+
   geom_hline(yintercept = 0)+
   facet_wrap(.~scale,scales = "free", ncol=1)+
   scale_color_manual(values= c( "#377eb8","#e41a1c") )+
-
+  
   ggtitle("Wavelet coefficients ")+
   xlab("")+
   ylab("")+
@@ -279,8 +279,8 @@ x <- seq(-3,3, length.out=n_rep)
 
 
 for ( i in 1:nrow(df_prior1)){
-
-
+  
+  
   tl[[ i]] <-  data.frame ( x=x,
                             y=df_prior2$pi_0[i]* dnorm(x,
                                                        sd=df_prior1$sigma[i]),
@@ -310,17 +310,16 @@ P2_prior <- ggplot( res_df, aes(x=x,y=y, colour=color))+
 
 
 WD_true_effect2 <- gridExtra::grid.arrange(P02,
-                        P2,P2b,P2_prior,
-                        layout_matrix = rbind(c(1,1,1),c(2,3,4)),
-                        heights=c(1,3))
+                                           P2,P2b,P2_prior,
+                                           layout_matrix = rbind(c(1,1,1),c(2,3,4)),
+                                           heights=c(1,3))
 
 WD_true_effect2
 
 #ggsave(WD_true_effect2 , file="combined_plot/WD_true_effect2.pdf")
 
 
-#### Curves------
-library(susiF.alpha)
+#### Curves------ 
 library(susieR)
 set.seed(1)
 X <- N3finemapping$X
@@ -334,15 +333,15 @@ pos1 <- 100
 pos2 <- 200#200
 for ( i in 1:nrow(X))
 {
-
+  
   noise <- rnorm(length(f1  ), sd=  1)
   noisy.data [[i]] <-  X[i,pos1]*f1  +X[i,pos2]*f2   + noise
-
+  
 }
 noisy.data <- do.call(rbind, noisy.data)
 
 Y <- noisy.data
- dim(Y)
+dim(Y)
 df_plot <- do.call( rbind, lapply(1:nrow(Y), function( i) cbind (Y[i,], 1:length(Y[i,]),rep(i, length(Y[i,]))) ))
 df_plot <- data.frame(df_plot)
 colnames(df_plot)<- c("y","x","ind")
@@ -371,10 +370,10 @@ pv_list <-c()
 X_tt <- X
 X   [,200:400] <- X[,800:1000]
 for (j in 1:ncol(X)){
-
+  
   fit <-  lm(y~X[,j])
   pv_list <- c( pv_list,summary(fit)$coefficients[2,4])
-
+  
 }
 lpv = (-log10(pv_list))
 
@@ -382,7 +381,7 @@ lpv[ -c(200:400) ] <- (lpv[ -c(200:400) ]/2 )^1.5
 
 
 df_pv <- data.frame( lpv=lpv,
-                    x= 1:length(pv_list))
+                     x= 1:length(pv_list))
 
 df_point <- data.frame(x= c(336,360),
                        y= lpv[c(336,360)],
@@ -391,8 +390,8 @@ df_point <- data.frame(x= c(336,360),
 
 pv_plot <- ggplot(df_pv)+
   geom_point(size=2,aes(y= lpv,
-                       x= x,
-                       color=-lpv)) +
+                        x= x,
+                        color=-lpv)) +
   #geom_point(df_point, mapping=aes(x=x,y=y),colour=df_point$color ,size=4)+
   # geom_text_repel(df_point ,mapping=aes(x=x,y=y,label =factor( label)),
   #                 box.padding   = 0.35,
@@ -437,16 +436,16 @@ pos1 <- 330
 pos2 <- 350#200
 for ( i in 1:nrow(X))
 {
-
+  
   noise <- rnorm(length(f1  ), sd=  2)
   noisy.data [[i]] <-  X[i,pos1]*f1  +X[i,pos2]*f2   + noise
-
+  
 }
 
- X[,pos1+1]<- X[,pos1 ]+ rnorm(nrow(X),sd=0.001)
+X[,pos1+1]<- X[,pos1 ]+ rnorm(nrow(X),sd=0.001)
 
- X[,pos1-1]<- X[,pos1]+ rnorm(nrow(X),sd=0.001)
- X[,pos1-2]<- X[,pos1 ]+ rnorm(nrow(X),sd=0.001)
+X[,pos1-1]<- X[,pos1]+ rnorm(nrow(X),sd=0.001)
+X[,pos1-2]<- X[,pos1 ]+ rnorm(nrow(X),sd=0.001)
 
 
 X[,pos2+1]<- X[,pos2 ]+ rnorm(nrow(X),sd=0.0001)
@@ -471,11 +470,11 @@ pip_df$color[out$cs[[2]]]<-"#6A3D9A"
 
 x = do.call (c, lapply(1:length(out$cs), function(l)
   out$cs[[l]][which.max(out$pip[ out$cs[[l]]])]
-
+  
 ))
 y= do.call (c, lapply(1:length(out$cs), function(l)
   out$pip[out$cs[[l]][which.max(out$pip[ out$cs[[l]]])]]
-
+  
 ))
 df_label <- data.frame(x= x,
                        y=y,
@@ -493,10 +492,10 @@ pip_plot <- ggplot(pip_df ,aes(x=x,y=y, colour=as.factor(color)))+
                    axis.text.x=element_blank(),
                    axis.ticks.x=element_blank())+
   geom_text_repel(df_label ,mapping=aes(x=x,y=y,label =factor( label)),
-                   box.padding   = 0.35,
-                   point.padding = 0.5 ,
-                   nudge_x = 20
-                   )+
+                  box.padding   = 0.35,
+                  point.padding = 0.5 ,
+                  nudge_x = 20
+  )+
   ylab("PIP")+
   xlab("SNPs")
 

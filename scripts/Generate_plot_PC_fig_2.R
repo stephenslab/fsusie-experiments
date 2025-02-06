@@ -51,7 +51,7 @@ geno_plot <-  ggplot( (df), aes(x=y, y=x, fill = z)) +
 
 library(ashr)
 library(wavethresh)
-library(susiF.alpha)
+library(fsusieR)
 library(ggplot2)
 library(ggrepel)
 set.seed(1)
@@ -68,7 +68,7 @@ f2 <- simu_IBSS_per_level(lev_res )$sim_func #second effect
 
 
 #### Function 1------
-library(susiF.alpha)
+library(fsusieR)
 library(susieR)
 set.seed(1)
 X <- N3finemapping$X
@@ -138,7 +138,7 @@ xwd1 <-list()
 ywd1 <-list()
 
 Y_map <- dat$y
-idx_lst <-  susiF.alpha:::gen_wavelet_indx(log2(length(Y_map)))
+idx_lst <-  fsusieR:::gen_wavelet_indx(log2(length(Y_map)))
 f1 <-  dat$y
 library(wavethresh)
 library(ashr)
@@ -173,8 +173,8 @@ P1b <-  ggplot( df1b, aes(x=x, y=y, colour=color))+
   facet_wrap(.~scale, ncol=1,strip.position = "left")+
   scale_color_manual(values= c( "#377eb8","#e41a1c") )+
   geom_segment(data = df1b, aes(x =x, xend = x, 
-                                     y = dummy, yend = y), 
-                 
+                                y = dummy, yend = y), 
+               
                colour = "#377eb8", 
                size = 1.5)+
   ggtitle("Observed wavelet coefficients ")+
@@ -190,7 +190,7 @@ P1b <-  ggplot( df1b, aes(x=x, y=y, colour=color))+
   xlab("")
 
 ### fsusie ----
-library(susiF.alpha)
+library(fsusieR)
 library(susieR)
 set.seed(1)
 
@@ -311,7 +311,7 @@ P_effect <- ggplot( effect  )+
 
 library(ashr)
 library(wavethresh)
-library(susiF.alpha)
+library(fsusieR)
 library(ggplot2)
 library(ggrepel)
 set.seed(1)
@@ -354,7 +354,7 @@ df01 <- data.frame(func = c( f1 ),
                    x=  ( 1:128 )
                    
 )
- 
+
 df1b <- data.frame(y= do.call(c,wd1_list),
                    x= do.call(c,xwd1),
                    scale =  factor(  do.call(c, ywd1)))
@@ -363,7 +363,7 @@ df1b$color= ifelse(abs(df1b$y)>0.01, "#377eb8","#e41a1c")
 
 
 df1b$dummy <- rep( 0, nrow(df1b))
- 
+
 P1 <- ggplot( df1b, aes(x=x, y=y, colour=color))+
   geom_point(size=2.5)+
   geom_hline(yintercept = 0)+
@@ -415,7 +415,7 @@ for ( i in 1:nrow(df_prior1)){
 
 
 res_df <- do.call(rbind,tl)
- 
+
 
 
 
@@ -449,7 +449,7 @@ for (s in 1:log2(length(f2))){
 
 
 
- 
+
 
 df2 <-data.frame(func = c(do.call(c, f2_list)),
                  x= rep( 1:128,  length(f2_list) ),
@@ -458,7 +458,7 @@ df2 <-data.frame(func = c(do.call(c, f2_list)),
                         each =length(f2_list[[1]]))
                  )
 )
- 
+
 df2b <- data.frame(y= do.call(c,wd2_list),
                    x= do.call(c,xwd2),
                    scale =  factor(  do.call(c, ywd2)))
@@ -488,7 +488,7 @@ pip_plot
 geno_plot
 P_obs
 P1b
- 
+
 ggsave(P_effect , file="data/fig_2_data/P_effect.pdf",
        width=29.7,
        height = 21,
@@ -521,7 +521,7 @@ ggsave(P1b , file="data/fig_2_data/raw_wc.pdf" ,
 
 
 
-source(paste(getwd(), "/script/plot_explanation.R", sep=""), echo=TRUE)
+source(paste(getwd(), "/scripts/plot_explanation.R", sep=""), echo=TRUE)
 
 
 mat <- do.call( rbind, out$est_pi[[1]])
@@ -534,17 +534,17 @@ saveRDS(mat2, file = "data/fig_1_data/fitted_weight_data2.rds")
 
 F_mat <- Reduce ("+",lapply( 1: length(out$cs), function(l) {
   return(sweep(out$fitted_wc[[l]],
-                             1,
-                             out$alpha[[l]],
-                             "*"  )
-         )}
-  )
-  )
+               1,
+               out$alpha[[l]],
+               "*"  )
+  )}
+)
+)
 
 F_mat <- as.data.frame (F_mat[ -c(1:280, 379:497),])
 image(as.matrix(F_mat) )
 
- 
+
 saveRDS(F_mat, file = "data/fig_2_data/B_mat.rds")
 
 Fitted_func <- do.call(rbind, out$fitted_func)
