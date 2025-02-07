@@ -1,9 +1,19 @@
 
 
 rm(list = ls())
-data = readRDS("Fig4_data.rds")
 library("ComplexUpset")
 library("tidyverse")
+library(ggplot2)
+library(dplyr)
+library(cowplot)
+library(RColorBrewer)  
+library(tidyr)      
+library(magrittr)   
+
+path= getwd()
+data = readRDS(paste0(path , 
+                      "/data/fig_4_data/Fig4_data.rds"))
+
 plot_df = data$a1
 # Create the plot
 a1 = ggplot(plot_df, aes(y = context)) +
@@ -80,10 +90,9 @@ cor_test <- cor.test(plot_df%>%pull(top_z.x), plot_df%>%pull(top_z.y))
 cor_coeff <- round(cor_test$estimate, 2)
 p_value <- signif(cor_test$p.value, 2)
 # Load necessary libraries
-library(ggplot2)
-library(dplyr)
-library(cowplot)
-library(RColorBrewer)
+
+
+
 palette_overlap <- c("Overlap" = "steelblue", "No Overlap" = "grey70")
 
 cor_coeff <- round(cor_test$estimate, 2)
@@ -140,11 +149,11 @@ plot_df = data$b2
 cor_test <- cor.test(plot_df%>%pull(top_z.x), plot_df%>%pull(top_z.y))
 cor_coeff <- round(cor_test$estimate, 2)
 p_value <- signif(cor_test$p.value, 2)
+
+
 # Load necessary libraries
-library(ggplot2)
-library(dplyr)
-library(cowplot)
-library(RColorBrewer)
+
+
 palette_overlap <- c("Overlap" = "steelblue", "No Overlap" = "grey70")
 
 cor_coeff <- round(cor_test$estimate, 2)
@@ -505,10 +514,6 @@ e <- cowplot::plot_grid(plotlist = list(p1, p3, p2),
 e
 
 # Load necessary libraries
-library(ggplot2)
-library(dplyr)
-library(tidyr)      
-library(magrittr)   
 
 # Interface: Assign datasets dynamically
 
