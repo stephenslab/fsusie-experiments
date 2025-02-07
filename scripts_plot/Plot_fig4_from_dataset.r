@@ -14,6 +14,7 @@ path= getwd()
 data = readRDS(paste0(path , 
                       "/data/fig_4_data/Fig4_data.rds"))
 
+### Upsett plot ----
 plot_df = data$a1
 # Create the plot
 a1 = ggplot(plot_df, aes(y = context)) +
@@ -84,6 +85,9 @@ a2 = ComplexUpset::upset(
 )+
   theme(legend.position = "top")  # Added this line       
 a2
+
+#### Correlation plot ----
+
 plot_df = data$b1
 # Calculate Pearson correlation
 cor_test <- cor.test(plot_df%>%pull(top_z.x), plot_df%>%pull(top_z.y))
@@ -268,6 +272,12 @@ b4 <- plot_df%>%
   )
 b4
 
+
+#### Case study  ----
+
+
+
+# case study 1 ----
 # Interface: Assign datasets dynamically
 
 plot_df <- data$d[[1]]
