@@ -298,7 +298,7 @@ custom_labeller <- function(x) {
     gsub("([_:,|-])", "\n", .)             
 }
 
-# Plot 1
+# Plot 1 ------
 p1 <- ggplot() +
   geom_point(data = plot_df %>% filter(study == "DLPFC_DeJager_eQTL"), 
              aes(x = pos, y = `z`), size = 8, alpha = 0.1) +
@@ -321,7 +321,7 @@ p1 <- ggplot() +
   xlab("") +
   ylab("z")
 
-# Plot 2
+# Plot 2------
 p2 <- ggplot() + theme_bw() +
   xlim(view_win) +
   ylab("Estimated effect") +
@@ -393,7 +393,7 @@ view_win <- c(207317782, 207895513)
 gene <- c("chr1:205117782-208795513", "1_205972031_208461272", "ENSG00000203710","ENSG00000117322")
 
 # -----------------
-# Plot 1
+# Plot 1  ------
 # -----------------
 p1 <- ggplot() +
   geom_point(
@@ -425,7 +425,7 @@ p1 <- ggplot() +
   ylab("z")
 
 # -----------------
-# Plot 2
+# Plot 2------
 # -----------------
 p2 <- ggplot() +
   theme_bw() +
@@ -479,7 +479,7 @@ p2 <- ggplot() +
   geom_point(data = sumstat, aes(x = pos - start_distance, y = beta), color = "steelblue", size = 2)
 
 # -----------------
-# Plot 3
+# Plot 3 -----
 # -----------------
 p3 <- ggplot() +
   facet_grid(
@@ -521,8 +521,7 @@ e <- cowplot::plot_grid(plotlist = list(p1, p3, p2),
   rel_heights = c(4, 2, 4)
 ) 
 
-e
-
+e 
 # Load necessary libraries
 
 # Interface: Assign datasets dynamically
