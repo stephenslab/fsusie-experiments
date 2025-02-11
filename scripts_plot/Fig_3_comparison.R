@@ -809,7 +809,7 @@ p_run_time2
 library(fsusieR)
 library(cowplot)
 library(ggplot2)
-source(paste( path ,"/scripts/plot_effect_benchmark.R", sep=""), echo=FALSE)
+source(paste( path ,"/scripts_plot/plot_effect_benchmark.R", sep=""), echo=FALSE)
 grid_plot <- ggdraw()+
   
   draw_plot(Pf_wac       ,

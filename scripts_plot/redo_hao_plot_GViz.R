@@ -5,9 +5,8 @@ library(org.Hs.eg.db)
 library(GenomicRanges)
 library(Gviz)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-
-data = readRDS(  
-                      "D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/Fig4_data.rds") 
+path= getwd()
+data = readRDS(paste0(  path,"/data/fig_4_data/Fig4_data.rds") )
 extract_snp_position <- function(snp_string) {
   # Split the input string by ':'
   parts <- unlist(strsplit(snp_string, ":"))
@@ -145,6 +144,73 @@ t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
 otme_ha <- OverlayTrack(trackList=list(    t_me, t_ha  ))
 plotTracks(otme_ha, from =view_win[1], to = view_win[2])
 
+#### so far so good ----- 
+
+res <- readRDS(paste0(path, "/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.rds"))
+
+fsusie_obj=res$`chr17:1059843-6175034`$ROSMAP_DLPFC_haQTL$fsusie_result
+
+positions = fsusie_obj$outing_grid
+
+
+effect=  fsusie_obj$fitted_func[[2]]
+
+ 
+haQTL_track = DataTrack(range = GRanges(seqnames = chr,
+                          ranges = IRanges(start = positions ,
+                                           end = positions   + 1)),
+          data = effect , genome = "hg38",
+           type = "l", 
+          track.margin = 0.05 ,
+          col.axis = "black",col.title = "black",
+          fontface = "plain",background.title = "white",
+          fontface.title = 1)
+
+
+
+effect=  fsusie_obj$cred_band[[2]][1, ]
+
+
+
+ 
+haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
+                                        ranges = IRanges(start = positions ,
+                                                         end = positions + 1)),
+                        data = effect , genome = "hg38",
+                        type = "l", 
+                        track.margin = 0.05 ,lty=2,
+                        col.axis = "black",col.title = "black",
+                        fontface = "plain",background.title = "white",
+                        fontface.title = 1)
+
+
+effect=  fsusie_obj$cred_band[[2]][2, ]
+
+
+
+
+haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
+                                            ranges = IRanges(start = positions ,
+                                                             end = positions + 1)),
+                            data = effect , genome = "hg38",
+                            type = "l", 
+                            track.margin = 0.05 ,lty=2,
+                            col.axis = "black",col.title = "black",
+                            fontface = "plain",background.title = "white",
+                            fontface.title = 1)
+
+fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ))
+plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2])
+
+
+
+
+
+
+
+
+
+plotTracks(otme_ha, from =view_win[1], to = view_win[2])
 
 
 data_effect_ha = haQTL_df %>% mutate(study = "haQTL effect") %>% filter(CS == 2)
