@@ -63,11 +63,11 @@ view_win <- c(4759843, 5000000)
 chr =  paste("chr", 17, sep = "")
 
 
-data_track =plot_df %>% filter(study == "DLPFC_DeJager_eQTL" )
+data_track =plot_df[ which(  plot_df$study == "DLPFC_DeJager_eQTL" ),]
 data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2] ),]
 
-data_track_CS1 =plot_df %>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
-data_track_CS4 = plot_df %>% filter(CS4, study == "DLPFC_DeJager_eQTL") #"steelblue"
+data_track_CS1 =plot_df [ which(  plot_df$study == "DLPFC_DeJager_eQTL" & plot_df$CS1 ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
+data_track_CS4 =plot_df [ which(  plot_df$study == "DLPFC_DeJager_eQTL" & plot_df$CS4 ),]# plot_df %>% filter(CS4, study == "DLPFC_DeJager_eQTL") #"steelblue"
 
 
 
@@ -113,8 +113,8 @@ plotTracks( otAD)
 
 # second panle
 
-
-data_ha =  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
+data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.95_min_corr==2  ),]
+#  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
 data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                   data = matrix(data_ha$pip , nrow=1), genome = "hg19", 
@@ -131,7 +131,8 @@ t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
 plotTracks( t_ha)
 
 
-data_me =  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7)
+data_me =  pip_df[which( pip_df$study %in% c("ROSMAP_DLPFC_mQTL", "") & pip_df$cs_coverage_0.95 == 7),]
+  #pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7)
 data_me= data_me[which(data_me$pos> view_win[1] & data_me$pos<view_win[2]),]
 t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
                   data = matrix(data_me$pip , nrow=1), genome = "hg19", 
@@ -272,6 +273,8 @@ fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
 
+fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ))
+plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
  
 
@@ -283,13 +286,15 @@ gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
                               showId = TRUE,geneSymbol = TRUE,
                               col.axis = "black",col.title = "black",
                               transcriptAnnotation = "symbol",
-                              rotation.title = 0,cex.title = cex,
+                              rotation.title = 0 ,
                               col = "salmon",fill = "salmon",
                               background.title = "white")
 
-
+plotTracks(gene_track)
 tracks <- c(otAD,
   otme_ha,
   fsusie_me_plot,
   gene_track
 )
+plotTracks(gene_track , from =view_win[1], to = view_win[2])
+
