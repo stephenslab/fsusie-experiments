@@ -1,4 +1,3 @@
-
 # Interface: Assign datasets dynamically
 plot_df <- data$e[[1]]
 haQTL_df <- data$e[[2]]
