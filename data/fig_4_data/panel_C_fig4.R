@@ -30,6 +30,18 @@ sumstat <- data$d[[5]]
 pip_df <- data$d[[6]]
 
 
+# Parameters
+view_win <- c(4759843, 5000000)
+text_size <- 20
+gene <- c("ENSG00000029725", "ENSG00000161929", "ENSG00000108556")
+custom_labeller <- function(x) {
+  x %>% 
+    gsub("DeJager_", "", ., fixed = TRUE) %>%  
+    gsub("([_:,|-])", "\n", .)             
+}
+# Function to extract SNP position from a given notation
+
+
 
 plot_df <- data$d[[1]]
 haQTL_df <- data$d[[2]]
@@ -261,6 +273,57 @@ list_track=  list( otAD,
 plotTracks(list_track,
            from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
            to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+
+# second pane -----  
+
+data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.95_min_corr==2  ),]
+#  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
+data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
+t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
+                  data = matrix(data_ha$pip , nrow=1), genome = "hg19", 
+                  ylim =c( 0, 0.5),
+                  type = "p", col = "steelblue",
+                  cex=1.5,# Use color column from df_plot
+                  track.margin = 0.05, # Reduce margin between track and title
+                  cex.title = 0.6,     # Reduce title size
+                  cex.axis = 0.6,      # Reduce axis text size
+                  col.axis = "black",  # Change axis color to black
+                  col.title = "black") ) # Change title color to black
+
+
+plotTracks( t_ha)
+
+
+data_me =  pip_df[which( pip_df$study %in% c("ROSMAP_DLPFC_mQTL", "") & pip_df$cs_coverage_0.95 == 7),]
+  #pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7)
+data_me= data_me[which(data_me$pos> view_win[1] & data_me$pos<view_win[2]),]
+t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
+                  data = matrix(data_me$pip , nrow=1), genome = "hg19", 
+                  ylim =c( 0, 0.5),
+                  type = "p", col = "maroon",
+                  cex=1.5,# Use color column from df_plot
+                  track.margin = 0.05, # Reduce margin between track and title
+                  cex.title = 0.6,     # Reduce title size
+                  cex.axis = 0.6,      # Reduce axis text size
+                  col.axis = "black",  # Change axis color to black
+                  col.title = "black") ) # Change title color to black
+otme_ha <- OverlayTrack(trackList=list(    t_me, t_ha  )) 
+
+
+
+
+list_track=  list( otAD,
+                   otCHRNE,
+                   otRABEP1 ,
+                   otSCIMP,
+                   otme_ha
+)
+
+
+plotTracks(list_track,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+
 
 #### ha ---- ----- 
 
