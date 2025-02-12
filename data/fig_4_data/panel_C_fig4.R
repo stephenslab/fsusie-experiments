@@ -17,6 +17,7 @@ extract_snp_position <- function(snp_string) {
   
   return(position)
 }
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 
 
 
@@ -150,7 +151,7 @@ plotTracks(otme_ha, from =view_win[1], to = view_win[2])
 res <- readRDS(paste0(path, "/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.rds"))
 
 fsusie_obj_ha=res$`chr17:1059843-6175034`$ROSMAP_DLPFC_haQTL$fsusie_result
-
+rm(res)
 positions = fsusie_obj_ha$outing_grid
 
 
@@ -213,8 +214,9 @@ fsusie_obj_me = res$`chr17:1059843-6175034`$ROSMAP_DLPFC_mQTL$fsusie_result
 
 positions = fsusie_obj_me$outing_grid
 
-
-effect= fsusie_obj_me$fitted_func[[2]]
+out=list(effect= fsusie_obj_me$fitted_func[[7]],
+         cred_band=  fsusie_obj_me$cred_band[[7]]  )
+effect= out$effect
 
 
 meQTL_track = DataTrack(range = GRanges(seqnames = chr,
@@ -229,7 +231,7 @@ meQTL_track = DataTrack(range = GRanges(seqnames = chr,
 
 
 
-effect=   fsusie_obj_me$cred_band[[2]] [1, ]
+effect=  out$cred_band[1,]
 
 
 
@@ -245,7 +247,7 @@ meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                             fontface.title = 1)
 
 
-effect=   fsusie_obj_me$cred_band[[2]] [2, ]
+effect=    out$cred_band[2,]
 
 
 
@@ -269,3 +271,25 @@ fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL
                                                meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ))
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
+
+
+ 
+
+genome_track <- GenomeAxisTrack(col.axis = "black",col.title = "black")
+
+# Create a "gene region" track.
+gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
+                              pos0 = view_win[1],pos1 = view_win[2],name = "",
+                              showId = TRUE,geneSymbol = TRUE,
+                              col.axis = "black",col.title = "black",
+                              transcriptAnnotation = "symbol",
+                              rotation.title = 0,cex.title = cex,
+                              col = "salmon",fill = "salmon",
+                              background.title = "white")
+
+
+tracks <- c(otAD,
+  otme_ha,
+  fsusie_me_plot,
+  gene_track
+)
