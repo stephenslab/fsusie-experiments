@@ -219,34 +219,50 @@ P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
- 
 library(ggplot2)
 library(gridExtra)
 library(grid)
 library(ggpubr)
 library(cowplot)
 library(dplyr)
-library(gridExtra)
-titles <- lapply(c( "block", 
-                    "distance decay"), function(n) {
-  textGrob(label = bquote(WGBS == .(n)), gp = gpar(fontsize =16, fontface = "bold"))
-}) 
 
-grid.arrange(P11,P12,
-             P21,P22,
-             P31,P32, 
-             ncol=2)
+# Create text labels for the column titles
+titles <- list(
+  textGrob(label = "WGBS = block", gp = gpar(fontsize = 16, fontface = "bold")),
+  textGrob(label = "WGBS = distance decay", gp = gpar(fontsize = 16, fontface = "bold"))
+)
 
-legend_plot <- get_legend(P11 + theme(legend.position = "bottom"))
+# Create text labels for the row annotations (h^2 values) using LaTeX-style expressions
+h2_labels <- list(
+  textGrob(expression(h^2~"= 1%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
+  textGrob(expression(h^2~"= 5%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
+  textGrob(expression(h^2~"= 10%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold"))
+)
 
+# Extract the legend from one of the plots
+legend_plot <- get_legend(P11 + theme(legend.position = "bottom", legend.justification = "center"))
 
-P_out= grid.arrange(
-  arrangeGrob(grobs = titles, ncol = 3),
-  arrangeGrob(  P12+ theme(legend.position = "none"), P11+ theme(legend.position = "none"),  
-                P22+ theme(legend.position = "none"), P21+ theme(legend.position = "none"), 
-                P32+ theme(legend.position = "none"), P31+ theme(legend.position = "none") ,  
-                 ncol=2),
+# Arrange the grid with correct alignment
+P_out <- grid.arrange(
+  arrangeGrob(
+    textGrob(""), titles[[1]], titles[[2]],  # Empty space for alignment
+    ncol = 3, widths = c(0.08, 1, 1)
+  ),
+  arrangeGrob(
+    h2_labels[[1]], P12 + theme(legend.position = "none"), P11 + theme(legend.position = "none"),
+    ncol = 3, widths = c(0.08, 1, 1)
+  ),
+  arrangeGrob(
+    h2_labels[[2]], P22 + theme(legend.position = "none"), P21 + theme(legend.position = "none"),
+    ncol = 3, widths = c(0.08, 1, 1)
+  ),
+  arrangeGrob(
+    h2_labels[[3]], P32 + theme(legend.position = "none"), P31 + theme(legend.position = "none"),
+    ncol = 3, widths = c(0.08, 1, 1)
+  ),
   arrangeGrob(legend_plot),
-  heights = c(0.03, 1,0.03))
+  heights = c(0.08, 1, 1, 1, 0.1)
+)
 
-
+# Display the final plot
+P_out
