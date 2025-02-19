@@ -32,6 +32,48 @@ sim_perf_finding_CpG= function(n=100 ,
   TI_res= fsusieR:::univariate_TI_regression(Y,X)
   
   
+  grid= seq(from=0.001, to =0.99, by =0.001)
+  cred_band = matrix( 0, ncol= length(TI_res$effect_estimate),
+                      nrow=2)
+  tl= list()
+  for( i in 1:length(grid)){
+    alpha=grid[i]
+    coeff= qnorm(1- alpha /2)
+    
+    cred_band=0*cred_band
+    cred_band [1, ]= TI_res$effect_estimate +  coeff* sqrt(TI_res$fitted_var )
+    cred_band [2, ]= TI_res$effect_estimate -  coeff* sqrt(TI_res$fitted_var )
+    
+    tout=rep( 0, ncol(cred_band))
+    
+    idxup = which( cred_band[1,]<0)
+    idxlow= which( cred_band[2,]>0)
+    if( length(idxup)>0){
+      tout[idxup]=1
+    }
+    if( length(idxlow)>0){
+      tout[idxlow]=1
+    }
+    tl[[i]]=tout
+  }
+  
+  tmat= do.call(rbind, tl)
+  
+  thresh=   do.call(c, 
+                    lapply( 1: ncol( tmat),
+                            function( i ){
+                             if(length( which ( tmat[,i]>0))==0){#ie only zero
+                                idx= grid[nrow(tmat)]
+                               }else{
+                                idx= grid[ min( which ( tmat[,i]>0))]#highest  level of condfidence 
+                                 # in which the credible band do not include 0 
+                                  }
+                                return(idx)
+                              }
+                          )
+                )
+ 
+  
   compute_pvalue <- function(estimate, lower_ci, upper_ci) {
     # Compute the standard error
     se <- (upper_ci - lower_ci) / (2 * qnorm(0.975))
@@ -62,24 +104,24 @@ sim_perf_finding_CpG= function(n=100 ,
   )
   )
   
-  pos_up <-  which(TI_res$cred_band [1,]<0)
-  pos_low <- which(TI_res$cred_band [2,]>0)
+  #pos_up <-  which(TI_res$cred_band [1,]<0)
+  #pos_low <- which(TI_res$cred_band [2,]>0)
   
-  affected_TI= rep( 0,  length(TI_res$effect_estimate))
-  if( length(pos_up)>0){
-    affected_TI[pos_up]=1
-  }
-  if(length(pos_low)>0){
-    affected_TI[pos_low]=1
-  }
-  CpG= rep(0, ncol(Y))
-  CpG [start_pos:(start_pos+n_effect-1)]=1
+  #affected_TI= rep( 0,  length(TI_res$effect_estimate))
+  #if( length(pos_up)>0){
+  #  affected_TI[pos_up]=1
+  #}
+  #if(length(pos_low)>0){
+  #  affected_TI[pos_low]=1
+  #}
+  #CpG= rep(0, ncol(Y))
+  #CpG [start_pos:(start_pos+n_effect-1)]=1
   
   
   out = data.frame(CpG=CpG, pv=pv,
                    hmm_lfsr=hmm_res$lfsr,
                    pv_ti=pv_ti,
-                   affected_TI=affected_TI,
+                   affected_TI=thresh,
                    n= rep( n, length(CpG)),
                    h2= rep( h2, length(CpG)))
   return( out)
