@@ -1,6 +1,6 @@
 rm(list=ls())
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_10_decay.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -34,7 +34,7 @@ P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   theme_cowplot()+xlab("FDR")+ylab("Power") 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -72,7 +72,7 @@ P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10_decay.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -106,7 +106,7 @@ P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   theme_cowplot()+xlab("FDR")+ylab("Power") 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -146,7 +146,7 @@ P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_10_decay.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -180,7 +180,7 @@ P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   theme_cowplot()+xlab("FDR")+ylab("Power") 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -239,6 +239,7 @@ h2_labels <- list(
 legend_plot <- get_legend(P11 + theme(legend.position = "bottom",
                                       legend.justification = "center",
                                       legend.title=element_blank()))
+
 # Arrange the grid with correct alignment
 P_out <- grid.arrange(
   arrangeGrob(
@@ -263,3 +264,4 @@ P_out <- grid.arrange(
 
 # Display the final plot
 P_out
+

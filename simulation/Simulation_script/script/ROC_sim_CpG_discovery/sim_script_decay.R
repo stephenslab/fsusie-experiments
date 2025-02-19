@@ -39,7 +39,12 @@ sim_perf_finding_CpG= function(n=100 ,
   Y <-Y+matrix(rnorm(prod(dim(Y)) ,
                      sd=noise_sd), nrow = nrow(Y))
   
-  
+  sigmoid <- function( x)
+  {
+    out <- 1/(1+exp(-x))
+    return(out)
+  }
+  Y <- sigmoid(Y)
   
   
   pv= do.call( c , lapply( 1:ncol(Y), function(j){

@@ -11,16 +11,39 @@ sim_perf_finding_CpG= function(n=100 ,
   
   X= matrix(rnorm(n), ncol=1)
   
-  noise_sd=   sqrt( ( 1/h2 )-1 )
+ # noise_sd=   sqrt( ( 1/h2 )-1 )
+  
+  
+ 
+  
+  
+  #Y = matrix(rnorm(n*n_CPG,sd= noise_sd), ncol= n_CPG)
+  
+  #Y[,start_pos:(start_pos+n_effect-1)]= Y[,start_pos:(start_pos+n_effect-1 )]+
+  #  matrix(rep(X,n_effect), ncol =n_effect) 
   
   
   
-  Y = matrix(rnorm(n*n_CPG,sd= noise_sd), ncol= n_CPG)
-  
-  Y[,start_pos:(start_pos+n_effect-1)]= Y[,start_pos:(start_pos+n_effect-1 )]+
-    matrix(rep(X,n_effect), ncol =n_effect) 
   
   
+  Y = matrix(0, ncol= n_CPG, nrow= nrow(X))
+  for ( j in 1:n_effect){
+    Y[, (start_pos+j-1) ]=  1*X
+  }
+  
+  
+  sd_Y_effect=sd(c(Y[,start_pos:(start_pos+n_effect-1)]))
+  noise_sd= sqrt( (sd_Y_effect^2/h2)  -sd_Y_effect^2)
+  Y <-Y+matrix(rnorm(prod(dim(Y)) ,
+                     sd=noise_sd), nrow = nrow(Y))
+  
+  
+  sigmoid <- function( x)
+  {
+    out <- 1/(1+exp(-x))
+    return(out)
+  }
+  Y <- sigmoid(Y)
   
   
   pv= do.call( c , lapply( 1:ncol(Y), function(j){

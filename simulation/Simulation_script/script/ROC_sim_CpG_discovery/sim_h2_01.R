@@ -13,7 +13,7 @@ source(paste0( path,
 res= list()
 for(  o in     1:100){
   
-  res[[o]]= sim_perf_finding_CpG(h2=0.01,
+  res[[o]]= sim_perf_finding_CpG(h2=0.025,
                                  n =100,
                                  n_effect = 21)
   
@@ -27,7 +27,7 @@ for(  o in     1:100){
 res= list()
 for(  o in     1:100){
   
-  res[[o]]= sim_perf_finding_CpG(h2=0.01,
+  res[[o]]= sim_perf_finding_CpG(h2=0.025,
                                  n =100,
                                  n_effect = 42)
   
@@ -42,7 +42,7 @@ for(  o in     1:100){
 res= list()
 for(  o in     1:100){
   
-  res[[o]]= sim_perf_finding_CpG(h2=0.01,
+  res[[o]]= sim_perf_finding_CpG(h2=0.025,
                                  n =200,
                                  n_effect = 21)
   
@@ -59,7 +59,7 @@ for(  o in     1:100){
 res= list()
 for(  o in     1:100){
   
-  res[[o]]= sim_perf_finding_CpG(h2=0.01,
+  res[[o]]= sim_perf_finding_CpG(h2=0.025,
                                  n =200,
                                  n_effect = 42)
   
