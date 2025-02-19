@@ -3,7 +3,7 @@
 path=getwd()
 
 source(paste0( path,
-               "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/sim_script.R")
+               "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/sim_script_decay.R")
 )
 
 
@@ -15,7 +15,7 @@ for(  o in     1:100){
                                  n =100,
                                  n_effect = 21)
   
-  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData" )))
+  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5_decay.RData" )))
   print( o)
   
 }
@@ -29,7 +29,7 @@ for(  o in     1:100){
                                  n =100,
                                  n_effect = 42)
   
-  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10.RData" )))
+  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10_decay.RData" )))
   print( o)
   
 }
@@ -43,7 +43,7 @@ for(  o in     1:100){
                                  n =200,
                                  n_effect = 21)
   
-  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n200_CpG_5.RData" )))
+  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n200_CpG_5_decay.RData" )))
   print( o)
   
 }
@@ -60,7 +60,7 @@ for(  o in     1:100){
                                  n =200,
                                  n_effect = 42)
   
-  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n200_CpG_10.RData" )))
+  save(res, file =paste0(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n200_CpG_10_decay.RData" )))
   print( o)
   
 }

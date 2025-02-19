@@ -1,4 +1,4 @@
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -36,7 +36,7 @@ P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   ggtitle(" h2=1%, n=100, naffect=5")
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_10_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -78,7 +78,7 @@ P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -116,7 +116,7 @@ P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   ggtitle(" h2=5%, n=100, naffect=5")
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_10_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -160,7 +160,7 @@ P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -198,7 +198,7 @@ P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
   ggtitle(" h2=10%, n=100, naffect=5")
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_10_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -240,7 +240,7 @@ P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_20_n100_CpG_5.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_20_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -281,7 +281,7 @@ P41= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_20_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_20_n100_CpG_10_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -325,7 +325,7 @@ P42= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_40_n100_CpG_5.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_40_n100_CpG_5_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -365,7 +365,7 @@ P51= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_40_n100_CpG_10.RData")
+load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_40_n100_CpG_10_decay.RData")
 library( ggplot2)
 library(cowplot)
 library(gridExtra)

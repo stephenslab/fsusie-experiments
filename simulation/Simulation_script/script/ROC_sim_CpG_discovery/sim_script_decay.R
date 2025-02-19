@@ -1,10 +1,4 @@
-
  
-
-hmm_res= fsusieR:::univariate_HMM_regression(Y,X)
-
-TI_res= fsusieR:::univariate_TI_regression(Y,X)
-
 
 
 sim_perf_finding_CpG= function(n=100 ,
@@ -33,7 +27,7 @@ sim_perf_finding_CpG= function(n=100 ,
   effect=dae::rmvnorm(mean = rep(0, n_effect),V = region_mat)
   
   
-  Y = matrix(rnorm(n*n_CPG,sd= noise_sd), ncol= n_CPG)
+  Y = matrix(0, ncol= n_CPG, nrow= nrow(X))
   for ( j in 1:n_effect){
     Y[, (start_pos+j-1) ]=  effect[j]*X
   }
