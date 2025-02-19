@@ -1,4 +1,9 @@
 
+ 
+
+hmm_res= fsusieR:::univariate_HMM_regression(Y,X)
+
+TI_res= fsusieR:::univariate_TI_regression(Y,X)
 
 
 
@@ -6,19 +11,39 @@ sim_perf_finding_CpG= function(n=100 ,
                                n_effect=5,
                                start_pos=10,
                                n_CPG=128,
+                               off_diag_corr = 0.99,
+                               decay =0.9,
                                h2=0.05){
   
   
   X= matrix(rnorm(n), ncol=1)
+  off_diag_corr = 0.99
+  decay =0.9
   
-  noise_sd=   sqrt( ( 1/h2 )-1 )
+  region_mat= matrix(off_diag_corr, ncol=  n_effect, nrow= n_effect)
+  for ( i in 1: nrow(region_mat)){
+    for ( j in  1:ncol(region_mat)){
+      tt <- region_mat[i,j]
+      region_mat[i,j] <- tt*decay ^( abs(i-j))
+      region_mat[j,i] <- tt*decay ^( abs(i-j))
+      
+    }
+  }
   
+  effect=dae::rmvnorm(mean = rep(0, n_effect),V = region_mat)
   
   
   Y = matrix(rnorm(n*n_CPG,sd= noise_sd), ncol= n_CPG)
+  for ( j in 1:n_effect){
+    Y[, (start_pos+j-1) ]=  effect[j]*X
+  }
   
-  Y[,start_pos:(start_pos+n_effect-1)]= Y[,start_pos:(start_pos+n_effect-1 )]+
-    matrix(rep(X,n_effect), ncol =n_effect) 
+  
+  sd_Y_effect=sd(c(Y[,start_pos:(start_pos+n_effect-1)]))
+  noise_sd= sqrt( (sd_Y_effect^2/h2)  -sd_Y_effect^2)
+  
+  Y <-Y+matrix(rnorm(prod(dim(Y)) ,
+                     sd=noise_sd), nrow = nrow(Y))
   
   
   
@@ -62,17 +87,17 @@ sim_perf_finding_CpG= function(n=100 ,
   thresh=   do.call(c, 
                     lapply( 1: ncol( tmat),
                             function( i ){
-                             if(length( which ( tmat[,i]>0))==0){#ie only zero
+                              if(length( which ( tmat[,i]>0))==0){#ie only zero
                                 idx= grid[nrow(tmat)]
-                               }else{
+                              }else{
                                 idx= grid[ min( which ( tmat[,i]>0))]#highest  level of condfidence 
-                                 # in which the credible band do not include 0 
-                                  }
-                                return(idx)
+                                # in which the credible band do not include 0 
                               }
-                          )
-                )
- 
+                              return(idx)
+                            }
+                    )
+  )
+  
   
   compute_pvalue <- function(estimate, lower_ci, upper_ci) {
     # Compute the standard error
@@ -107,8 +132,8 @@ sim_perf_finding_CpG= function(n=100 ,
   #if(length(pos_low)>0){
   #  affected_TI[pos_low]=1
   #}
-   CpG= rep(0, ncol(Y))
-   CpG [start_pos:(start_pos+n_effect-1)]=1
+  CpG= rep(0, ncol(Y))
+  CpG [start_pos:(start_pos+n_effect-1)]=1
   
   
   out = data.frame(CpG=CpG, pv=pv,
@@ -123,4 +148,3 @@ sim_perf_finding_CpG= function(n=100 ,
 
 
 #plot(-log10(pv_ti))
- 
