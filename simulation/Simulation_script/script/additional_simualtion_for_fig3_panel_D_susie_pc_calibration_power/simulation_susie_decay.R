@@ -1,0 +1,103 @@
+library(susieR)
+library(dae)
+library(fsusieR)
+path_save = "D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power"
+res=list()
+
+for (o  in (length(res)+1):10000) {
+  N=100 
+  list_files = list.files("D:/Document/Serieux/Travail/Package/1KG_data/1kg/rds")
+  id = sample( 1:length(list_files), size=1)
+  G <- readRDS(paste0("D:/Document/Serieux/Travail/Package/1KG_data/1kg/rds/" ,list_files[id]))
+  G <-   G[sample (1:nrow(  G), size=100, replace=FALSE), ]
+  
+  
+  
+  if( length(which(apply(G,2,var)==0))>0){
+    G <- G[,-which(apply(G,2,var)==0)]
+  }
+
+  L <- sample(1:20, size=1)#actual number of effect 
+  lf <-  list()
+  R=2^7
+  for(l in 1:L){
+    
+    block_cov_generate = function(corr=0.7, v=1){
+      R = dim(corr)[1]
+      cov = diag(sqrt(v),R) %*% corr %*% diag(sqrt(v),R)
+      return(cov)
+    }
+    
+    decay_corr_generate = function(R =2^7,# # sites
+                                   num_block = 10,# #islands within the region
+                                   off_diag_corr = 0.7,
+                                   decay =0.9#
+    ){
+      corr_b = matrix(0,nrow=R,ncol=R)
+      region_mat = matrix(off_diag_corr,R/num_block,R/num_block)
+      for ( i in 1: nrow(region_mat)){
+        for ( j in  1:ncol(region_mat)){
+          tt <- region_mat[i,j]
+          region_mat[i,j] <- tt*decay ^( abs(i-j))
+          region_mat[j,i] <- tt*decay ^( abs(i-j))
+          
+        }
+      }
+      for(i in 1:num_block){
+        corr_b[seq(((i-1)*(R/num_block)+1),i*(R/num_block)), seq(((i-1)*(R/num_block)+1),i*(R/num_block))] = region_mat
+      }
+      
+      diag(corr_b) = 1
+      return(corr_b)
+    }
+    corr <-    decay_corr_generate()
+    cov = block_cov_generate(corr =   corr, v = 0.1)
+    
+    
+    lf[[l]] <- dae::rmvnorm(mean = rep(0,R),V = cov) #functional effect for effect l
+  }
+  
+   
+  
+
+  # G <- matrix( rnorm(N*300), nrow = N)
+  true_pos <- sample( 1:ncol(G), L)
+  
+  Y <- matrix(0 , ncol=  2^7 , nrow = N)
+  for ( i in 1:N){
+    for ( l in 1:L){
+      Y[i,] <- Y[i,]+ lf[[l]]*G[i,true_pos[[l]]]
+    }
+  }
+  
+  
+  Y <-Y+matrix(rnorm((2^7)*N ,sd=sd(c(Y))/sqrt(1)), nrow = N)
+  
+  PCA <- svd(Y)
+  
+  print("susie done")
+  res_susie <-susieR::susie(X=G,
+                            y=PCA$u[,1],
+                            L=20
+  ) 
+  print("susie done")
+  
+  
+  Number_effect = length( true_pos)
+  n_cs      = length(res_susie$sets$cs)
+  
+  if( n_cs>0){
+    n_false_effect=Reduce("+", lapply( 1:n_cs, function(l){
+      ifelse( length(which( true_pos%in%res_susie$sets$cs[[l]] ))==0, 1,0)
+    }))
+  }else{
+    n_false_effect=0 
+  }
+  n_effect= n_cs- n_false_effect
+  out <-   c( Number_effect, n_cs, n_effect, n_false_effect)
+  
+  
+  res[[o]] <- (out)
+   
+  save(res, file=paste0(path_save, "/check_L_susie_128_distdecay_sd1.RData"))
+}

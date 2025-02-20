@@ -5,6 +5,8 @@ res=list()
  
 for (o  in (length(res)+1):10000) {
   
+  
+  N=100 
   L <- sample(1:20, size=1)#actual number of effect
   lf <-  list()
   for(l in 1:L){
@@ -17,37 +19,40 @@ for (o  in (length(res)+1):10000) {
   G <-   G[sample (1:nrow(  G), size=100, replace=FALSE), ]
   
   
-   
   
   if( length(which(apply(G,2,var)==0))>0){
     G <- G[,-which(apply(G,2,var)==0)]
   }
-  # G <- matrix( rnorm(100*300), nrow = 100)
+  # G <- matrix( rnorm(N*300), nrow = N)
   true_pos <- sample( 1:ncol(G), L)
   
-  Y <- matrix(0 , ncol=  2^7 , nrow = 100)
-  for ( i in 1:100){
+  Y <- matrix(0 , ncol=  2^7 , nrow = N)
+  for ( i in 1:N){
     for ( l in 1:L){
       Y[i,] <- Y[i,]+ lf[[l]]*G[i,true_pos[[l]]]
     }
   }
   
   
-  Y <-Y+matrix(rnorm((2^7)*100 ,sd=sd(c(Y))), nrow = 100)
-  library(susieR)
-  Z <- scale(Y,center = TRUE,scale = FALSE)
-  out <- svd(Z)
-print("running susie")
-res_susie  <- susieR::susie(y=out$v[1,], X=G ,L=20)
+  Y <-Y+matrix(rnorm((2^7)*N ,sd=sd(c(Y))/sqrt(1)), nrow = N)
+  
+  PCA <- svd(Y)
+  
   print("susie done")
-   
+  res_susie <-susieR::susie(X=G,
+                    y=PCA$u[,1],
+                    L=20
+  )
+  print(res_susie$sets)
+  print("susie done")
+  
   
   Number_effect = length( true_pos)
-  n_cs      = length(res_susie$cs)
+  n_cs      = length(res_susie$sets$cs)
   
   if( n_cs>0){
     n_false_effect=Reduce("+", lapply( 1:n_cs, function(l){
-      ifelse( length(which( true_pos%in%res_susie$cs[[l]] ))==0, 1,0)
+      ifelse( length(which( true_pos%in%res_susie$sets$cs[[l]] ))==0, 1,0)
     }))
   }else{
     n_false_effect=0 
@@ -58,6 +63,6 @@ res_susie  <- susieR::susie(y=out$v[1,], X=G ,L=20)
  
   res[[o]] <- (out)
   
-  
+  print( do.call(rbind,res))
   save(res, file=paste0(path_save, "/check_L_susie_128_sd1.RData"))
 }
