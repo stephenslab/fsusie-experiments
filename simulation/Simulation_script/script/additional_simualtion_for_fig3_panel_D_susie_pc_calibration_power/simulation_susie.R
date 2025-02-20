@@ -1,6 +1,6 @@
-library(susieRsmall)
+library(susieR)
 library(fsusieR)
-path_save = "D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_C_susie_pc_calibration_power"
+path_save = "D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power"
 res=list()
  
 for (o  in (length(res)+1):10000) {
@@ -37,17 +37,17 @@ for (o  in (length(res)+1):10000) {
   library(susieR)
   Z <- scale(Y,center = TRUE,scale = FALSE)
   out <- svd(Z)
-  
-  res <- susie(y=out$v[1,], X=G ,L=20)
-  
+print("running susie")
+res_susie  <- susieR::susie(y=out$v[1,], X=G ,L=20)
+  print("susie done")
    
   
   Number_effect = length( true_pos)
-  n_cs      = length(res $cs)
+  n_cs      = length(res_susie$cs)
   
   if( n_cs>0){
     n_false_effect=Reduce("+", lapply( 1:n_cs, function(l){
-      ifelse( length(which( true_pos%in%res  $cs[[l]] ))==0, 1,0)
+      ifelse( length(which( true_pos%in%res_susie$cs[[l]] ))==0, 1,0)
     }))
   }else{
     n_false_effect=0 
