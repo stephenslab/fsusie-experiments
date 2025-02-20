@@ -28,8 +28,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+              # linetype = "dashed", color = "black") + 
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData"))
@@ -38,12 +40,7 @@ library(cowplot)
 library(gridExtra)
 res= do.call( rbind, res)
 
-
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
+ 
 
 #usage 
 roc0 <- simple_roc(res$CpG,   res$pv)
@@ -60,8 +57,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+               #linetype = "dashed", color = "black") +
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
@@ -75,13 +74,7 @@ library(cowplot)
 library(gridExtra)
 res= do.call( rbind, res)
 
-
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
-
+ 
 #usage 
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
@@ -97,8 +90,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+              # linetype = "dashed", color = "black") + 
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
@@ -109,11 +104,7 @@ library(gridExtra)
 res= do.call( rbind, res)
 
 
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
+ 
 
 #usage 
 roc0 <- simple_roc(res$CpG,   res$pv)
@@ -130,8 +121,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+              # linetype = "dashed", color = "black") + 
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
@@ -147,13 +140,7 @@ library(cowplot)
 library(gridExtra)
 res= do.call( rbind, res)
 
-
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
-
+ 
 #usage 
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
@@ -169,8 +156,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power")+
+  theme_linedraw()+xlab("FDR")+ylab("Power")+
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+              # linetype = "dashed", color = "black") + 
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
@@ -180,13 +169,7 @@ library(cowplot)
 library(gridExtra)
 res= do.call( rbind, res)
 
-
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
-
+ 
 #usage 
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
@@ -202,8 +185,10 @@ df_plot = data.frame (TPR= c(roc0$TPR,
 )
 
 P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
-  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
+  #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
+               #linetype = "dashed", color = "black") +
   scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 

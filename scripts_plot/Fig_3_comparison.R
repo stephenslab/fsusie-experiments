@@ -12,7 +12,10 @@ library(ggpubr)
 #40B0A6
 
 colors <- c("#D41159","#1A85FF","#40B0A6" )
-### For PVE=10% ---- 
+### For PVE=10% ----
+
+
+#### preparing the data  ----
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_128_sd1.RData", 
             sep=""))
@@ -140,13 +143,9 @@ n_effect <-  do.call(c, lapply( 1: length(res),
                                 function( i) length(res[[i]]$ true_pos)))
 
 
+ 
 
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
-
-## corriger sous ça ------
+#### ROC Gaussian simulation   ------
 
 roc_fsusie <- simple_roc(true_lab , score_fsusie)
 roc_sp_fsusie <- simple_roc(true_lab , score_sp_fsusie  )
@@ -175,6 +174,8 @@ P1
 
 
 ### For PVE=10% ----
+
+#### ROC block simulation  ----
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_block_sd1.RData", 
             sep=""))
@@ -300,10 +301,7 @@ n_effect <-  do.call(c, lapply( 1: length(res),
 score_susie <-  do.call( c, lapply( 1: length(res),
                                     function( i) res[[i]]$susie_rss_pip))
 
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
+ 
 
 
 roc_fsusie <- simple_roc(true_lab, score_fsusie)
@@ -330,7 +328,7 @@ P2 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
 
 
 P2
-### For PVE=10% ---- 
+#### ROC  distance decay simulation  -----
 
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_distdecay_sd1.RData", 
@@ -448,13 +446,8 @@ n_effect <-  do.call(c, lapply( 1: length(res),
 
 score_susie <-  do.call( c, lapply( 1: length(res),
                                     function( i) res[[i]]$susie_rss_pip))
-
-simple_roc <- function(labs, scores){
-  labs <- labs[order(scores, decreasing=TRUE)]
-  data.frame(TPR=cumsum(labs)/sum(labs), FPR=cumsum(!labs)/sum(!labs), labs)
-}
-
-## corriger sous ça ------
+ 
+ 
 
 roc_fsusie <- simple_roc(true_lab, score_fsusie)
 roc_sp_fsusie <- simple_roc(true_lab, score_sp_fsusie  )
@@ -477,6 +470,10 @@ P3 <-ggplot(df_roc, aes (x=FDR, y=Power,col=method))+
   ggtitle("WGBS distance decay")+
   scale_color_manual(values = colors)
 P3
+
+
+
+#### purity and CS size plots-----
 
 df_cs_purity <- data.frame( scenario= factor(
   rep(
@@ -506,7 +503,7 @@ P5  <-ggplot( df_cs_purity, aes(x= scenario, y=purity, col=method))+
 
 
 
-## run time df -----
+#### run time plot -----
 df_run_time = data.frame( run_time=  c(run_time_fsusie,
                                        run_time_sp_fsusie,
                                        128*run_time_susie),
@@ -522,7 +519,7 @@ P_run_time <- ggplot( df_run_time, aes( x= run_time, y=method, col=method))+
 
 
 
-
+#### Overlapp probability plot ----
 
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/overlap_check_distdecay_sd1.RData", 
@@ -579,8 +576,11 @@ P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
 colors <- c( "#D41159","#1A85FF" )
 
 library(dplR)
+
+
+
 ### For PVE=10% ----
- 
+#### Calibration and  
 
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd1.RData", 
@@ -705,10 +705,11 @@ P1_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
 P1_p
 
 P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
+  
+  geom_hline(yintercept = 0.95, color="black", linewidth=2)+
   geom_point(position=position_dodge(.9),size=2)+
   geom_errorbar(aes(ymin=t1_er_low, ymax=t1_er_up), width=.2,
                 position=position_dodge(.9) )+
-  geom_hline(yintercept = 0.95, color="red")+
   ylim(c(0.8,1.01))+
   ylab("Coverage")+
   #ggtitle("Coverage PVE=10%") +
