@@ -580,7 +580,7 @@ library(dplR)
 
 
 ### For PVE=10% ----
-#### Calibration and  
+#### Calibration and  power  plot ----
 
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/check_L_accuracy_128_sd1.RData", 
