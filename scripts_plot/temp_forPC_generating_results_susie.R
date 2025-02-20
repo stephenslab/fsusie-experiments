@@ -1,27 +1,14 @@
+rm(list=ls())
+
 path <- getwd()
-load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_128_sd1.RData", 
-            sep=""))
+load(paste0(path,
+            "/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power/check_L_susie_128_distdecay_sd1.RData"))
 
  
-
-tl =list()
-for ( k in 1:length(res)){
-  Number_effect = length(res[[k]]$true_pos)
-  n_cs      = length(res[[k]]$susie_cs$cs)
-  
-  if( n_cs>0){
-    n_false_effect=Reduce("+", lapply( 1:n_cs, function(l){
-      ifelse( length(which(res[[k]]$true_pos%in%res[[k]]$susie_cs$cs[[l]] ))==0, 1,0)
-    }))
-  }else{
-    n_false_effect=0 
-  }
-  n_effect= n_cs- n_false_effect
-  tl[[k]]= c( Number_effect, n_cs, n_effect, n_false_effect)
-}
+ 
 
 
-df_susie= data.frame(do.call( rbind, tl))
+df_susie= data.frame(do.call( rbind, res))
 colnames(df_susie)=c( "Number_effect", "n_cs", "n_effect", "n_false_effect")
 
 df_simu=df_susie
@@ -58,3 +45,13 @@ for ( i in unique(df_simu$Number_effect))
 
 mean_T1_susie
 mean_power_susie
+
+
+df= data.frame( T1= mean_T1_susie,
+                Power= mean_power_susie,
+                L= unique(df_simu$Number_effect))
+
+
+plot( df$L, df$Power)
+plot( df$L, df$T1)
+

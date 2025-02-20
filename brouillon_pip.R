@@ -4,6 +4,8 @@ library(dplyr)
 
 
 path <- getwd()
+
+## Gaussian ----
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_128_sd1.RData", 
             sep=""))
 
@@ -44,7 +46,7 @@ num_bins <- 10
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+# Compute Mean PIP and Empirical Inclusion Probability   per bin
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
 # Compute summary statistics per bin
@@ -65,12 +67,12 @@ summary_df <- pip_df %>%
 summary_df= summary_df[-which(summary_df$count<30),]
 # Plot PIP Calibration with Confidence Intervals
 P11 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-  geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+  geom_point(color = "#D41159", size = 3) +  # Scatter plot of PIP vs. EIP
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#D41159") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-  labs(title = "PIP Calibration Plot with Confidence Intervals",
-       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-  ggtitle("fsusie normal mixture")+
+  labs( 
+       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+ # ggtitle("fsusie normal mixture")+
   theme_minimal()
 
 
@@ -85,7 +87,7 @@ num_bins <- 10
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+# Compute Mean PIP and Empirical Inclusion Probability   per bin
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
 # Compute summary statistics per bin
@@ -106,12 +108,12 @@ summary_df <- pip_df %>%
 summary_df= summary_df[-which(summary_df$count<30),]
 # Plot PIP Calibration with Confidence Intervals
 P21 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-  geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+  geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-  labs(title = "PIP Calibration Plot with Confidence Intervals",
-       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-  ggtitle("fsusie  mixture per scale")+
+  labs( 
+       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+ # ggtitle("fsusie  mixture per scale")+
   theme_minimal()
 
 
@@ -128,7 +130,7 @@ num_bins <- 10
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+# Compute Mean PIP and Empirical Inclusion Probability   per bin
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
 # Compute summary statistics per bin
@@ -149,16 +151,21 @@ summary_df <- pip_df %>%
 summary_df= summary_df[-which(summary_df$count<40),]
 # Plot PIP Calibration with Confidence Intervals
 P31 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-  geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+  geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-  labs(title = "PIP Calibration Plot with Confidence Intervals",
-       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-  ggtitle("fsusie normal mixture")+
+  labs( 
+       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+ # ggtitle("fsusie normal mixture")+
   theme_minimal()
 
 
 
+
+
+
+
+##### Block ----
 path <- getwd()
 load(paste( path,"/simulation/Simulation_results/comparison_susie_fusie_block_sd1.RData", 
             sep=""))
@@ -200,7 +207,7 @@ num_bins <- 10
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+# Compute Mean PIP and Empirical Inclusion Probability   per bin
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
 # Compute summary statistics per bin
@@ -221,12 +228,12 @@ summary_df <- pip_df %>%
 summary_df= summary_df[-which(summary_df$count<30),]
 # Plot PIP Calibration with Confidence Intervals
 P12 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-  geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+  geom_point(color = "#D41159", size = 3) +  # Scatter plot of PIP vs. EIP
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#D41159") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-  labs(title = "PIP Calibration Plot with Confidence Intervals",
-       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-  ggtitle("fsusie normal mixture")+
+  labs( 
+       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+ # ggtitle("fsusie normal mixture")+
   theme_minimal()
 
   
@@ -241,7 +248,7 @@ num_bins <- 10
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+# Compute Mean PIP and Empirical Inclusion Probability   per bin
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
 # Compute summary statistics per bin
@@ -262,12 +269,12 @@ summary_df <- pip_df %>%
 summary_df= summary_df[-which(summary_df$count<30),]
 # Plot PIP Calibration with Confidence Intervals
 P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-  geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+  geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-  labs(title = "PIP Calibration Plot with Confidence Intervals",
-       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-  ggtitle("fsusie  mixture per scale")+
+  labs( 
+       x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+ # ggtitle("fsusie  mixture per scale")+
   theme_minimal()
 
   
@@ -284,7 +291,7 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   bin_edges <- seq(0, 1, length.out = num_bins + 1)
   bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
   
-  # Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+  # Compute Mean PIP and Empirical Inclusion Probability   per bin
   pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
   
   # Compute summary statistics per bin
@@ -305,12 +312,12 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   summary_df= summary_df[-which(summary_df$count<30),]
   # Plot PIP Calibration with Confidence Intervals
   P32 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-    geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+    geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-    labs(title = "PIP Calibration Plot with Confidence Intervals",
-         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-    ggtitle("fsusie normal mixture")+
+    labs( 
+         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+   # ggtitle("fsusie normal mixture")+
   theme_minimal()
   
   
@@ -318,7 +325,7 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   
   
   
-  
+#### Decay ----
   
   
   path <- getwd()
@@ -362,7 +369,7 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   bin_edges <- seq(0, 1, length.out = num_bins + 1)
   bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
   
-  # Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+  # Compute Mean PIP and Empirical Inclusion Probability   per bin
   pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
   
   # Compute summary statistics per bin
@@ -383,12 +390,12 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   summary_df= summary_df[-which(summary_df$count<30),]
   # Plot PIP Calibration with Confidence Intervals
   P13 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-    geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+    geom_point(color = "#D41159", size = 3) +  # Scatter plot of PIP vs. EIP
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#D41159") +  # CI bars
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-    labs(title = "PIP Calibration Plot with Confidence Intervals",
-         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-    ggtitle("fsusie normal mixture")+
+    labs( 
+         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+   # ggtitle("fsusie normal mixture")+
     theme_minimal()
   
   
@@ -403,7 +410,7 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   bin_edges <- seq(0, 1, length.out = num_bins + 1)
   bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
   
-  # Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+  # Compute Mean PIP and Empirical Inclusion Probability   per bin
   pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
   
   # Compute summary statistics per bin
@@ -424,12 +431,12 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   summary_df= summary_df[-which(summary_df$count<30),]
   # Plot PIP Calibration with Confidence Intervals
   P23 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-    geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+    geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-    labs(title = "PIP Calibration Plot with Confidence Intervals",
-         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-    ggtitle("fsusie  mixture per scale")+
+    labs( 
+         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+   # ggtitle("fsusie  mixture per scale")+
     theme_minimal()
   
   
@@ -446,7 +453,7 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
   bin_edges <- seq(0, 1, length.out = num_bins + 1)
   bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
   
-  # Compute Mean PIP and Empirical Inclusion Probability (EIP) per bin
+  # Compute Mean PIP and Empirical Inclusion Probability   per bin
   pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
   
   # Compute summary statistics per bin
@@ -464,22 +471,75 @@ P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
     )
   
   
-  summary_df= summary_df[-which(summary_df$count<30),]
+  summary_df= summary_df[-which(summary_df$count<60),]
   # Plot PIP Calibration with Confidence Intervals
   P33 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
-    geom_point(color = "blue", size = 3) +  # Scatter plot of PIP vs. EIP
-    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "blue") +  # CI bars
+    geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
+    geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
     geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
-    labs(title = "PIP Calibration Plot with Confidence Intervals",
-         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability (EIP)") +
-    ggtitle("fsusie normal mixture")+
+    labs( 
+         x = "Mean PIP in Bin", y = "Empirical Inclusion Probability  ") +
+    # ggtitle("fsusie normal mixture")+
     theme_minimal()
 
   
   
+  library(ggplot2)
+  library(gridExtra)
+  library(grid)
+  library(ggpubr)
+  library(cowplot)
+  library(dplyr)  
+  
+  # Create text labels for the column titles
+  titles <- list(   textGrob(label = "Gaussian functional", gp = gpar(fontsize = 16, fontface = "bold")),
+    textGrob(label = "WGBS block", gp = gpar(fontsize = 16, fontface = "bold")),
+    textGrob(label = "WGBS distance decay", gp = gpar(fontsize = 16, fontface = "bold"))
+  )  
+  
+  # Create text labels for the row annotations (h^2 values) using LaTeX-style expressions
+  h2_labels <- list(
+    textGrob(expression("fSuSiE IS"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
+    textGrob(expression("fSuSiE SPS"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
+    textGrob(expression( "SuSiE"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold"))
+  )
   
   
+  # Arrange the grid with correct alignment
+  P_out <- grid.arrange(
+    arrangeGrob(
+      textGrob(""), titles[[1]], titles[[2]], titles[[3]],  # Empty space for alignment
+      ncol = 4, widths = c(0.08, 1, 1,1)
+    ),
+    arrangeGrob(
+      h2_labels[[1]], 
+      P11 + theme(legend.position = "none"), 
+      P12 + theme(legend.position = "none"),
+      P13 + theme(legend.position = "none"),
+      
+      ncol =4, widths = c(0.08, 1, 1,1)
+    ),
+    arrangeGrob(
+      h2_labels[[2]], 
+      P21 + theme(legend.position = "none"), 
+      P22 + theme(legend.position = "none"),
+      P23 + theme(legend.position = "none"),
+      
+      ncol =4, widths = c(0.08, 1, 1,1)
+    ),
+    arrangeGrob(
+      h2_labels[[3]], 
+      P31 + theme(legend.position = "none"), 
+      P32 + theme(legend.position = "none"),
+      P33 + theme(legend.position = "none"),
+      
+      ncol =4, widths = c(0.08, 1, 1,1)
+    ), 
+    heights = c(0.08, 1, 1, 1, 0.1)
+  )
+  
+  # Display the final plot
+  P_out
   
   
-   
    
