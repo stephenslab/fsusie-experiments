@@ -1,11 +1,11 @@
 rm(list=ls())
+path=getwd()
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5_decay.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5_decay.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
 res= do.call( rbind, res)
-
 
 
 simple_roc <- function(labs, scores){
@@ -18,23 +18,21 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
-
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -52,27 +50,26 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
 
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5_decay.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5_decay.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -90,23 +87,22 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR  ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -124,20 +120,19 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
 
@@ -146,7 +141,7 @@ P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
 
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5_decay.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5_decay.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -164,23 +159,22 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power")+
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
-load("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5.RData")
+load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5.RData"))
 library( ggplot2)
 library(cowplot)
 library(gridExtra)
@@ -198,20 +192,19 @@ roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
 roc3 <- simple_roc(res$CpG,res$affected_TI)
-df_plot = data.frame (TPR= c(roc0$TPR,
-                             roc1$TPR,
+df_plot = data.frame (TPR= c(roc0$TPR, 
                              roc2$TPR ),
-                      FPR=  c(roc0$FPR,
-                              roc1$FPR,
+                      FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "pv", length(roc0$FPR )),
-                                    rep( "hmm", length(roc1$FPR )),
-                                    rep( "TI_pv", length(roc1$FPR )) )
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line()+
-  theme_cowplot()+xlab("FDR")+ylab("Power") 
+P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+  theme_cowplot()+xlab("FDR")+ylab("Power") +
+  xlim(c(0,0.5))+
+  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
 
 
 
@@ -230,7 +223,7 @@ titles <- list(
 
 # Create text labels for the row annotations (h^2 values) using LaTeX-style expressions
 h2_labels <- list(
-  textGrob(expression(h^2~"= 1%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
+  textGrob(expression(h^2~"= 2.5%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
   textGrob(expression(h^2~"= 5%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold")),
   textGrob(expression(h^2~"= 10%"), rot = 90, gp = gpar(fontsize = 14, fontface = "bold"))
 )

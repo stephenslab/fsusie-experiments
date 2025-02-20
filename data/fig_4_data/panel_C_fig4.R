@@ -53,7 +53,7 @@ pip_df <- data$d[[6]]
 
 # Parameters
 view_win <- c(4759843, 5000000)
-
+view_win <- c(4759843,5387340)
 
 ### AD GWAS panel -----
 
@@ -454,25 +454,60 @@ plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ))
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
- 
 
-genome_track <- GenomeAxisTrack(col.axis = "black",col.title = "black")
+## gene track plot ----
 
-# Create a "gene region" track.
+
+
+
+library(AnnotationHub)
+library(org.Hs.eg.db)
+library(GenomicRanges)
+library(Gviz)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+# Initialize AnnotationHub
+ah <- AnnotationHub()
+
+# Load the TxDb for GRCh38
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+chr=paste0("chr",17)
+# Extract the relevant genes and exons in the specified region
+region_genes <- genes(txdb,columns = c("tx_id","gene_id"))
+
+# Subset the genes and exons to the region of interest.
+region_genes <- subsetByOverlaps(region_genes,
+                                 GRanges(seqnames = chr,
+                                         ranges = IRanges(view_win[1],
+                                                          view_win[2])))
+cex <- 0.6
+# Create a gene region track for the specified region
 gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
-                              pos0 = view_win[1],pos1 = view_win[2],name = "",
+                              pos0 = view_win[1],pos1 =view_win[2],name = "",
                               showId = TRUE,geneSymbol = TRUE,
                               col.axis = "black",col.title = "black",
                               transcriptAnnotation = "symbol",
-                              rotation.title = 0 ,
+                              rotation.title = 0,cex.title = cex,
                               col = "salmon",fill = "salmon",
                               background.title = "white")
+# Map gene IDs to gene symbols
+gene_ids <- unique(unlist(region_genes$gene_id))  # Get unique gene IDs
 
-plotTracks(gene_track)
-tracks <- c(otAD,
-  otme_ha,
-  fsusie_me_plot,
-  gene_track
-)
-plotTracks(gene_track , from =view_win[1], to = view_win[2])
+# Map to gene symbols using org.Hs.eg.db
+gene_symbols <- AnnotationDbi::select(org.Hs.eg.db, keys = gene_ids, columns = "SYMBOL", keytype = "ENTREZID")
 
+
+
+if(nrow(gene_symbols)>0){
+  for(i in 1:length(gene_symbols$ENTREZID)){
+    gene_track@range@elementMetadata@listData$id[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
+    gene_track@range@elementMetadata@listData$symbol[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
+    
+    
+  }
+}
+
+plotTracks(gene_track,
+           from =view_win[1],
+           to=view_win[2])

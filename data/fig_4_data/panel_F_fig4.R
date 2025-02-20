@@ -250,8 +250,6 @@ otAD <- OverlayTrack(trackList=list(    t1,  t2 ))
 
 
 
-
-
 plotTracks( otAD )
 
 
@@ -259,18 +257,15 @@ plotTracks( otAD )
 
 
 
-#### CHRNE panel ---- 
+#### GALNT6 panel ---- 
+ 
 
-
-chr =  paste("chr", 17, sep = "")
-
-gene_name="CHRNE"
-study="DLPFC_DeJager_eQTL" 
+gene_name="GALNT6"
+study="Oli_mega_eQTL" 
 data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
 #data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
 
 data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
-data_track_CS4 =plot_df [ which(  plot_df$study == study & plot_df$CS4& plot_df$region==gene_name ),]# plot_df %>% filter(CS4, study == "DLPFC_DeJager_eQTL") #"steelblue"
 
 
 
@@ -289,30 +284,18 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "maroon", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black") ) # Change title color to black
+ 
+
+otGALNT6 <- OverlayTrack(trackList=list(    t1, t2 ))
 
 
-t3= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS4$pos , end = data_track_CS4$pos )),
-                data = matrix(data_track_CS4$z , nrow=1), genome = "hg19", 
-                ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue",
-                cex=1.5,# Use color column from df_plot
-                track.margin = 0.05, # Reduce margin between track and title
-                cex.title = 0.6,     # Reduce title size
-                cex.axis = 0.6,      # Reduce axis text size
-                col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
-
-
-otCHRNE <- OverlayTrack(trackList=list(    t1, t3 ,t2 ))
-
-
-plotTracks( otCHRNE )
+plotTracks( otGALNT6 )
 
 
 
@@ -323,19 +306,16 @@ plotTracks( otCHRNE )
 
 
 
-#### RABEP1 panel ---- 
+#### SLC4A8 panel ---- 
 
+chr =  paste("chr", 12, sep = "")
 
-chr =  paste("chr", 17, sep = "")
-
-gene_name="RABEP1"
-study="Mic_DeJager_eQTL" 
+gene_name="SLC4A8"
+study="Oli_mega_eQTL" 
 data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
 #data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
 
-data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
-data_track_CS4 =plot_df [ which(  plot_df$study == study & plot_df$CS4& plot_df$region==gene_name ),]# plot_df %>% filter(CS4, study == "DLPFC_DeJager_eQTL") #"steelblue"
-
+data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]   
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
@@ -353,7 +333,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "#2E8B57", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
@@ -362,12 +342,91 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 
 
 
-otRABEP1 <- OverlayTrack(trackList=list(    t1,  t2 ))
+otSLC4A8 <- OverlayTrack(trackList=list(    t1,  t2 ))
 
 
-plotTracks( otRABEP1 )
+plotTracks( otSLC4A8 )
 
 
 
 
 
+
+
+
+
+
+list_track=  list( otAD,
+                   otGALNT6,
+                   otSLC4A8  
+)
+
+view_win <- c(5.12e7, 5.16e7)
+plotTracks(list_track,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+
+
+
+
+
+
+
+
+
+## gene track plot ----
+library(AnnotationHub)
+library(org.Hs.eg.db)
+library(GenomicRanges)
+library(Gviz)
+library(TxDb.Hsapiens.UCSC.hg38.knownGene)
+
+# Initialize AnnotationHub
+ah <- AnnotationHub()
+
+# Load the TxDb for GRCh38
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+chr=paste0("chr",12)
+# Extract the relevant genes and exons in the specified region
+region_genes <- genes(txdb,columns = c("tx_id","gene_id"))
+
+# Subset the genes and exons to the region of interest.
+region_genes <- subsetByOverlaps(region_genes,
+                                 GRanges(seqnames = chr,
+                                         ranges = IRanges(view_win[1],
+                                                          view_win[2])))
+cex <- 0.6
+# Create a gene region track for the specified region
+gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
+                              pos0 = view_win[1],pos1 =view_win[2],name = "",
+                              showId = TRUE,geneSymbol = TRUE,
+                              col.axis = "black",col.title = "black",
+                              transcriptAnnotation = "symbol",
+                              rotation.title = 0,cex.title = cex,
+                              col = "salmon",fill = "salmon",
+                              background.title = "white")
+# Map gene IDs to gene symbols
+gene_ids <- unique(unlist(region_genes$gene_id))  # Get unique gene IDs
+
+# Map to gene symbols using org.Hs.eg.db
+gene_symbols <- AnnotationDbi::select(org.Hs.eg.db, keys = gene_ids, columns = "SYMBOL", keytype = "ENTREZID")
+
+
+
+if(nrow(gene_symbols)>0){
+  for(i in 1:length(gene_symbols$ENTREZID)){
+    gene_track@range@elementMetadata@listData$id[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
+    gene_track@range@elementMetadata@listData$symbol[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
+    
+    
+  }
+}
+
+plotTracks(gene_track,
+           from =view_win[1],
+           to=view_win[2])
