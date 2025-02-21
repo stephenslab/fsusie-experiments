@@ -67,34 +67,40 @@ data_track =plot_df[ which(  plot_df$study == study   ),]
 #data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
 
 data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1   ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
+ 
 
-
+cex=0.6
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg19",  
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",
+                rotation.title = 0,cex.title = cex,
+                background.title = "white",
+                name="AD") ) # Change title color to black
 
 
-
+plotTracks( t1)
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38",   
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "#2E8B57", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",
+                rotation.title = 0,cex.title = cex,
+                background.title = "white",
+                name="AD") )
 
 
-
-otAD <- OverlayTrack(trackList=list(    t1,  t2 ))
+otAD <- OverlayTrack(trackList=list(    t1,  t2 ),background.title = "white",)
 
 
 plotTracks( otAD )
@@ -120,30 +126,36 @@ data_track_CS4 =plot_df [ which(  plot_df$study == study & plot_df$CS4& plot_df$
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg38", 
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",
+                rotation.title = 0,cex.title = cex,
+                background.title = "white",
+                name="CHRNE") ) # Change title color to black
 
 
 
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "maroon", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",
+                rotation.title = 0,cex.title = cex,
+                background.title = "white",
+                name="CHRNE") ) # Change title color to black
 
 
 t3= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS4$pos , end = data_track_CS4$pos )),
-                data = matrix(data_track_CS4$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS4$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "steelblue",
                 cex=1.5,# Use color column from df_plot
@@ -151,10 +163,14 @@ t3= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",
+                rotation.title = 0,cex.title = cex,
+                background.title = "white",
+                name="CHRNE") ) # Change title color to black
 
 
-otCHRNE <- OverlayTrack(trackList=list(    t1, t3 ,t2 ))
+otCHRNE <- OverlayTrack(trackList=list(    t1, t3 ,t2 ),
+                        background.title = "white")
 
 
 plotTracks( otCHRNE )
@@ -184,30 +200,33 @@ data_track_CS4 =plot_df [ which(  plot_df$study == study & plot_df$CS4& plot_df$
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg38", 
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",rotation.title = 0,cex.title = cex,
+                background.title = "white",name="RABEP1") ) # Change title color to black
 
 
 
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "#2E8B57", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",rotation.title = 0,cex.title = cex,
+                background.title = "white",name="RABEP1") ) # Change title color to black
 
 
 
-otRABEP1 <- OverlayTrack(trackList=list(    t1,  t2 ))
+otRABEP1 <- OverlayTrack(trackList=list(    t1,  t2 ),
+                         background.title = "white")
 
 
 plotTracks( otRABEP1 )
@@ -239,7 +258,8 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black" ,rotation.title = 0,cex.title = cex,
+      background.title = "white",name="SCIMP")) # Change title color to black
 
 
 
@@ -252,11 +272,13 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
-                col.title = "black") ) # Change title color to black
+                col.title = "black",rotation.title = 0,cex.title = cex,
+                background.title = "white",name="SCIMP") ) # Change title color to black
 
 
 
-otSCIMP <- OverlayTrack(trackList=list(    t1,  t2 ))
+otSCIMP <- OverlayTrack(trackList=list(    t1,  t2 ),
+                        background.title = "white")
 
 
 plotTracks( otSCIMP )
@@ -288,7 +310,8 @@ t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
-                  col.title = "black") ) # Change title color to black
+                  col.title = "black",rotation.title = 0,cex.title = cex,
+                  background.title = "white",name="PIP") ) # Change title color to black
 
 
 plotTracks( t_ha)
@@ -306,8 +329,10 @@ t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
-                  col.title = "black") ) # Change title color to black
-otme_ha <- OverlayTrack(trackList=list(    t_me, t_ha  )) 
+                  col.title = "black",rotation.title = 0,cex.title = cex,
+                  background.title = "white",name="PIP") ) # Change title color to black
+otme_ha <- OverlayTrack(trackList=list(    t_me, t_ha  ),
+                        background.title = "white" ) 
 
 
 
@@ -344,8 +369,8 @@ haQTL_track = DataTrack(range = GRanges(seqnames = chr,
                         type = "l", 
                         track.margin = 0.05 ,
                         col.axis = "black",col.title = "black",
-                        fontface = "plain",background.title = "white",
-                        fontface.title = 1)
+                        fontface = "plain",rotation.title = 0,cex.title = cex,
+                        background.title = "white",name="effect H3k9ac")
 
 
 
@@ -361,8 +386,8 @@ haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                             type = "l", 
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
-                            fontface = "plain",background.title = "white",
-                            fontface.title = 1)
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect H3k9ac")
 
 
 effect=  fsusie_obj_ha$cred_band[[2]][2, ]
@@ -377,11 +402,12 @@ haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
                             type = "l", 
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
-                            fontface = "plain",background.title = "white",
-                            fontface.title = 1)
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect H3k9ac")
+ 
 
-fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ))
-plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2])
+fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ), background.title = "white")
+plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 
 
 #### meqtl -----
@@ -405,8 +431,8 @@ meQTL_track = DataTrack(range = GRanges(seqnames = chr,
                         type = "l", 
                         track.margin = 0.05 ,
                         col.axis = "black",col.title = "black",
-                        fontface = "plain",background.title = "white",
-                        fontface.title = 1)
+                        fontface = "plain",rotation.title = 0,cex.title = cex,
+                        background.title = "white",name="effect DNAm")
 
 
 
@@ -422,8 +448,9 @@ meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                             type = "l", 
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
-                            fontface = "plain",background.title = "white",
-                            fontface.title = 1)
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect DNAm")
+
 
 
 effect=    out$cred_band[2,]
@@ -438,20 +465,24 @@ meQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
                             type = "l", 
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
-                            fontface = "plain",background.title = "white",
-                            fontface.title = 1)
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect DNAm")
 
-fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ))
+
+fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
+                               background.title = "white")
 plotTracks(fsusie_me_plot  )
 
 
 
 fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2,
-                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ))
+                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
+                               background.title = "white")
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
 
-fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ))
+fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ),
+                               background.title = "white")
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
 
@@ -510,4 +541,25 @@ if(nrow(gene_symbols)>0){
 
 plotTracks(gene_track,
            from =view_win[1],
-           to=view_win[2])
+           to=view_win[2] ,collapseTranscripts = TRUE)
+
+
+
+
+
+
+
+
+
+list_track=  list( otAD,
+                   otCHRNE,
+                   otRABEP1 ,
+                   otSCIMP,
+                   otme_ha, 
+                   gene_track
+)
+
+
+plotTracks(list_track,collapseTranscripts = TRUE,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
