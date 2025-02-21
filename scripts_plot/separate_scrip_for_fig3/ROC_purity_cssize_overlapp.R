@@ -596,7 +596,7 @@ save_path=  paste0(getwd(),
 )
 ggsave(grid_plot_roc , file=paste0(save_path,"ROC.pdf"),
        width = 29.7,
-       height = 21,
+       height = 10.5,
        units = "cm"
 )
 
@@ -620,6 +620,6 @@ save_path=  paste0(getwd(),
 )
 ggsave(grid_plot_summary , file=paste0(save_path,"purity_cs_size_overlapp.pdf"),
        width = 29.7,
-       height = 21,
+       height = 10.5,
        units = "cm"
 )

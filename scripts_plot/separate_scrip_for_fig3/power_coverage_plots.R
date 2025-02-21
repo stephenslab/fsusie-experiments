@@ -741,6 +741,15 @@ P_out <- grid.arrange(
 P_out
 
 
+save_path=  paste0(getwd(),
+                   "/plot/fig3_separate_panel/"
+)
+ggsave(P_out , file=paste0(save_path,"power.pdf"),
+       width = 29.7,
+       height = 10.5,
+       units = "cm"
+)
+
 
 # Arrange the grid with correct alignment
 P_out <- grid.arrange(
@@ -760,3 +769,14 @@ P_out <- grid.arrange(
 
 # Display the final plot
 P_out
+
+
+save_path=  paste0(getwd(),
+                   "/plot/fig3_separate_panel/"
+)
+ggsave(P_out , file=paste0(save_path,"coverage.pdf"),
+       width = 29.7,
+       height =  10.5,
+       units = "cm"
+)
+

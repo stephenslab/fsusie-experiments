@@ -88,6 +88,6 @@ save_path=  paste0(getwd(),
                    )
 ggsave(p_run_time2 , file=paste0(save_path,"run_time.pdf"),
        width = 29.7,
-       height = 21,
+       height = 10.5,
        units = "cm"
 )

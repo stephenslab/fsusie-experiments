@@ -150,12 +150,12 @@ df_plot = data.frame (TPR= c(roc0$TPR,
                              roc2$TPR ),
                       FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                      method=factor(c( rep( "p-value", length(roc0$FPR )), 
                                     rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=method))+geom_line(size=1.2)+
   theme_linedraw()+xlab("FDR")+ylab("Power")+
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
@@ -179,12 +179,12 @@ df_plot = data.frame (TPR= c(roc0$TPR,
                              roc2$TPR ),
                       FPR=  c(roc0$FPR, 
                               roc2$FPR ),
-                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                      method=factor(c( rep( "p-value", length(roc0$FPR )), 
                                     rep( "functional regression", length(roc1$FPR )) )
                       )
 )
 
-P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
+P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=method))+geom_line(size=1.2)+
   theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
@@ -233,7 +233,8 @@ P_out <- grid.arrange(
     ncol = 3, widths = c(0.08, 1, 1)
   ),
   arrangeGrob(
-    h2_labels[[3]], P32 + theme(legend.position = "none"), P31 + theme(legend.position = "none"),
+    h2_labels[[3]], P32 + theme(legend.position = "bottom" ),
+    P31 + theme(legend.position = "none"),
     ncol = 3, widths = c(0.08, 1, 1)
   ),
   arrangeGrob(legend_plot),
@@ -242,4 +243,11 @@ P_out <- grid.arrange(
 
 # Display the final plot
 P_out
-
+save_path=  paste0(getwd(),
+                   "/plot/fig3_separate_panel/"
+)
+ggsave(P_out , file=paste0(save_path,"mapping_CpG_ROC.pdf"),
+       width = 29.7,
+       height =  21,
+       units = "cm"
+)
