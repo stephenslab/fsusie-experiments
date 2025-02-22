@@ -41,15 +41,17 @@ pip_scores <- score_fsusie
 # 
 causal_flags <-true_lab
 
-# Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -58,12 +60,17 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
 
+# Optionally remove bins with too few observations
+#summary_df <- summary_df[summary_df$count >= 60, ]
 
+# Plot using bin centers as the x-axis
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
 P11 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
@@ -82,15 +89,17 @@ pip_scores <- score_sp_fsusie
 # 
 causal_flags <-true_lab
 
-# Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -99,15 +108,25 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
 
+# Optionally remove bins with too few observations
+#summary_df <- summary_df[summary_df$count >= 60, ]
 
+# Plot using bin centers as the x-axis
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P21 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+ 
+
+
+ 
+# Plot PIP Calibration with Confidence Intervals
+P21 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -126,14 +145,17 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -142,15 +164,22 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
 
+# Optionally remove bins with too few observations
+#summary_df <- summary_df[summary_df$count >= 60, ]
+
+# Plot using bin centers as the x-axis
+ 
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P31 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P31 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -203,14 +232,17 @@ pip_scores <- score_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -219,15 +251,22 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
+
+# Optionally remove bins with too few observations
+#summary_df <- summary_df[summary_df$count >= 60, ]
+
+ 
 
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P12 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P12 =ggplot(summary_df, aes(x =bin_center, y = eip)) +
   geom_point(color = "#D41159", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#D41159") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -244,14 +283,18 @@ pip_scores <- score_sp_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+# Define bins
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -260,15 +303,18 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
+
 
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P22 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P22 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -287,14 +333,17 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -303,15 +352,17 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
 
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P32 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P32 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -365,14 +416,17 @@ pip_scores <- score_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -381,15 +435,16 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
-
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P13 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P13 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#D41159", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#D41159") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -406,14 +461,18 @@ pip_scores <- score_sp_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+# Define bins
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -422,15 +481,17 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
 
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P23 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P23 =ggplot(summary_df, aes(x =bin_center, y = eip)) +
   geom_point(color = "#1A85FF", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#1A85FF") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
@@ -449,14 +510,17 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 10
+num_bins <- 9
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
-# Compute Mean PIP and Empirical Inclusion Probability   per bin
+# Calculate bin centers
+bin_centers <- (bin_edges[-length(bin_edges)] + bin_edges[-1]) / 2
+
+# Create a data frame including the bin index
 pip_df <- data.frame(pip_scores, causal_flags, bin_indices)
 
-# Compute summary statistics per bin
+# Compute summary statistics per bin and add bin centers
 summary_df <- pip_df %>%
   group_by(bin_indices) %>%
   summarise(
@@ -465,15 +529,16 @@ summary_df <- pip_df %>%
     count = n()
   ) %>%
   mutate(
-    se = sqrt(eip * (1 - eip) / count),  # Standard error for proportion
-    ci_lower = pmax(eip - 1.96 * se, 0), # 95% CI lower bound
-    ci_upper = pmin(eip + 1.96 * se, 1)  # 95% CI upper bound
+    se = sqrt(eip * (1 - eip) / count),
+    ci_lower = pmax(eip - 1.96 * se, 0),
+    ci_upper = pmin(eip + 1.96 * se, 1),
+    # Map the bin index to the corresponding bin center
+    bin_center = bin_centers[as.numeric(bin_indices)]
   )
-
 
 summary_df= summary_df[-which(summary_df$count<60),]
 # Plot PIP Calibration with Confidence Intervals
-P33 =ggplot(summary_df, aes(x = mean_pip, y = eip)) +
+P33 =ggplot(summary_df, aes(x = bin_center, y = eip)) +
   geom_point(color = "#40B0A6", size = 3) +  # Scatter plot of PIP vs. EIP
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.02, color = "#40B0A6") +  # CI bars
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "black") +  # Ideal calibration line
