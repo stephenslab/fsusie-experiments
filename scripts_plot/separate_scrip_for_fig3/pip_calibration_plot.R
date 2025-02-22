@@ -2,7 +2,9 @@
 library(ggplot2)
 library(dplyr)
 
-
+save_path=  paste0(getwd(),
+                   "/plot/fig3_separate_panel/"
+)
 path <- getwd()
 
 ## Gaussian ----
@@ -41,7 +43,7 @@ pip_scores <- score_fsusie
 # 
 causal_flags <-true_lab
 
-num_bins <- 9
+num_bins <- 11
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -89,7 +91,7 @@ pip_scores <- score_sp_fsusie
 # 
 causal_flags <-true_lab
 
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -145,7 +147,7 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -232,7 +234,7 @@ pip_scores <- score_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -284,7 +286,7 @@ causal_flags <-true_lab
 
 # Define bins
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -333,7 +335,7 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -416,7 +418,7 @@ pip_scores <- score_fsusie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -462,7 +464,7 @@ causal_flags <-true_lab
 
 # Define bins
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
@@ -510,7 +512,7 @@ pip_scores <-score_susie
 causal_flags <-true_lab
 
 # Define bins
-num_bins <- 9
+
 bin_edges <- seq(0, 1, length.out = num_bins + 1)
 bin_indices <- cut(pip_scores, breaks = bin_edges, include.lowest = TRUE, labels = FALSE)
 
