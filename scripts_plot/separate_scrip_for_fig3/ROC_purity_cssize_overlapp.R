@@ -655,7 +655,7 @@ df_cs_purity <- data.frame( scenario= factor(
 )
    
 P4 <- ggplot( df_cs_purity, aes(x= scenario, y=cs_size, col=method))+
-  geom_point(size=1.5,position=position_dodge(.2))+
+  geom_point(size=1.1,position=position_dodge(.2))+
   scale_x_discrete(guide = guide_axis(angle = 30)) +
   geom_errorbar(aes(ymin = ci_lower_cs,
                     ymax = ci_upper_cs),
@@ -667,7 +667,7 @@ P4 <- ggplot( df_cs_purity, aes(x= scenario, y=cs_size, col=method))+
   scale_color_manual(values = colors)
 P5  <-ggplot( df_cs_purity, aes(x= scenario, y=purity, col=method))+
   
-  geom_point(size=1.5,position=position_dodge(.2))+ 
+  geom_point(size=1.1,position=position_dodge(.2))+ 
   scale_x_discrete(guide = guide_axis(angle = 30),
                                        ) +
   geom_errorbar(aes(ymin = ci_lower_purity,
@@ -780,7 +780,7 @@ df_overlapp <- data.frame( scenario= factor(
   method= factor( rep(c("fSuSiE IS", "SuSiE", "fSuSiE SPS"),3))
 )
 P6  <-ggplot(df_overlapp, aes(x= scenario, y=overlapp, col=method))+
-  geom_point(size=1.5, position=position_dodge(.2))+
+  geom_point(size=1.1, position=position_dodge(.2))+
   geom_errorbar(aes(ymin =overlapp_up,
                     ymax = overlapp_low),
                 position=position_dodge(.2),
