@@ -1,3 +1,5 @@
+rm(list=ls())
+
 path= getwd()
 data = readRDS(paste0(path , 
                       "/data/fig_4_data/Fig4_data.rds"))
@@ -204,8 +206,11 @@ plotTracks(list_track,
 ##### effect plot  -----
 
 res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
-fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
+  fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 rm(res)
+
+
+
 
 
 
@@ -286,7 +291,10 @@ plotTracks(list_track,
            from =min(positions),
            to=max(positions) )
            
- 
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2] )
+
 
 
 
@@ -357,12 +365,3 @@ res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-expe
 fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 
 
-
-fsusie_obj_ha$cs
-res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data.rds")
-Y= as.data.frame(res_ha$residual_Y)
-
-
-X=as.data.frame(res_ha$residual_X)
-pos = as.data.frame(res_ha$Y_coordinates) #use start
-pos= pos$start
