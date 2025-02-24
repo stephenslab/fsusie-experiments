@@ -230,7 +230,82 @@ plotTracks(gene_track,
 
 
 
-res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_mQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
-res
-fsusie_obj_me = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_mQTL$fsusie_result
+res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
+fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 rm(res)
+
+
+
+positions = fsusie_obj_ha$outing_grid
+
+idx=5
+out=list(effect= fsusie_obj_ha$fitted_func[[idx]],
+         cred_band=  fsusie_obj_ha$cred_band[[idx]]  )
+effect= out$effect
+
+
+meQTL_track = DataTrack(range = GRanges(seqnames = chr,
+                                        ranges = IRanges(start = positions ,
+                                                         end = positions   + 1)),
+                        data = effect , genome = "hg38",
+                        type = "l", 
+                        track.margin = 0.05 ,
+                        col.axis = "black",col.title = "black",
+                        fontface = "plain",rotation.title = 0,cex.title = cex,
+                        background.title = "white",name="effect DNAm")
+
+
+
+effect=  out$cred_band[1,]
+
+
+
+
+meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
+                                            ranges = IRanges(start = positions ,
+                                                             end = positions + 1)),
+                            data = effect , genome = "hg38",
+                            type = "l", 
+                            track.margin = 0.05 ,lty=2,
+                            col.axis = "black",col.title = "black",
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect DNAm")
+
+
+
+effect=    out$cred_band[2,]
+
+
+
+
+meQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
+                                            ranges = IRanges(start = positions ,
+                                                             end = positions + 1)),
+                            data = effect , genome = "hg38",
+                            type = "l", 
+                            track.margin = 0.05 ,lty=2,
+                            col.axis = "black",col.title = "black",
+                            fontface = "plain",rotation.title = 0,cex.title = cex,
+                            background.title = "white",name="effect DNAm")
+
+
+fsusie_ha_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
+                               background.title = "white")
+#plotTracks(fsusie_ha_plot  )
+
+
+list_track=  list( otAD,
+                   otCR1,
+                   otCR2  ,
+                   fsusie_ha_plot  
+)
+
+view_win <- c(207317782, 207895513)
+plotTracks(list_track,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+plotTracks(list_track,
+           from =min(positions),
+           to=max(positions) )
+           
+ 
