@@ -360,8 +360,9 @@ fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 
 fsusie_obj_ha$cs
 res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data.rds")
-Y= res_ha$residual_Y
+Y= as.data.frame(res_ha$residual_Y)
 
 
-X=res_ha$residual_X
-res_ha$Y_coordinates #use start
+X=as.data.frame(res_ha$residual_X)
+pos = as.data.frame(res_ha$Y_coordinates) #use start
+pos= pos$start
