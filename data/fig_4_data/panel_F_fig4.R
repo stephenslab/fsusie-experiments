@@ -472,3 +472,11 @@ if(nrow(gene_symbols)>0){
 plotTracks(gene_track,
            from =view_win[1],
            to=view_win[2])
+
+
+
+
+res_me <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+
+
+res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.input_data.rds")

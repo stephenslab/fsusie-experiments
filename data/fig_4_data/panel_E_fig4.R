@@ -234,6 +234,9 @@ effect=  out$cred_band[1,]
 
 
 
+
+
+
 haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
@@ -347,3 +350,18 @@ plotTracks(gene_track,
 plotTracks(gene_track,
 from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
 to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+
+
+
+res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
+fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
+
+
+
+fsusie_obj_ha$cs
+res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+Y= res_ha$residual_Y
+
+
+X=res_ha$residual_X
+res_ha$Y_coordinates #use start
