@@ -1,11 +1,13 @@
 rm(list=ls())
-
+library(ggplot2)
+library(tidyr)
 library(AnnotationHub)
 library(org.Hs.eg.db)
 library(GenomicRanges)
 library(Gviz)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(fsusieR)
+library(dplyr)
 path= getwd()
 data = readRDS(paste0(  path,"/data/fig_4_data/Fig4_data.rds") )
 extract_snp_position <- function(snp_string) {
@@ -24,6 +26,7 @@ cex=0.6
 ##" cas 1 ---- 
 
 
+view_win <- c(4759843, 5300000) 
 
 plot_df <- data$f[[1]]
 haQTL_df <- data$f[[2]]
@@ -33,174 +36,7 @@ sumstat <- data$f[[5]]
 pip_df <- data$f[[6]]
 QTL_data <- data$f[[7]] 
 
-# Parameters
-view_win <- c(4759843, 5000000)
-text_size <- 20
-gene <- c("ENSG00000029725", "ENSG00000161929", "ENSG00000108556")
-custom_labeller <- function(x) {
-  x %>% 
-    gsub("DeJager_", "", ., fixed = TRUE) %>%  
-    gsub("([_:,|-])", "\n", .)             
-}
-# Function to extract SNP position from a given notation
-
-
-# Custom Labeller
-custom_labeller <- function(x) {
-  x %>% 
-    gsub("mega_", "", ., fixed = TRUE) %>%  
-    gsub("([_:,|-])", " \n ", .)             
-}
-
-# Parameters
-text_size <- 20
-view_win <- c(5.12e7, 5.16e7)
-gene <- c("ENSG00000139629", "ENSG00000050438")
-
-# -----------------
-# Plot 1
-# -----------------
-p1 <- ggplot() +
-  geom_point(
-    data = plot_df %>% filter(),
-    aes(x = pos, y = `z`),
-    size = 8, alpha = 0.1
-  ) +
-  facet_grid(
-    study + region ~ .,
-    labeller = labeller(.rows =custom_labeller),
-    scale = "free_y"
-  ) +
-  geom_point(
-    data = plot_df %>% filter(CS1),
-    aes(x = pos, y = `z`),
-    color = "steelblue",  
-    size = 8, alpha = 1
-  ) +
-  xlim(view_win) +
-  theme_bw() +
-  theme(
-    text = element_text(size = text_size),
-    strip.text.y = element_text(size = text_size, angle = 0.5),
-    axis.text.x = element_blank(),
-    axis.text.y = element_text(size = text_size),
-    axis.title = element_text(size = text_size)
-  ) +
-  xlab("") +
-  ylab("Z")
-
-# -----------------
-# Plot 2
-# -----------------
-p2 <- ggplot() +
-  theme_bw() +
-  theme(
-    text = element_text(size = text_size),
-    strip.text.y = element_text(size = text_size, angle = 0.5),
-    axis.text.x = element_text(size = text_size),    
-    axis.text.y = element_text(size = text_size),
-    axis.title.x = element_text(size = text_size)
-  ) +
-  xlim(view_win) +
-  geom_line(
-    data = haQTL_df %>% mutate(study = "haQTL effect") %>% filter(CS == 5),
-    aes_string(y = "fun_plot", x = "x", col = "CS"),
-    size = 4, col = "steelblue"
-  ) +
-  geom_line(
-    data = MSBB_df %>% mutate(study = "dmr QTL effect") %>% filter(CS == 14),
-    aes_string(y = "fun_plot", x = "x", col = "CS"),
-    size = 4, col = "maroon"
-  ) +
-  geom_hline(aes(yintercept = 0)) +
-  geom_segment(
-    aes(x = view_win[2] + 1000, 
-        xend = (haQTL_df %>% mutate(study = "haQTL effect") %>% filter(CS == 5))$start[[1]],
-        y = 0, yend = 0, col = "CS"),
-    size = 4, col = "steelblue"
-  ) +
-  geom_segment(
-    aes(xend = view_win[1] - 1000,
-        x = (haQTL_df %>% mutate(study = "haQTL effect") %>% filter(CS == 5))$end[[1]],
-        y = 0, yend = 0, col = "CS"),
-    size = 4, col = "steelblue"
-  ) +
-  geom_hline(aes(yintercept = 0)) +
-  geom_segment(
-    arrow = arrow(length = unit(0.5, "cm")), 
-    aes(x = start, xend = end, y = -0.12 - strand / 10 - 0.02, 
-        yend = -0.12 - strand / 10 - 0.02),
-    size = 1,
-    data = gene_info %>%
-      filter(gene_id %in% gene) %>%
-      mutate(study = "gene_plot")
-  ) +
-  geom_text(
-    aes(x = (start + end) / 2, 
-        y = -0.12 - strand / 10,
-        label = gene_name),
-    size = 10, 
-    data = gene_info %>%
-      filter(gene_id %in% gene) %>%
-      mutate(study = "gene_plot")
-  ) +
-  xlab("Phenotype Position") +
-  ylab("Estimated\neffect")  +
-  geom_point(data =  sumstat %>% filter(ha), aes(x = pos - start_distance, y = beta), color = "steelblue", size = 2) +
-  geom_point(data =  sumstat %>% filter(!ha), aes(x = pos - start_distance, y = beta), color = "maroon", size = 2)
-
-# -----------------
-# Plot 3
-# -----------------
-p3 <- ggplot() +
-  facet_grid(
-    study ~ .,
-    scale = "free_y",
-    labeller = labeller(study = c(ROSMAP_DLPFC_haQTL = "car-QTL"))
-  ) +
-  xlim(view_win) +
-  theme_bw() +
-  theme(
-    text = element_text(size = text_size),
-    strip.text.y = element_text(size = text_size, angle = 0.5),
-    axis.text.x = element_text(size = text_size),
-    axis.text.y = element_text(size = text_size),
-    axis.title = element_text(size = text_size)
-  ) +
-  scale_y_continuous(
-    breaks = pretty(c(0, 1), n = 3),  
-    limits = c(0, 1)
-  ) +
-  xlab("") +
-  ylab("PIP") +
-  geom_point(
-    data = pip_df %>%
-      filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95 == 5),
-    aes(x = pos, y = pip, color = as.character(cs_coverage_0.95)),
-    alpha = 1, size = 8, color = "steelblue"
-  ) +
-  geom_point(
-    data = QTL_data %>%
-      filter(variant_id == "chr12:51362485:T:C", study == "MSBB_mQTL") %>%
-      mutate(study = "dmr-QTL") %>%
-      separate(col = variant_id, into = c("chrom", "pos"), remove = FALSE) %>%
-      mutate(pos = as.numeric(pos)),
-    aes(x = pos, y = pip, color = as.character(cs_coverage_0.95)),
-    alpha = 1, size = 8, color = "maroon"
-  ) +
-  xlab("Genotype Position") +
-  ylab("PIP") 
-
-# Combine Plots
-f <- cowplot::plot_grid(plotlist = list(p1, p3, p2),
-                        ncol = 1,
-                        align = "v",
-                        axis = "tlbr",
-                        label_fontface = "bold",
-                        rel_heights = c(5, 2, 4)
-) 
-
-f
+ 
 
 ### AD GWAS panel -----
 
@@ -358,10 +194,11 @@ plotTracks( otSLC4A8 )
 
 
 
-#### RPIP plot ---
+####  PIP plot ------
 
 
-data_ha =  pip_df[which( pip_df$study %in% c("ROSMAP_DLPFC_haQTL", "") & pip_df$cs_coverage_0.95 == 5),]
+data_ha = pip_df %>%
+  filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95 == 5)
 #pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                   data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
@@ -377,9 +214,12 @@ t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
 
 
 
-data_me =  pip_df[which( pip_df$study %in% c("MSBB_mQTL", "") & pip_df$cs_coverage_0.95 == 14),]
-#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7)
-data_me= data_me[which(data_me$pos> view_win[1] & data_me$pos<view_win[2]),]
+data_me =  QTL_data %>%
+  filter(variant_id == "chr12:51362485:T:C", study == "MSBB_mQTL") %>%
+  mutate(study = "dmr-QTL") %>%
+  separate(col = variant_id, into = c("chrom", "pos"), remove = FALSE) %>%
+  mutate(pos = as.numeric(pos))
+
 t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
                   data = matrix(data_me$pip , nrow=1), genome = "hg38", 
                   ylim =c( 0, 1) ,
@@ -416,21 +256,21 @@ plotTracks(list_track,
 
 #### ha ---- ----- 
 
-res <- res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.rds")
+res  <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.rds")
 
-fsusie_obj_ha=res$`chr17:1059843-6175034`$ROSMAP_DLPFC_haQTL$fsusie_result
+fsusie_obj_ha=res$`chr12:47653211-53108261`$ROSMAP_DLPFC_haQTL$fsusie_result
 rm(res)
 positions = fsusie_obj_ha$outing_grid
 
 
-effect=  fsusie_obj_ha$fitted_func[[2]]
+effect=  fsusie_obj_ha$fitted_func[[5]]
 
 
 haQTL_track = DataTrack(range = GRanges(seqnames = chr,
                                         ranges = IRanges(start = positions ,
                                                          end = positions   + 1)),
                         data = effect , genome = "hg38",
-                        type = "l", 
+                        type = "l",  col = "steelblue",
                         track.margin = 0.05 ,
                         col.axis = "black",col.title = "black",
                         fontface = "plain",rotation.title = 0,cex.title = cex,
@@ -438,7 +278,7 @@ haQTL_track = DataTrack(range = GRanges(seqnames = chr,
 
 
 
-effect=  fsusie_obj_ha$cred_band[[2]][1, ]
+effect=  fsusie_obj_ha$cred_band[[5]][1, ]
 
 
 
@@ -447,14 +287,14 @@ haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
                             data = effect , genome = "hg38",
-                            type = "l", 
+                            type = "l", col = "steelblue",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
                             background.title = "white",name="effect H3k9ac")
 
 
-effect=  fsusie_obj_ha$cred_band[[2]][2, ]
+effect=  fsusie_obj_ha$cred_band[[5]][2, ]
 
 
 
@@ -463,7 +303,7 @@ haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
                             data = effect , genome = "hg38",
-                            type = "l", 
+                            type = "l", col = "steelblue",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
@@ -477,14 +317,14 @@ plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 #### meqtl -----
 
 res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights (1).rds")
-fsusie_obj_me = res$`chr17:1059843-6175034`$ROSMAP_DLPFC_mQTL$fsusie_result 
+fsusie_obj_me = res$`chr12:47653211-53108261`$ROSMAP_DLPFC_mQTL$fsusie_result
 
 
-
+rm(res)
 positions = fsusie_obj_me$outing_grid
 
-out=list(effect= fsusie_obj_me$fitted_func[[7]],
-         cred_band=  fsusie_obj_me$cred_band[[7]]  )
+out=list(effect= fsusie_obj_me$fitted_func[[14]],
+         cred_band=  fsusie_obj_me$cred_band[[14]]  )
 effect= out$effect
 
 
@@ -492,7 +332,7 @@ meQTL_track = DataTrack(range = GRanges(seqnames = chr,
                                         ranges = IRanges(start = positions ,
                                                          end = positions   + 1)),
                         data = effect , genome = "hg38",
-                        type = "l", 
+                        type = "l",  col = "maroon",
                         track.margin = 0.05 ,
                         col.axis = "black",col.title = "black",
                         fontface = "plain",rotation.title = 0,cex.title = cex,
@@ -509,7 +349,7 @@ meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
                             data = effect , genome = "hg38",
-                            type = "l", 
+                            type = "l",  col = "maroon",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
@@ -526,7 +366,7 @@ meQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
                             data = effect , genome = "hg38",
-                            type = "l", 
+                            type = "l",  col = "maroon",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
@@ -539,39 +379,45 @@ plotTracks(fsusie_me_plot  )
 
 
 
-fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2,
-                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
-                               background.title = "white")
-plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
-
-
-fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ),
-                               background.title = "white")
-plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
+#fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2,
+#                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
+#                               background.title = "white")
+#plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
+ 
 
 
 
 
+list_track=  list( otAD,
+                   otGALNT6,
+                   otSLC4A8 ,
+                   t_me,t_ha,
+                   
+                   fsusie_me_plot ,
+                   fsusie_ha_plot
+)
+
+view_win <- c(5.12e7, 5.16e7)
+plotTracks(list_track,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+
+plotTracks(list_track )
+
+plotTracks(fsusie_me_plot,
+           from =view_win[1],
+           to=view_win[2])
 
 
 
-
-
-
-
-
-tt =as.data.frame(pip_df[which( pip_df$study %in% c("MSBB_mQTL", "")),])
-> which( tt$pos==51362485)
-integer(0)
-> tt2 =as.data.frame(pip_df[which( pip_df$study %in% c("ROSMAP_DLPFC_haQTL", "")),])
-
-
-
-
-
-
-
-
+view_win <- c(4759843, 5000000) 
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
 
 
 ## gene track plot ----
