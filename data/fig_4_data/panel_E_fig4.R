@@ -211,26 +211,52 @@ rm(res)
 
 
 
+fsusie_obj_ha$cs[[5]]
+
+
+res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data (1).rds")
+Y= as.data.frame(res_ha$residual_Y)
+
+
+X=as.data.frame(res_ha$residual_X)
+pos = as.data.frame(res_ha$Y_coordinates) #use start
+pos= pos$start
+
+
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
+
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y
+
+
+out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,10765 ], ncol=1),alpha=0.01)
+plot( out$effect_estimate)
+lines(out$cred_band[1,])                                        
+
+lines(out$cred_band[2,])       
 
 
 
-positions = fsusie_obj_ha$outing_grid
+plot( out$effect_estimate[300:450])
+lines(out$cred_band[1,300:450])                                        
 
-idx=5
-out=list(effect= fsusie_obj_ha$fitted_func[[idx]],
-         cred_band=  fsusie_obj_ha$cred_band[[idx]]  )
-effect= out$effect
+lines(out$cred_band[2,300:450])       
 
+positions=outing_grid
+effect=out$effect_estimate
 
 haQTL_track = DataTrack(range = GRanges(seqnames = chr,
                                         ranges = IRanges(start = positions ,
                                                          end = positions   + 1)),
                         data = effect , genome = "hg38",
-                        type = "l", 
+                        type = "l",  col = "steelblue",
                         track.margin = 0.05 ,
                         col.axis = "black",col.title = "black",
                         fontface = "plain",rotation.title = 0,cex.title = cex,
-                        background.title = "white",name="effect DNAm")
+                        background.title = "white",name="effect H3k9ac")
 
 
 
@@ -239,22 +265,18 @@ effect=  out$cred_band[1,]
 
 
 
-
-
-
 haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
+                            data =  out$cred_band[1,] , genome = "hg38",
+                            type = "l", col = "steelblue",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
+                            background.title = "white",name="effect H3k9ac")
 
 
-
-effect=    out$cred_band[2,]
+effect=  out$cred_band[2,]
 
 
 
@@ -262,16 +284,17 @@ effect=    out$cred_band[2,]
 haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
                                             ranges = IRanges(start = positions ,
                                                              end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
+                            data = out$cred_band[2,], genome = "hg38",
+                            type = "l", col = "steelblue",
                             track.margin = 0.05 ,lty=2,
                             col.axis = "black",col.title = "black",
                             fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
+                            background.title = "white",name="effect H3k9ac")
 
 
-fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1,haQTL_trackcb2 ),
-                               background.title = "white")
+fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ), background.title = "white")
+plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
+
 #plotTracks(fsusie_ha_plot  )
 
 

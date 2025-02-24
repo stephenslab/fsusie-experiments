@@ -54,6 +54,8 @@ sim_perf_finding_CpG= function(n=100 ,
   hmm_res= fsusieR:::univariate_HMM_regression(Y,X)
   
   TI_res= fsusieR:::univariate_TI_regression(Y,X)
+  TI_res_IS= fsusieR:::univariate_TI_regression_IS(Y,X)
+  
   
   
   grid= seq(from=0.00001, to =0.99, by =0.00001)
@@ -121,6 +123,16 @@ sim_perf_finding_CpG= function(n=100 ,
   )
   )
   
+  pv_ti_IS =do.call( c, lapply(  1: length(TI_res_IS$effect_estimate),
+                              function( i){
+                                compute_pvalue(estimate=TI_res_IS$effect_estimate[i], 
+                                               lower_ci= TI_res_IS$cred_band[2,i], 
+                                               upper_ci= TI_res_IS$cred_band[1,i])
+                                
+                              }
+  )
+  )
+  
   #pos_up <-  which(TI_res$cred_band [1,]<0)
   #pos_low <- which(TI_res$cred_band [2,]>0)
   
@@ -138,6 +150,7 @@ sim_perf_finding_CpG= function(n=100 ,
   out = data.frame(CpG=CpG, pv=pv,
                    hmm_lfsr=hmm_res$lfsr,
                    pv_ti=pv_ti,
+                   pv_ti_IS=pv_ti_IS,
                    affected_TI=thresh,
                    n= rep( n, length(CpG)),
                    h2= rep( h2, length(CpG)))
