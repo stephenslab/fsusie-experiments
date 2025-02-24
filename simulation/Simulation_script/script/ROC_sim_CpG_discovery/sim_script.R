@@ -119,6 +119,15 @@ sim_perf_finding_CpG= function(n=100 ,
                               }
   )
   )
+  pv_ti_IS =do.call( c, lapply(  1: length(TI_res_IS$effect_estimate),
+                                 function( i){
+                                   compute_pvalue(estimate=TI_res_IS$effect_estimate[i], 
+                                                  lower_ci= TI_res_IS$cred_band[2,i], 
+                                                  upper_ci= TI_res_IS$cred_band[1,i])
+                                   
+                                 }
+  )
+  )
   
   #pos_up <-  which(TI_res$cred_band [1,]<0)
   #pos_low <- which(TI_res$cred_band [2,]>0)
