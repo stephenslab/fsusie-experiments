@@ -17,13 +17,17 @@ simple_roc <- function(labs, scores){
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR ),
+                              roc2$FPR ,
+                              roc3$FPR),
                       col=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                                    rep( "functional regression IS", length(roc2$FPR )),
+                                    rep( "functional regression  SPS", length(roc3$FPR ))
+                                    )
                       )
 )
 
@@ -32,7 +36,7 @@ P11= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
               # linetype = "dashed", color = "black") + 
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
+  scale_color_manual(values= c( "#1A85FF","#D41159", "#FFC20A"))
 
 load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_01_n100_CpG_5.RData"))
 library( ggplot2)
@@ -46,13 +50,17 @@ res= do.call( rbind, res)
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR ),
+                              roc2$FPR ,
+                              roc3$FPR),
                       col=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                                    rep( "functional regression IS", length(roc2$FPR )),
+                                    rep( "functional regression SPS", length(roc3$FPR ))
+                      )
                       )
 )
 
@@ -61,8 +69,7 @@ P12= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
                #linetype = "dashed", color = "black") +
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
-
+  scale_color_manual(values= c( "#D41159","#1A85FF", "#FFC20A"))
 
 
 
@@ -79,23 +86,25 @@ res= do.call( rbind, res)
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR  ),
+                              roc2$FPR ,
+                              roc3$FPR),
                       col=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                                    rep( "functional regression SPS ", length(roc2$FPR )),
+                                    rep( "functional regression IS", length(roc3$FPR ))
+                      )
                       )
 )
-
 P21= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
               # linetype = "dashed", color = "black") + 
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
-
+  scale_color_manual(values= c( "#D41159","#1A85FF", "#FFC20A"))
 
 load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_05_n100_CpG_5.RData"))
 library( ggplot2)
@@ -110,13 +119,17 @@ res= do.call( rbind, res)
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR ),
+                              roc2$FPR ,
+                              roc3$FPR),
                       col=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                                    rep( "functional regression SPS", length(roc2$FPR )),
+                                    rep( "functional regression IS", length(roc3$FPR ))
+                      )
                       )
 )
 
@@ -125,7 +138,7 @@ P22= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
               # linetype = "dashed", color = "black") + 
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
+  scale_color_manual(values= c( "#D41159","#1A85FF", "#FFC20A"))
 
 
 
@@ -145,22 +158,26 @@ res= do.call( rbind, res)
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR ),
-                      method=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                              roc2$FPR ,
+                              roc3$FPR),
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression SPS", length(roc2$FPR )),
+                                    rep( "functional regression IS", length(roc3$FPR ))
+                      )
                       )
 )
 
-P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=method))+geom_line(size=1.2)+
+P31= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   theme_linedraw()+xlab("FDR")+ylab("Power")+
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
               # linetype = "dashed", color = "black") + 
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
+  scale_color_manual(values= c( "#D41159","#1A85FF", "#FFC20A"))
 
 
 load(paste0(path, "/simulation/Simulation_script/script/ROC_sim_CpG_discovery/h2_10_n100_CpG_5.RData"))
@@ -174,22 +191,26 @@ res= do.call( rbind, res)
 roc0 <- simple_roc(res$CpG,   res$pv)
 roc1 <- simple_roc(res$CpG, res$hmm_lfsr)
 roc2 <- simple_roc(res$CpG,res$pv_ti)
-roc3 <- simple_roc(res$CpG,res$affected_TI)
+roc3 <- simple_roc(res$CpG,res$pv_ti_IS)
 df_plot = data.frame (TPR= c(roc0$TPR, 
-                             roc2$TPR ),
+                             roc2$TPR,
+                             roc3$TPR),
                       FPR=  c(roc0$FPR, 
-                              roc2$FPR ),
-                      method=factor(c( rep( "p-value", length(roc0$FPR )), 
-                                    rep( "functional regression", length(roc1$FPR )) )
+                              roc2$FPR ,
+                              roc3$FPR),
+                      col=factor(c( rep( "p-value", length(roc0$FPR )), 
+                                    rep( "functional regression SPS", length(roc2$FPR )),
+                                    rep( "functional regression IS", length(roc3$FPR ))
+                      )
                       )
 )
 
-P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=method))+geom_line(size=1.2)+
+P32= ggplot(df_plot, aes(x=TPR, y=FPR, col=col))+geom_line(size=1.2)+
   theme_linedraw()+xlab("FDR")+ylab("Power") +
   xlim(c(0,0.5))+
   #geom_segment(aes(x = 0, y = 0, xend = 0.5, yend = 0.5), 
                #linetype = "dashed", color = "black") +
-  scale_color_manual(values= c( "#1A85FF", "#FFC20A"))
+  scale_color_manual(values= c( "#D41159","#1A85FF", "#FFC20A"))
 
 
 
@@ -233,7 +254,7 @@ P_out <- grid.arrange(
     ncol = 3, widths = c(0.08, 1, 1)
   ),
   arrangeGrob(
-    h2_labels[[3]], P32 + theme(legend.position = "bottom" ),
+    h2_labels[[3]], P32 + theme(legend.position = "none" ),
     P31 + theme(legend.position = "none"),
     ncol = 3, widths = c(0.08, 1, 1)
   ),
