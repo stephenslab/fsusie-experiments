@@ -458,14 +458,124 @@ plotTracks(list_track,
            from =view_win[1],
            to=view_win[2])
 
-plotTracks(list_track )
+ 
 
-plotTracks(fsusie_me_plot,
+ 
+
+
+ 
+library(biomaRt)
+library(GenomicRanges)
+
+# Define the genomic region
+chr <- "chr12"
+start_pos <-  min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")])
+end_pos <- max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) 
+
+# Use biomaRt to fetch gene annotations from Ensembl
+mart <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
+
+# Get gene and transcript information
+genes <- getBM(
+  attributes = c("chromosome_name", "start_position", "end_position", 
+                 "strand", "ensembl_gene_id", "ensembl_transcript_id", "external_gene_name"),
+  filters = c("chromosome_name", "start", "end"),
+  values = list("12", start_pos, end_pos),
+  mart = mart
+)
+
+# Get exon-level information
+exons <- getBM(
+  attributes = c("chromosome_name", "exon_chrom_start", "exon_chrom_end",
+                 "strand", "ensembl_gene_id", "ensembl_transcript_id", 
+                 "ensembl_exon_id", "external_gene_name"),
+  filters = c("chromosome_name", "start", "end"),
+  values = list("12", start_pos, end_pos),
+  mart = mart
+)
+
+# Check if any genes were retrieved
+if (nrow(genes) == 0) {
+  stop("No gene data retrieved. Check chromosome and coordinates.")
+}
+
+# Ensure strand is correctly formatted
+exons$strand <- ifelse(exons$strand == 1, "+", "-")
+
+# Keep only one isoform per gene (longest transcript)
+genes <- genes[order(genes$external_gene_name, genes$end_position - genes$start_position, decreasing = TRUE), ]
+genes <- genes[!duplicated(genes$external_gene_name), ]
+
+# Filter exons to match selected transcripts
+exons <- exons[exons$ensembl_transcript_id %in% genes$ensembl_transcript_id, ]
+
+# Rename columns to match GeneRegionTrack expectations
+exons <- exons[, c("chromosome_name", "exon_chrom_start", "exon_chrom_end", "strand", "ensembl_gene_id", "ensembl_transcript_id", "ensembl_exon_id", "external_gene_name")]
+colnames(exons) <- c("chromosome", "start", "end", "strand", "gene", "transcript", "exon", "symbol")
+
+# Convert to GeneRegionTrack-compatible data frame
+exons_df <- data.frame(
+  chromosome = paste0("chr", exons$chromosome),
+  start = exons$start,
+  end = exons$end,
+  strand = exons$strand,
+  gene = exons$gene,
+  transcript = exons$transcript,
+  exon = exons$exon,
+  symbol = exons$symbol,
+  feature = "exon"  # Mark exons so GViz can differentiate introns automatically
+)
+
+# Create the GeneRegionTrack with exon/intron display
+gene_track <- GeneRegionTrack(
+  exons_df,
+  genome = "hg38",
+  chromosome = chr,
+  start = start_pos,
+  end = end_pos,
+  name = "Genes",
+  showId = TRUE,
+  transcriptAnnotation = "symbol",
+  col = "black",
+  fill = "blue",
+  
+  col.axis = "black",col.title = "black",
+  rotation.title = 0,cex.title = cex,
+  col = "salmon",fill = "salmon",
+  background.title = "white"
+)
+
+  
+
+
+list_track=  list( otAD,
+                   otGALNT6,
+                   otSLC4A8 ,
+                   t_me,t_ha,
+                   
+                   fsusie_me_plot ,
+                   fsusie_ha_plot,
+                   gene_track
+)
+
+#view_win <- c(5.12e7, 5.16e7) 
+plotTracks(list_track,
            from =view_win[1],
            to=view_win[2])
 
 
- 
+
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+plotTracks(list_track,
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) )
+
+
+
+break
+##old  script gene---  ----- 
 
 ## gene track plot ----
 library(AnnotationHub)
