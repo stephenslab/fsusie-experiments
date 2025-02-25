@@ -258,7 +258,7 @@ plotTracks(list_track,
 
 res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
-#rm(res)
+ rm(res)
 #positions = fsusie_obj_ha$outing_grid
 
 
@@ -334,61 +334,32 @@ Y_w= map_data$Y
 
 
 out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,2716], ncol=1),alpha=0.01)
-plot( out$effect_estimate)
-lines(out$cred_band[1,])                                        
 
-lines(out$cred_band[2,])       
+positions=outing_grid 
 
-
-positions=outing_grid
-effect=out$effect_estimate
-
-haQTL_track = DataTrack(range = GRanges(seqnames = chr,
-                                        ranges = IRanges(start = positions ,
-                                                         end = positions   + 1)),
-                        data = effect , genome = "hg38",
-                        type = "l",  col = "steelblue",
-                        track.margin = 0.05 ,
-                        col.axis = "black",col.title = "black",
-                        fontface = "plain",rotation.title = 0,cex.title = cex,
-                        background.title = "white",name="effect H3k9ac")
+effect=rbind(out$effect_estimate,
+             out$cred_band,
+             rep(0,length(out$effect_estimate)))
+group_cred= c(1:3,0)
+group_colors <- c("black" ,"steelblue","steelblue","royalblue" )
 
 
+haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
+                                          ranges = IRanges(start = positions,
+                                                           end = positions + 1)),
+                          data = effect, genome = "hg38",
+                          groups= group_cred,rotation.title = 0,
+                          name ="effect H3k9ac",type = "l",col = group_colors,
+                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                          col.axis = "black",col.title = "black",
+                          fontface = "plain",background.title = "white",
+                          fontface.title = 1)
 
-effect=  out$cred_band[1,]
-
-
-
-
-haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", col = "steelblue",
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect H3k9ac")
+plotTracks(haQTL_track, from =view_win[1], to = view_win[2]      )
 
 
-effect=  out$cred_band[2,]
-
-
-
-
-haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", col = "steelblue",
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect H3k9ac")
-
-
-fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ), background.title = "white")
-plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
+fsusie_ha_plot <-haQTL_track
+  plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 
 
 #### meqtl -----
@@ -432,56 +403,30 @@ lines(out$cred_band[2,])
 
 positions=outing_grid 
 
-effect= out$effect
+
+positions=outing_grid 
+
+effect=rbind(out$effect_estimate,
+             out$cred_band,
+             rep(0,length(out$effect_estimate)))
+group_cred= c(1:3,0)
+group_colors <- c("black" ,"maroon" ,"red","red")
 
 
-meQTL_track = DataTrack(range = GRanges(seqnames = chr,
-                                        ranges = IRanges(start = positions ,
-                                                         end = positions   + 1)),
-                        data = effect , genome = "hg38",
-                        type = "l",  col = "maroon",
-                        track.margin = 0.05 ,
-                        col.axis = "black",col.title = "black",
-                        fontface = "plain",rotation.title = 0,cex.title = cex,
-                        background.title = "white",name="effect DNAm")
+meQTLtrack =   DataTrack(range = GRanges(seqnames = chr,
+                                          ranges = IRanges(start = positions,
+                                                           end = positions + 1)),
+                          data = effect, genome = "hg38",
+                          groups= group_cred,rotation.title = 0,
+                          name ="effect DNAm",type = "l",col = group_colors,
+                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                          col.axis = "black",col.title = "black",
+                          fontface = "plain",background.title = "white",
+                          fontface.title = 1)
 
+ 
 
-
-effect=  out$cred_band[1,]
-
-
-
-
-meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l",  col = "maroon",
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
-
-
-
-effect=    out$cred_band[2,]
-
-
-
-
-meQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l",  col = "maroon",
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
-
-
-fsusie_me_plot <- OverlayTrack(trackList=list(  meQTL_trackcb1,meQTL_track, meQTL_trackcb2 ),
-                               background.title = "white")
+fsusie_me_plot <- meQTLtrack 
 plotTracks(fsusie_me_plot  )
 
 
@@ -507,7 +452,7 @@ list_track=  list( otAD,
 view_win <- c(5.12e7, 5.16e7)
 plotTracks(list_track,
            from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+           to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) )
 
 plotTracks(list_track,
            from =view_win[1],
@@ -576,5 +521,24 @@ plotTracks(gene_track,
            to=view_win[2])
 
 
+
+
+
+
+list_track=  list( otAD,
+                   otGALNT6,
+                   otSLC4A8 ,
+                   t_me,t_ha,
+                   
+                   fsusie_me_plot ,
+                   fsusie_ha_plot,
+                   gene_track
+)
+
+#view_win <- c(5.12e7, 5.16e7) 
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+ 
 
  

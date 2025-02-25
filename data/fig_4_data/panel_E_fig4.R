@@ -239,14 +239,9 @@ lines(out$cred_band[1,])
 lines(out$cred_band[2,])       
 
 
+     
 
-plot( out$effect_estimate[300:450])
-lines(out$cred_band[1,300:450])                                        
-
-lines(out$cred_band[2,300:450])       
-
-positions=outing_grid
-effect=out$effect_estimate
+positions=outing_grid 
 
 effect=rbind(out$effect_estimate,
       out$cred_band,
@@ -259,7 +254,7 @@ haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
-                          groups= group_cred,
+                          groups= group_cred,rotation.title = 0,
                           name ="effect H3k9ac",type = "l",col = group_colors,
                           track.margin = 0.05,cex.title = cex,cex.axis = cex,
                           col.axis = "black",col.title = "black",
