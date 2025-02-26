@@ -355,58 +355,58 @@ plotTracks(list_track,
 res <- readRDS(paste0(path, "/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.rds"))
 
 fsusie_obj_ha=res$`chr17:1059843-6175034`$ROSMAP_DLPFC_haQTL$fsusie_result
-rm(res)
-positions = fsusie_obj_ha$outing_grid
-
-
-effect=  fsusie_obj_ha$fitted_func[[2]]
-
-
-haQTL_track = DataTrack(range = GRanges(seqnames = chr,
-                                        ranges = IRanges(start = positions ,
-                                                         end = positions   + 1)),
-                        data = effect , genome = "hg38",
-                        type = "l", 
-                        track.margin = 0.05 ,
-                        col.axis = "black",col.title = "black",
-                        fontface = "plain",rotation.title = 0,cex.title = cex,
-                        background.title = "white",name="effect H3k9ac")
-
-
-
-effect=  fsusie_obj_ha$cred_band[[2]][1, ]
+rm(res)# CS 2
 
 
 
 
-haQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect H3k9ac")
 
 
-effect=  fsusie_obj_ha$cred_band[[2]][2, ]
+res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+Y= as.data.frame(res_ha$residual_Y)
 
 
+X=as.data.frame(res_ha$residual_X)
+pos = as.data.frame(res_ha$Y_coordinates) #use start
+pos= pos$start
 
 
-haQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect H3k9ac")
- 
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
 
-fsusie_ha_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2 ), background.title = "white")
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y
+
+
+out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,24579], ncol=1),alpha=0.01)
+
+positions=outing_grid 
+
+effect=rbind(out$effect_estimate,
+             out$cred_band,
+             rep(0,length(out$effect_estimate)))
+group_cred= c(1:3,0)
+group_colors <- c("black" ,"steelblue","steelblue","royalblue" )
+
+
+haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
+                                          ranges = IRanges(start = positions,
+                                                           end = positions + 1)),
+                          data = effect, genome = "hg38",
+                          groups= group_cred,rotation.title = 0,
+                          name ="effect H3k9ac",type = "l",col = group_colors,
+                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                          col.axis = "black",col.title = "black",
+                          fontface = "plain",background.title = "white",
+                          fontface.title = 1)
+
+plotTracks(haQTL_track, from =view_win[1], to = view_win[2]      )
+
+
+fsusie_ha_plot <-haQTL_track
+plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 
 
@@ -415,78 +415,172 @@ plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 res <- readRDS(paste0(path, "/data/fig_4_data/fsusie_object/ROSMAP_mQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.rds"))
 fsusie_obj_me = res$`chr17:1059843-6175034`$ROSMAP_DLPFC_mQTL$fsusie_result 
 
+rm(res)#cs7
+res_me <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_maQTL.chr17_1059843_6175034.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+Y= as.data.frame(res_me$residual_Y)
 
 
-positions = fsusie_obj_me$outing_grid
-
-out=list(effect= fsusie_obj_me$fitted_func[[7]],
-         cred_band=  fsusie_obj_me$cred_band[[7]]  )
-effect= out$effect
+X=as.data.frame(res_me$residual_X)
+pos = as.data.frame(res_me$Y_coordinates) #use start
+pos= pos$start
 
 
-meQTL_track = DataTrack(range = GRanges(seqnames = chr,
-                                        ranges = IRanges(start = positions ,
-                                                         end = positions   + 1)),
-                        data = effect , genome = "hg38",
-                        type = "l", 
-                        track.margin = 0.05 ,
-                        col.axis = "black",col.title = "black",
-                        fontface = "plain",rotation.title = 0,cex.title = cex,
-                        background.title = "white",name="effect DNAm")
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
 
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y
 
-
-effect=  out$cred_band[1,]
-
-
-
-
-meQTL_trackcb1  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
+out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,24332], ncol=1),alpha=0.01)
+plot( out$effect_estimate)
+lines(out$cred_band[1,])                                        
+lines(out$cred_band[2,])  
 
 
 
-effect=    out$cred_band[2,]
+positions=outing_grid 
+
+
+positions=outing_grid 
+
+effect=rbind(out$effect_estimate,
+             out$cred_band,
+             rep(0,length(out$effect_estimate)))
+group_cred= c(1:3,0)
+group_colors <- c("black" ,"maroon" ,"red","red")
+
+
+meQTLtrack =   DataTrack(range = GRanges(seqnames = chr,
+                                         ranges = IRanges(start = positions,
+                                                          end = positions + 1)),
+                         data = effect, genome = "hg38",
+                         groups= group_cred,rotation.title = 0,
+                         name ="effect DNAm",type = "l",col = group_colors,
+                         track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                         col.axis = "black",col.title = "black",
+                         fontface = "plain",background.title = "white",
+                         fontface.title = 1)
 
 
 
-
-meQTL_trackcb2  = DataTrack(range = GRanges(seqnames = chr,
-                                            ranges = IRanges(start = positions ,
-                                                             end = positions + 1)),
-                            data = effect , genome = "hg38",
-                            type = "l", 
-                            track.margin = 0.05 ,lty=2,
-                            col.axis = "black",col.title = "black",
-                            fontface = "plain",rotation.title = 0,cex.title = cex,
-                            background.title = "white",name="effect DNAm")
-
-
-fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
-                               background.title = "white")
-plotTracks(fsusie_me_plot  )
+fsusie_me_plot <- meQTLtrack 
+plotTracks(fsusie_me_plot  ) 
 
 
 
-fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2,
-                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
-                               background.title = "white")
+ 
+plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
+ 
 plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
 
 
-fsusie_me_plot <- OverlayTrack(trackList=list( meQTL_track,meQTL_trackcb1, meQTL_trackcb2  ),
-                               background.title = "white")
-plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
+### gene track
+
+library(biomaRt)
+library(GenomicRanges)
+
+# Define the genomic region
+chr <- "chr17"
+start_pos = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) 
+end_pos =max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) 
+
+# Use biomaRt to fetch gene annotations from Ensembl
+mart <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
+
+# Get gene and transcript information
+genes <- getBM(
+  attributes = c("chromosome_name", "start_position", "end_position", 
+                 "strand", "ensembl_gene_id", "ensembl_transcript_id", "external_gene_name"),
+  filters = c("chromosome_name", "start", "end"),
+  values = list("12", start_pos, end_pos),
+  mart = mart
+)
+
+# Get exon-level information
+exons <- getBM(
+  attributes = c("chromosome_name", "exon_chrom_start", "exon_chrom_end",
+                 "strand", "ensembl_gene_id", "ensembl_transcript_id", 
+                 "ensembl_exon_id", "external_gene_name"),
+  filters = c("chromosome_name", "start", "end"),
+  values = list("12", start_pos, end_pos),
+  mart = mart
+)
+
+# Check if any genes were retrieved
+if (nrow(genes) == 0) {
+  stop("No gene data retrieved. Check chromosome and coordinates.")
+}
+
+# Ensure strand is correctly formatted
+exons$strand <- ifelse(exons$strand == 1, "+", "-")
+
+# Keep only one isoform per gene (longest transcript)
+genes <- genes[order(genes$external_gene_name, genes$end_position - genes$start_position, decreasing = TRUE), ]
+genes <- genes[!duplicated(genes$external_gene_name), ]
+
+# Filter exons to match selected transcripts
+exons <- exons[exons$ensembl_transcript_id %in% genes$ensembl_transcript_id, ]
+
+# Rename columns to match GeneRegionTrack expectations
+exons <- exons[, c("chromosome_name", "exon_chrom_start", "exon_chrom_end", "strand", "ensembl_gene_id", "ensembl_transcript_id", "ensembl_exon_id", "external_gene_name")]
+colnames(exons) <- c("chromosome", "start", "end", "strand", "gene", "transcript", "exon", "symbol")
+
+# Convert to GeneRegionTrack-compatible data frame
+exons_df <- data.frame(
+  chromosome = paste0("chr", exons$chromosome),
+  start = exons$start,
+  end = exons$end,
+  strand = exons$strand,
+  gene = exons$gene,
+  transcript = exons$transcript,
+  exon = exons$exon,
+  symbol = exons$symbol,
+  feature = "exon"  # Mark exons so GViz can differentiate introns automatically
+)
+
+# Create the GeneRegionTrack with exon/intron display
+gene_track <- GeneRegionTrack(
+  exons_df,
+  genome = "hg38",
+  chromosome = chr,
+  start = start_pos,
+  end = end_pos,
+  name = "Genes",
+  showId = TRUE,
+  transcriptAnnotation = "symbol",
+  col = "black",
+  fill = "blue",
+  
+  col.axis = "black",col.title = "black",
+  rotation.title = 0,cex.title = cex,
+  col = "salmon",fill = "salmon",
+  background.title = "white"
+)
 
 
-## gene track plot ----
+
+
+list_track=  list( otAD,
+                   otCHRNE,
+                   otRABEP1 ,
+                   otSCIMP,
+ 
+
+
+                   
+                   fsusie_me_plot ,
+                   fsusie_ha_plot,
+                   gene_track
+)
+
+#view_win <- c(5.12e7, 5.16e7) 
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+
+## old  gene track plot---- ----
 
 
 

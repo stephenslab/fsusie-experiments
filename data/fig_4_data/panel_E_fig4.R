@@ -327,11 +327,7 @@ exons <- getBM(
 )
 
 # Check if any genes were retrieved
-if (nrow(genes) == 0) {
-  stop("No gene data retrieved. Check chromosome and coordinates.")
-}
-
-# Ensure strand is correctly formatted
+ # Ensure strand is correctly formatted
 exons$strand <- ifelse(exons$strand == 1, "+", "-")
 
 # Keep only one isoform per gene (longest transcript)
@@ -367,10 +363,7 @@ gene_track <- GeneRegionTrack(
   end = end_pos,
   name = "Genes",
   showId = TRUE,
-  transcriptAnnotation = "symbol",
-  col = "black",
-  fill = "blue",
-  
+  transcriptAnnotation = "symbol", 
   col.axis = "black",col.title = "black",
   rotation.title = 0,cex.title = cex,
   col = "salmon",fill = "salmon",
