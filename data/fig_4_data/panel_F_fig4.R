@@ -351,7 +351,7 @@ haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                           groups= group_cred,
                           lwd = group_lwd,
                           rotation.title = 90,
-                          name ="effect H3k9ac",
+                          name ="Effect H3k9ac",
                           type = "l",
                           col = group_colors,
                           type = c(  "s" ),
@@ -449,14 +449,14 @@ meQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                           data = effect, genome = "hg38",
                           groups= group_cred,
                           rotation.title = 90,
-                          name ="effect DNAm",
+                          name ="Effect DNAm",
                           type = "l",
                           lwd= group_lwd,
                           col = group_colors,
                           type = c(  "s" ),
                           cex=1.5,# Use color column from df_plot
                           track.margin = 0.05, # Reduce margin between track and title
-                          cex.title = 0.6,     # Reduce title size
+                          cex.title = 1.6,     # Reduce title size
                           cex.axis = 0.6,      # Reduce axis text size
                           col.axis = "black",  # Change axis color to black
                           col.title = "black", 

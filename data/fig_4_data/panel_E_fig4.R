@@ -166,6 +166,19 @@ plotTracks( otCR2 )
 ##### PIP plots  -----
 
 data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.95_min_corr==5  ),]
+tdf= plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
+tdf$z=tdf$z*0
+t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = tdf$pos , end = tdf$pos )),
+                 data = matrix(tdf$z, nrow=1), genome = "hg19", 
+                 ylim =c( 0, 0.5),
+                 type = "p", col = "black",
+                 cex=1.5,# Use color column from df_plot
+                 track.margin = 0.05, # Reduce margin between track and title
+                 cex.title = 0.6,     # Reduce title size
+                 cex.axis = 0.6,      # Reduce axis text size
+                 col.axis = "black",  # Change axis color to black
+                 col.title = "black",rotation.title = 90,cex.title = cex,
+                 background.title = "white",name="PIP \n H3K9ac") ) 
 #  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
 #data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
@@ -181,8 +194,11 @@ t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
                   background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
 
 
+ 
+t_ha=OverlayTrack(trackList=list( t_ha, t_0 ),
+                  background.title = "white")
 plotTracks( t_ha)
-
+ 
 
 list_track=  list( otAD,
                    otCR1,
@@ -286,7 +302,7 @@ haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = 
                        col.axis = "black",  # Change axis color to black
                        col.title = "black", 
                        background.title = "white",
-                       name="effect H3k9ac") ) # Change title color to black
+                       name="Effect H3k9ac") ) # Change title color to black
 
 
 #plotTracks(fsusie_ha_plot  )
