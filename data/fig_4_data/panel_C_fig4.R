@@ -388,25 +388,52 @@ effect=rbind(out$effect_estimate,
              out$cred_band,
              rep(0,length(out$effect_estimate)))
 group_cred= c(1:3,0)
-group_colors <- c("black" ,"steelblue","steelblue","royalblue" )
+group_colors <- c("black" ,"royalblue","steelblue","steelblue" )
 
-
+group_lwd= c(1,2,1,1)
 haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
-                          groups= group_cred,rotation.title = 0,
-                          name ="effect H3k9ac",type = "l",col = group_colors,
-                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
-                          col.axis = "black",col.title = "black",
-                          fontface = "plain",background.title = "white",
-                          fontface.title = 1)
+                          groups= group_cred,
+                          lwd = group_lwd,
+                          rotation.title = 90,
+                          name ="effect H3k9ac",
+                          type = "l",
+                          col = group_colors,
+                          type = c(  "s" ),
+                          track.margin = 0.05,
+                          cex=1.5,# Use color column from df_plot
+                          track.margin = 0.05, # Reduce margin between track and title
+                          cex.title = 0.6,     # Reduce title size
+                          cex.axis = 0.6,      # Reduce axis text size
+                          col.axis = "black",  # Change axis color to black
+                          col.title = "black",
+                          background.title = "white",
+                          legend = FALSE  # Remove legend
+)
+
+
+
+haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos  , end = pos )),
+                       data = matrix(0*pos , nrow=1), genome = "hg38", 
+                       ylim =c( min( c(effect)),max(c(effect)  )) ,
+                       type = "p", 
+                       col = "lightblue" ,
+                       cex= 1,# Use color column from df_plot
+                       track.margin = 0.05, # Reduce margin between track and title
+                       cex.title = 0.6,     # Reduce title size
+                       cex.axis = 0.6,      # Reduce axis text size
+                       col.axis = "black",  # Change axis color to black
+                       col.title = "black", 
+                       background.title = "white",
+                       name="PIP DNAm") ) # Change title color to black
+
+
 
 plotTracks(haQTL_track, from =view_win[1], to = view_win[2]      )
-
-
-fsusie_ha_plot <-haQTL_track
-plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
+fsusie_ha_plot <- OverlayTrack(trackList=list(   haQTL_pos, haQTL_track    ),
+                               background.title = "white", show.legend = c( FALSE, FALSE) )
 plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
 
 
@@ -494,7 +521,7 @@ genes <- getBM(
   attributes = c("chromosome_name", "start_position", "end_position", 
                  "strand", "ensembl_gene_id", "ensembl_transcript_id", "external_gene_name"),
   filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
+  values = list("17", start_pos, end_pos),
   mart = mart
 )
 
@@ -504,7 +531,7 @@ exons <- getBM(
                  "strand", "ensembl_gene_id", "ensembl_transcript_id", 
                  "ensembl_exon_id", "external_gene_name"),
   filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
+  values = list("17", start_pos, end_pos),
   mart = mart
 )
 

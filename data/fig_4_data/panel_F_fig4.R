@@ -60,7 +60,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="AD") ) # Change title color to black
 
 
@@ -69,13 +69,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="AD") ) # Change title color to black
 
 
@@ -112,7 +112,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="GALNT6") ) # Change title color to black
 
 
@@ -121,13 +121,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="GALNT6") ) # Change title color to black
  
 
@@ -166,7 +166,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="SLC4A8") ) # Change title color to black
 
 
@@ -175,13 +175,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="SLC4A8"))  # Change title color to black
 
 
@@ -202,15 +202,15 @@ data_ha = pip_df %>%
 #pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                   data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
-                  ylim =c( 0, 1),
-                  type = "p", col = "steelblue",
+                  ylim =c( 0.5, 1.1),
+                  type = "p", col = "royalblue",
                   cex=1.5,# Use color column from df_plot
                   track.margin = 0.05, # Reduce margin between track and title
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 0,cex.title = cex,
-                  background.title = "white",name="PIP H3k4a9ac") ) # Change title color to black
+                  col.title = "black",rotation.title = 90,cex.title = cex,
+                  background.title = "white",name="PIP \n H3k4a9ac") ) # Change title color to black
 
 
 
@@ -222,15 +222,15 @@ data_me =  QTL_data %>%
 
 t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
                   data = matrix(data_me$pip , nrow=1), genome = "hg38", 
-                  ylim =c( 0, 1) ,
+                  ylim =c( 0.5, 1.1) ,
                   type = "p", col = "maroon",
                   cex=1.5,# Use color column from df_plot
                   track.margin = 0.05, # Reduce margin between track and title
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 0,cex.title = cex,
-                  background.title = "white",name="PIP DNAm") ) # Change title color to black
+                  col.title = "black",rotation.title = 90,cex.title = cex,
+                  background.title = "white",name="PIP \n DNAm") ) # Change title color to black
 
 
 
@@ -272,7 +272,7 @@ fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
 #                        type = "l",  col = "steelblue",
 #                        track.margin = 0.05 ,
 #                        col.axis = "black",col.title = "black",
-#                        fontface = "plain",rotation.title = 0,cex.title = cex,
+#                        fontface = "plain",rotation.title = 90,cex.title = cex,
 #                        background.title = "white",name="effect H3k9ac")
 
 
@@ -289,7 +289,7 @@ fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
 #                            type = "l", col = "steelblue",
 #                            track.margin = 0.05 ,lty=2,
 #                            col.axis = "black",col.title = "black",
-#                            fontface = "plain",rotation.title = 0,cex.title = cex,
+#                            fontface = "plain",rotation.title = 90,cex.title = cex,
 #                            background.title = "white",name="effect H3k9ac")
 
 
@@ -305,7 +305,7 @@ fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
 #                            type = "l", col = "steelblue",
 #                            track.margin = 0.05 ,lty=2,
 #                            col.axis = "black",col.title = "black",
-#                            fontface = "plain",rotation.title = 0,cex.title = cex,
+#                            fontface = "plain",rotation.title = 90,cex.title = cex,
 #                            background.title = "white",name="effect H3k9ac")
 
 
@@ -341,25 +341,55 @@ effect=rbind(out$effect_estimate,
              out$cred_band,
              rep(0,length(out$effect_estimate)))
 group_cred= c(1:3,0)
-group_colors <- c("black" ,"steelblue","steelblue","royalblue" )
+group_colors <- c("black" ,"royalblue","steelblue","steelblue" )
 
-
+group_lwd= c(1,2,1,1)
 haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
-                          groups= group_cred,rotation.title = 0,
-                          name ="effect H3k9ac",type = "l",col = group_colors,
-                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
-                          col.axis = "black",col.title = "black",
-                          fontface = "plain",background.title = "white",
-                          fontface.title = 1)
+                          groups= group_cred,
+                          lwd = group_lwd,
+                          rotation.title = 90,
+                          name ="effect H3k9ac",
+                          type = "l",
+                          col = group_colors,
+                          type = c(  "s" ),
+                          track.margin = 0.05,
+                          cex=1.5,# Use color column from df_plot
+                          track.margin = 0.05, # Reduce margin between track and title
+                          cex.title = 0.6,     # Reduce title size
+                          cex.axis = 0.6,      # Reduce axis text size
+                          col.axis = "black",  # Change axis color to black
+                          col.title = "black",
+                          background.title = "white",
+                          legend = FALSE  # Remove legend
+                          )
+
+
+
+haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos  , end = pos )),
+                  data = matrix(0*pos , nrow=1), genome = "hg38", 
+                  ylim =c( min( c(effect)),max(c(effect)  )) ,
+                  type = "p", 
+                  col = "lightblue" ,
+                  cex= 1,# Use color column from df_plot
+                  track.margin = 0.05, # Reduce margin between track and title
+                  cex.title = 0.6,     # Reduce title size
+                  cex.axis = 0.6,      # Reduce axis text size
+                  col.axis = "black",  # Change axis color to black
+                  col.title = "black", 
+                  background.title = "white",
+                  name="PIP DNAm") ) # Change title color to black
+
+
 
 plotTracks(haQTL_track, from =view_win[1], to = view_win[2]      )
+fsusie_ha_plot <- OverlayTrack(trackList=list(   haQTL_pos, haQTL_track    ),
+                background.title = "white", show.legend = c( FALSE, FALSE) )
 
-
-fsusie_ha_plot <-haQTL_track
-  plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]      )
+ 
+  plotTracks(fsusie_ha_plot , from =view_win[1], to = view_win[2]    , show.legend = FALSE  )
 
 
 #### meqtl -----
@@ -410,24 +440,52 @@ effect=rbind(out$effect_estimate,
              out$cred_band,
              rep(0,length(out$effect_estimate)))
 group_cred= c(1:3,0)
-group_colors <- c("black" ,"maroon" ,"red","red")
+group_colors <- c("black" ,"royalblue","steelblue","steelblue" )
+group_lwd= c(1,2,1,1)
 
-
-meQTLtrack =   DataTrack(range = GRanges(seqnames = chr,
+meQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
-                          groups= group_cred,rotation.title = 0,
-                          name ="effect DNAm",type = "l",col = group_colors,
-                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
-                          col.axis = "black",col.title = "black",
-                          fontface = "plain",background.title = "white",
-                          fontface.title = 1)
+                          groups= group_cred,
+                          rotation.title = 90,
+                          name ="effect DNAm",
+                          type = "l",
+                          lwd= group_lwd,
+                          col = group_colors,
+                          type = c(  "s" ),
+                          cex=1.5,# Use color column from df_plot
+                          track.margin = 0.05, # Reduce margin between track and title
+                          cex.title = 0.6,     # Reduce title size
+                          cex.axis = 0.6,      # Reduce axis text size
+                          col.axis = "black",  # Change axis color to black
+                          col.title = "black", 
+                          background.title = "white",
+                          legend=FALSE
+                          )
+plotTracks(meQTL_track , type = c(  "s" ))
+meQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos  , end = pos )),
+                       data = matrix(0*pos , nrow=1), genome = "hg38", 
+                       ylim =c( min( c(effect)),max(c(effect))) ,
+                       type = "p", 
+                        
+                       pch=20,
+                       col = "royalblue" ,
+                       cex=  1,# Use color column from df_plot
+                       track.margin = 0.05, # Reduce margin between track and title
+                       cex.title = 0.6,     # Reduce title size
+                       cex.axis = 0.6,      # Reduce axis text size
+                       col.axis = "black",  # Change axis color to black
+                       col.title = "black",
+                       background.title = "white" ,name="PIP DNAm") ) # Change title color to black
+
+
+
+fsusie_me_plot <- OverlayTrack(trackList=list(  meQTL_pos, meQTL_track  ),
+                               background.title = "white")
+plotTracks(fsusie_me_plot  )
 
  
-
-fsusie_me_plot <- meQTLtrack 
-plotTracks(fsusie_me_plot  )
 
 
 
@@ -462,7 +520,10 @@ plotTracks(list_track,
 
  
 
-
+plotTracks(list_track,
+           from =view_win[1],
+           to=52000000 , frame = TRUE)
+                000000
  
 library(biomaRt)
 library(GenomicRanges)
@@ -540,7 +601,7 @@ gene_track <- GeneRegionTrack(
   fill = "blue",
   
   col.axis = "black",col.title = "black",
-  rotation.title = 0,cex.title = cex,
+  rotation.title = 90,cex.title = cex,
   col = "salmon",fill = "salmon",
   background.title = "white"
 )
@@ -551,7 +612,7 @@ gene_track <- GeneRegionTrack(
 list_track=  list( otAD,
                    otGALNT6,
                    otSLC4A8 ,
-                   t_me,t_ha,
+                    t_me,t_ha,
                    
                    fsusie_me_plot ,
                    fsusie_ha_plot,
@@ -567,88 +628,29 @@ plotTracks(list_track,
 
 plotTracks(list_track,
            from =view_win[1],
-           to=view_win[2])
+           to=view_win[2],  frame = TRUE)
 plotTracks(list_track,
            from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) )
-
-
-
-break
-##old  script gene---  ----- 
-
-## gene track plot ----
-library(AnnotationHub)
-library(org.Hs.eg.db)
-library(GenomicRanges)
-library(Gviz)
-library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-
-# Initialize AnnotationHub
-ah <- AnnotationHub()
-
-# Load the TxDb for GRCh38
-txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-
-chr=paste0("chr",12)
-# Extract the relevant genes and exons in the specified region
-region_genes <- genes(txdb,columns = c("tx_id","gene_id"))
-
-# Subset the genes and exons to the region of interest.
-region_genes <- subsetByOverlaps(region_genes,
-                                 GRanges(seqnames = chr,
-                                         ranges = IRanges(view_win[1],
-                                                          view_win[2])))
-cex <- 0.6
-# Create a gene region track for the specified region
-gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
-                              pos0 = view_win[1],pos1 =view_win[2],name = "",
-                              showId = TRUE,geneSymbol = TRUE,
-                              col.axis = "black",col.title = "black",
-                              transcriptAnnotation = "symbol",
-                              rotation.title = 0,cex.title = cex,
-                              col = "salmon",fill = "salmon",
-                              background.title = "white")
-# Map gene IDs to gene symbols
-gene_ids <- unique(unlist(region_genes$gene_id))  # Get unique gene IDs
-
-# Map to gene symbols using org.Hs.eg.db
-gene_symbols <- AnnotationDbi::select(org.Hs.eg.db, keys = gene_ids, columns = "SYMBOL", keytype = "ENTREZID")
-
-
-
-if(nrow(gene_symbols)>0){
-  for(i in 1:length(gene_symbols$ENTREZID)){
-    gene_track@range@elementMetadata@listData$id[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
-    gene_track@range@elementMetadata@listData$symbol[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
-    
-    
-  }
-}
-
-plotTracks(gene_track,
-           from =view_win[1],
-           to=view_win[2])
-
-
-
-
-
+           to=51875000 ,
+           frame = TRUE,
+         
+           sizes = c(1, 1,1, 0.5, 0.5,1,1,1))
 
 list_track=  list( otAD,
                    otGALNT6,
                    otSLC4A8 ,
-                   t_me,t_ha,
+                   #t_me,t_ha,
                    
                    fsusie_me_plot ,
                    fsusie_ha_plot,
                    gene_track
 )
 
-#view_win <- c(5.12e7, 5.16e7) 
 plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2])
- 
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=51875000 ,
+           frame = TRUE,
+           
+           sizes = c(0.5, 0.5,0.5,  1,1,0.75))
 
  

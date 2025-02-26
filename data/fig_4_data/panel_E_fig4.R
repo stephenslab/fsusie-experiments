@@ -41,7 +41,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",
-                rotation.title = 0,cex.title = cex,
+                rotation.title = 90,cex.title = cex,
                 background.title = "white",name="AD") ) # Change title color to black
 
 
@@ -50,13 +50,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",
-                rotation.title = 0,cex.title = cex,
+                rotation.title = 90,cex.title = cex,
                 background.title = "white",name="AD") ) # Change title color to black
 
 
@@ -91,7 +91,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="CR1") ) # Change title color to black
 
 
@@ -100,13 +100,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="CR1") ) # Change title color to black
 
 
@@ -139,7 +139,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="CR2") ) # Change title color to black
 
 
@@ -148,13 +148,13 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
                 data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
                 ylim =c( min(data_track$z), max(data_track$z)),
-                type = "p", col = "steelblue", cex=1.5,  # Use color column from df_plot
+                type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
                 cex.axis = 0.6,      # Reduce axis text size
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
-                rotation.title = 0,
+                rotation.title = 90,
                 background.title = "white",name="CR2") ) # Change title color to black
 
 
@@ -171,14 +171,14 @@ data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                   data = matrix(data_ha$pip , nrow=1), genome = "hg19", 
                   ylim =c( 0, 0.5),
-                  type = "p", col = "steelblue",
+                  type = "p", col = "royalblue",
                   cex=1.5,# Use color column from df_plot
                   track.margin = 0.05, # Reduce margin between track and title
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 0,cex.title = cex,
-                  background.title = "white",name="PIP H3K9ac") ) # Change title color to black
+                  col.title = "black",rotation.title = 90,cex.title = cex,
+                  background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
 
 
 plotTracks( t_ha)
@@ -247,23 +247,51 @@ effect=rbind(out$effect_estimate,
       out$cred_band,
       rep(0,length(out$effect_estimate)))
 group_cred= c(1:3,0)
-group_colors <- c("black" ,"steelblue","steelblue","royalblue" )
+group_colors <- c("black" ,"royalblue","steelblue","steelblue" )
 
-
+group_lwd= c(1,2,1,1)
 haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
-                          groups= group_cred,rotation.title = 0,
-                          name ="effect H3k9ac",type = "l",col = group_colors,
-                          track.margin = 0.05,cex.title = cex,cex.axis = cex,
-                          col.axis = "black",col.title = "black",
-                          fontface = "plain",background.title = "white",
-                          fontface.title = 1)
+                          groups= group_cred,
+                          lwd = group_lwd,
+                          rotation.title = 90,
+                          name ="effect H3k9ac",
+                          type = "l",
+                          col = group_colors,
+                          type = c(  "s" ),
+                          track.margin = 0.05,
+                          cex=1.5,# Use color column from df_plot
+                          track.margin = 0.05, # Reduce margin between track and title
+                          cex.title = 0.6,     # Reduce title size
+                          cex.axis = 0.6,      # Reduce axis text size
+                          col.axis = "black",  # Change axis color to black
+                          col.title = "black",
+                          background.title = "white",
+                          legend = FALSE  # Remove legend
+)
 
-plotTracks(haQTL_track, from =view_win[1], to = view_win[2]      )
+
+
+haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos  , end = pos )),
+                       data = matrix(0*pos , nrow=1), genome = "hg38", 
+                       ylim =c( min( c(effect)),max(c(effect)  )) ,
+                       type = "p", 
+                       col = "royalblue" ,
+                       cex= 1,# Use color column from df_plot
+                       track.margin = 0.05, # Reduce margin between track and title
+                       cex.title = 0.6,     # Reduce title size
+                       cex.axis = 0.6,      # Reduce axis text size
+                       col.axis = "black",  # Change axis color to black
+                       col.title = "black", 
+                       background.title = "white",
+                       name="effect H3k9ac") ) # Change title color to black
+
 
 #plotTracks(fsusie_ha_plot  )
+fsusie_ha_plot <- OverlayTrack(trackList=list(   haQTL_pos, haQTL_track    ),
+                               background.title = "white", show.legend = c( FALSE, FALSE) )
 
 
 list_track=  list( otAD,
@@ -271,7 +299,7 @@ list_track=  list( otAD,
                    otCR2  ,
                    
                    t_ha,
-                   haQTL_track  
+                   fsusie_ha_plot 
 )
 
 view_win <- c(207317782, 207895513)
@@ -312,7 +340,7 @@ genes <- getBM(
   attributes = c("chromosome_name", "start_position", "end_position", 
                  "strand", "ensembl_gene_id", "ensembl_transcript_id", "external_gene_name"),
   filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
+  values = list("1", start_pos, end_pos),
   mart = mart
 )
 
@@ -322,12 +350,16 @@ exons <- getBM(
                  "strand", "ensembl_gene_id", "ensembl_transcript_id", 
                  "ensembl_exon_id", "external_gene_name"),
   filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
+  values = list("1", start_pos, end_pos),
   mart = mart
 )
 
 # Check if any genes were retrieved
- # Ensure strand is correctly formatted
+if (nrow(genes) == 0) {
+  stop("No gene data retrieved. Check chromosome and coordinates.")
+}
+
+# Ensure strand is correctly formatted
 exons$strand <- ifelse(exons$strand == 1, "+", "-")
 
 # Keep only one isoform per gene (longest transcript)
@@ -363,22 +395,24 @@ gene_track <- GeneRegionTrack(
   end = end_pos,
   name = "Genes",
   showId = TRUE,
-  transcriptAnnotation = "symbol", 
+  transcriptAnnotation = "symbol",
+  col = "black",
+  fill = "blue",
+  
   col.axis = "black",col.title = "black",
-  rotation.title = 0,cex.title = cex,
+  rotation.title = 90,cex.title = cex,
   col = "salmon",fill = "salmon",
   background.title = "white"
 )
 
 
 
-
-list_track=  list( otAD,
-                   otGALNT6,
-                   otSLC4A8 ,
-                   t_ha,
+list_track=  list(  otAD,
+                    otCR1,
+                    otCR2  ,
                     
-                   fsusie_ha_plot,
+                    t_ha,
+                    fsusie_ha_plot ,
                    gene_track
 )
 
@@ -387,68 +421,10 @@ plotTracks(list_track,
            from =view_win[1],
            to=view_win[2])
 
-
-break 
-## OLD gene track plot---- ----
-library(AnnotationHub)
-library(org.Hs.eg.db)
-library(GenomicRanges)
-library(Gviz)
-library(TxDb.Hsapiens.UCSC.hg38.knownGene)
-
-# Initialize AnnotationHub
-ah <- AnnotationHub()
-
-# Load the TxDb for GRCh38
-txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
-
-chr=paste0("chr",1)
-# Extract the relevant genes and exons in the specified region
-region_genes <- genes(txdb,columns = c("tx_id","gene_id"))
-
-# Subset the genes and exons to the region of interest.
-region_genes <- subsetByOverlaps(region_genes,
-                                 GRanges(seqnames = chr,
-                                         ranges = IRanges(view_win[1],
-                                                          view_win[2])))
-cex <- 0.6
-# Create a gene region track for the specified region
-gene_track <- GeneRegionTrack(txdb,genome = "hg38",chromosome = chr,
-                              pos0 = view_win[1],pos1 =view_win[2],name = "",
-                              showId = TRUE,geneSymbol = TRUE,
-                              col.axis = "black",col.title = "black",
-                              transcriptAnnotation = "symbol",
-                              rotation.title = 0,cex.title = cex,
-                              col = "salmon",fill = "salmon",
-                              background.title = "white" )
-# Map gene IDs to gene symbols
-gene_ids <- unique(unlist(region_genes$gene_id))  # Get unique gene IDs
-
-# Map to gene symbols using org.Hs.eg.db
-gene_symbols <- AnnotationDbi::select(org.Hs.eg.db, keys = gene_ids, columns = "SYMBOL", keytype = "ENTREZID")
-
-
-
-if(nrow(gene_symbols)>0){
-  for(i in 1:length(gene_symbols$ENTREZID)){
-    gene_track@range@elementMetadata@listData$id[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
-    gene_track@range@elementMetadata@listData$symbol[gene_track@range@elementMetadata@listData$gene == gene_symbols$ENTREZID[i]] <- gene_symbols$SYMBOL[i]
-    
-    
-  }
-}
-
-plotTracks(gene_track,
-           from =view_win[1],
-           to=view_win[2]   )
-
-plotTracks(gene_track,
-from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
-
-
-
-res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
-fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
-
+plotTracks(list_track,
+           from = min( plot_df$pos[which( 
+             plot_df$study=="DLPFC_DeJager_eQTL")]),
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
+           frame = TRUE 
+)
 
