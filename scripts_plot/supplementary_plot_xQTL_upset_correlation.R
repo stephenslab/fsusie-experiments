@@ -9,7 +9,7 @@ library(RColorBrewer)
 library(tidyr)
 library(magrittr)
 
-# Define common text size settings for consistency
+# Define common text size settings for consistencyhttp://127.0.0.1:15077/graphics/4ebeea29-43a3-49b0-bdce-8e9f155ba977.png
 axis_text_size <- 10      # for axis texts and theme elements
 annotation_size <- 5      # for numeric labels on bars
 
@@ -20,15 +20,15 @@ data <- readRDS(file.path(path, "data/fig_4_data/Fig4_data.rds"))
 ### Plot a1: Horizontal Stacked Bar Plot ###
 plot_df <- data$a1
 
-plot_df$context[1] = "dmr QTL"
-plot_df$context[2] = "car QTL"
+plot_df$context[1] = "car QTL"
+plot_df$context[2] = "dmr QTL"
 
-a1 <- ggplot(plot_df, aes(y = context)) +
+a1 <-ggplot(plot_df, aes(y = context)) +
   # Draw the full-length bar (total number of CS)
-  geom_col(aes(x = n_of_cs), fill = "grey70", width = 0.6) +
+  geom_col(aes(x = n_of_cs, fill = " "), width = 0.6) +
   # Overlay the portion that is super-finemapped
-  geom_col(aes(x = total_super_finemapped), fill = "steelblue", width = 0.6) +
-  # Label the super-finemapped portion (centered inside the blue bar)
+  geom_col(aes(x = total_super_finemapped, fill = "1 SNP CS"), width = 0.6) +
+  # Label the super-finemapped portion (centered inside the green bar)
   geom_text(aes(x = total_super_finemapped/2, label = total_super_finemapped),
             color = "white", size = annotation_size, fontface = "bold") +
   # Label the total CS count (positioned slightly to the right of the bar)
@@ -36,22 +36,29 @@ a1 <- ggplot(plot_df, aes(y = context)) +
             color = "black", size = annotation_size, fontface = "bold") +
   coord_flip() +
   scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  scale_fill_manual(values = c("Total CS" = "grey70", "1 SNP CS" = "green4")) +
   theme_minimal(base_size = axis_text_size) +
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         axis.text = element_text(size = axis_text_size),
         panel.grid.major.y = element_blank(),
         panel.grid.minor = element_blank(),
-        plot.margin = margin(10, 10, 10, 10))
+        plot.margin = margin(10, 10, 10, 10),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 14),
+        axis.text.x.bottom =  element_text(size = 14),
+        legend.position = "bottom")  # Adjust as needed
+
 
 ### Plot a2: Upset Plot ###
-custom_colors <- c("cell-type specific" = "steelblue")
+custom_colors <- c("cell-type specific" = "royalblue")
 upset_df <- data$a2
 
 a2 <- ComplexUpset::upset(
   upset_df %>% as_tibble(),
   colnames(upset_df %>% as_tibble() %>% select(-class, -cell_type)),
   keep_empty_groups = FALSE,
+  set_sizes = FALSE,
   base_annotations = list(
     `Intersection size` = intersection_size(
       mapping = aes(fill = as.character(upset_df$cell_type)),
@@ -66,28 +73,36 @@ a2 <- ComplexUpset::upset(
                         values = rev(custom_colors),
                         name = "")
   ),
-  set_sizes = upset_set_size(
-    geom = geom_bar(aes(), fill = "gray70")
-  ) +
-    theme(axis.text.x = element_text(size = axis_text_size)),
-  width_ratio = 0.15,
+  width_ratio = 0.15,  # Adjust if needed
   themes = upset_default_themes(
     plot.margin = unit(c(0, 0, 0, 0), "mm"),
     axis.text = element_text(size = axis_text_size),
     axis.title.x = element_blank(),
     text = element_text(size = axis_text_size),
-    legend.position = "bottom"
+    legend.position = "bottom",
+    axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 14)
   ),
   min_degree = 1
 ) +
   theme(legend.position = "bottom")
 
+
 # Optionally, combine the two plots using cowplot for a unified display
-combined_plot <- cowplot::plot_grid(a1, a2, ncol = 2, rel_heights = c(0.2, 1))
+combined_plot <- cowplot::plot_grid(a1, a2, ncol = 2, 
+                                    rel_widths = c(0.2,1),
+                                    rel_heights = c(0.2, 1)
+                                    )
 print(combined_plot)
 
-
-
+save_path=  paste0(getwd(),
+                   "/plot/"
+)
+ggsave(combined_plot, file=paste0(save_path,"upset.pdf"),
+       width = 50,
+       height =25,
+       units = "cm"
+)
 #### Correlation plot ----
 
 plot_df = data$b1
@@ -234,8 +249,8 @@ b3 <- plot_df%>%
   ) +
   annotate(
     "text",
-    x = min(plot_df$epi_top_z, na.rm = TRUE) + 0.2,
-    y = max(plot_df %>% filter(context.x =="ROSMAP_DLPFC_mQTL" )%>%pull(epi_top_z), na.rm = TRUE) - 0.05,
+    x = -1.5,
+    y = 0.45,
     label = paste0("Pearson r = ", cor_coeff, "\nP-value = ", p_value),
     hjust = 0,
     size = 10
@@ -273,4 +288,12 @@ b4 <- plot_df%>%
     size = 10
   )
 b4
-
+P0= cowplot::plot_grid(b1,b2,b3,b4, nrow = 2,ncol = 2) 
+save_path=  paste0(getwd(),
+                   "/plot/"
+)
+ggsave(P0, file=paste0(save_path,"sup_correlation_effect.pdf"),
+       width = 60,
+       height =45,
+       units = "cm"
+)
