@@ -120,13 +120,18 @@ path <- getwd()
 load(paste0(path, "/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power/check_L_susie_128_sd1.RData"))
 
 df_susie <- data.frame(do.call(rbind, res))
-colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect")
+colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect",
+                        "purity",
+                        "cs_size")
 df_simu <- df_susie
 df_simu$power <- df_simu$n_effect / df_simu$Number_effect 
 df_simu$t1    <- 1 - df_simu$n_false_effect / (df_simu$n_effect + df_simu$n_false_effect)
 
 mean_power_susie <- rep(NA, max(df_simu$Number_effect))
 mean_T1_susie    <- rep(NA, max(df_simu$Number_effect))
+
+mean_purity    <- rep(NA, max(df_simu$Number_effect))
+mean_cs    <- rep(NA, max(df_simu$Number_effect))
 which_L         <- rep(NA, max(df_simu$Number_effect))
 
 h <- 1
@@ -135,14 +140,17 @@ for (i in unique(df_simu$Number_effect)) {
   
   mean_power_susie[h] <- mean(df_simu$power[idx])
   mean_T1_susie[h]    <- mean(df_simu$t1[idx])
-  
+  mean_purity [h]     <- mean(df_simu$purity[idx])
+  mean_cs [h]         <- mean(df_simu$cs_size[idx])
   which_L[h] <- i
   h <- h + 1
 }
 
 df <- data.frame(power    = mean_power_susie,
                  T1_error = mean_T1_susie,
-                 L        = unique(df_simu$Number_effect))
+                 L        = unique(df_simu$Number_effect),
+                 mean_purity   =  mean_purity,
+                 cs_size  = mean_cs)
 
 plot(df$L, df$power)
 plot(df$L, df$T1_error)
@@ -156,11 +164,15 @@ df$t1_er_up  <- mapply(exact_ci_up,  df$T1_error, n_rep)
 df$L <- as.factor(df$L)
 df$prior <- rep("SuSiE", nrow(df))
 
-dfp <- rbind(df_plot[, c("power", "T1_error", "prior", "L",
-                         "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")],
-             df[, c("power", "T1_error", "prior", "L",
-                    "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")])
 
+
+dfp <- rbind(df_plot[, c("power", "T1_error", "prior", "L",
+                         "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                         "cs_size","mean_purity")],
+             df[, c("power", "T1_error", "prior", "L",
+                    "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                    
+                    "cs_size","mean_purity")])
 library(ggplot2)
 
 P11 <- ggplot(dfp, aes(x = L, y = power, col = prior)) +
@@ -263,25 +275,39 @@ df_plot$t1_er_up  <- mapply(exact_ci_up,  df_plot$T1_error, n_rep)
 # Process SuSiE block results
 path <- getwd()
 load(paste0(path, "/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power/check_L_susie_128_block_sd1.RData"))
+
 df_susie <- data.frame(do.call(rbind, res))
-colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect")
+colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect",
+                        "purity",
+                        "cs_size")
 df_simu <- df_susie
 df_simu$power <- df_simu$n_effect / df_simu$Number_effect 
 df_simu$t1    <- 1 - df_simu$n_false_effect / (df_simu$n_effect + df_simu$n_false_effect)
+
 mean_power_susie <- rep(NA, max(df_simu$Number_effect))
 mean_T1_susie    <- rep(NA, max(df_simu$Number_effect))
+
+mean_purity    <- rep(NA, max(df_simu$Number_effect))
+mean_cs    <- rep(NA, max(df_simu$Number_effect))
 which_L         <- rep(NA, max(df_simu$Number_effect))
+
 h <- 1
 for (i in unique(df_simu$Number_effect)) {
   idx <- which(df_simu$Number_effect == i)
+  
   mean_power_susie[h] <- mean(df_simu$power[idx])
   mean_T1_susie[h]    <- mean(df_simu$t1[idx])
+  mean_purity [h]     <- mean(df_simu$purity[idx])
+  mean_cs [h]         <- mean(df_simu$cs_size[idx])
   which_L[h] <- i
   h <- h + 1
 }
+
 df <- data.frame(power    = mean_power_susie,
                  T1_error = mean_T1_susie,
-                 L        = unique(df_simu$Number_effect))
+                 L        = unique(df_simu$Number_effect),
+                 mean_purity  =  mean_purity,
+                 cs_size  = mean_cs)
 # For SuSiE block, use exact CI functions
 n_rep <- as.numeric(table(df_simu$Number_effect))
 df$pw_er_low <- mapply(exact_ci_low, df$power, n_rep)
@@ -290,10 +316,13 @@ df$t1_er_low <- mapply(exact_ci_low, df$T1_error, n_rep)
 df$t1_er_up  <- mapply(exact_ci_up,  df$T1_error, n_rep)
 df$L <- as.factor(df$L)
 df$prior <- rep("SuSiE", nrow(df))
-dfp_block <- rbind(df_plot[, c("power", "T1_error", "prior", "L",
-                               "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")],
-                   df[, c("power", "T1_error", "prior", "L",
-                          "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")])
+dfp_block <-  rbind(df_plot[, c("power", "T1_error", "prior", "L",
+                                "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                                "cs_size","mean_purity")],
+                    df[, c("power", "T1_error", "prior", "L",
+                           "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                           
+                           "cs_size","mean_purity")])
 
 # Plot block section results
 library(ggplot2)
@@ -398,25 +427,39 @@ df_plot$t1_er_up  <- mapply(exact_ci_up,  df_plot$T1_error, n_rep)
 # Process SuSiE distance decay results
 path <- getwd()
 load(paste0(path, "/simulation/Simulation_script/script/additional_simualtion_for_fig3_panel_D_susie_pc_calibration_power/check_L_susie_128_distdecay_sd1.RData"))
+
 df_susie <- data.frame(do.call(rbind, res))
-colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect")
+colnames(df_susie) <- c("Number_effect", "n_cs", "n_effect", "n_false_effect",
+                        "purity",
+                        "cs_size")
 df_simu <- df_susie
 df_simu$power <- df_simu$n_effect / df_simu$Number_effect 
 df_simu$t1    <- 1 - df_simu$n_false_effect / (df_simu$n_effect + df_simu$n_false_effect)
+
 mean_power_susie <- rep(NA, max(df_simu$Number_effect))
 mean_T1_susie    <- rep(NA, max(df_simu$Number_effect))
+
+mean_purity    <- rep(NA, max(df_simu$Number_effect))
+mean_cs    <- rep(NA, max(df_simu$Number_effect))
 which_L         <- rep(NA, max(df_simu$Number_effect))
+
 h <- 1
 for (i in unique(df_simu$Number_effect)) {
   idx <- which(df_simu$Number_effect == i)
+  
   mean_power_susie[h] <- mean(df_simu$power[idx])
   mean_T1_susie[h]    <- mean(df_simu$t1[idx])
+  mean_purity [h]     <- mean(df_simu$purity[idx])
+  mean_cs [h]         <- mean(df_simu$cs_size[idx])
   which_L[h] <- i
   h <- h + 1
 }
+
 df <- data.frame(power    = mean_power_susie,
                  T1_error = mean_T1_susie,
-                 L        = unique(df_simu$Number_effect))
+                 L        = unique(df_simu$Number_effect),
+                 mean_purity   =  mean_purity,
+                 cs_size  = mean_cs)
 # For SuSiE distance decay, use exact CI functions
 n_rep <- as.numeric(table(df_simu$Number_effect))
 df$pw_er_low <- mapply(exact_ci_low, df$power, n_rep)
@@ -426,10 +469,12 @@ df$t1_er_up  <- mapply(exact_ci_up,  df$T1_error, n_rep)
 df$L <- as.factor(df$L)
 df$prior <- rep("SuSiE", nrow(df))
 dfp_decay <- rbind(df_plot[, c("power", "T1_error", "prior", "L",
-                               "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")],
+                               "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                               "cs_size","mean_purity")],
                    df[, c("power", "T1_error", "prior", "L",
-                          "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low")])
-
+                          "pw_er_up", "pw_er_low", "t1_er_up", "t1_er_low",
+                          
+                          "cs_size","mean_purity")])
 # Plot distance decay section results
 P31 <- ggplot(dfp_decay, aes(x = L, y = power, col = prior)) +
   geom_point(position = position_dodge(.9), size = 2) +
@@ -510,3 +555,119 @@ P_out_cov <- grid.arrange(
 )
 ggsave(P_out_cov, file = paste0(save_path, "coverage.pdf"),
        width = 29.7, height = 10.5, units = "cm")
+
+
+
+
+
+
+
+
+
+library(dplyr)
+decay = dfp_decay[which(as.numeric(dfp_decay$L)<15 ),] %>%
+  group_by_("prior")%>% 
+  summarise(power       = mean(power,na.rm=TRUE),
+            coverage    = mean(T1_error, na.rm=TRUE),
+            purity      = mean(mean_purity, na.rm=TRUE),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            cs_size_est     = mean(cs_size,na.rm=TRUE),
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+            )
+decay 
+block= dfp_block[which(as.numeric(dfp_block$L)<15),] %>%
+  group_by_("prior")%>% 
+  summarise(power       = mean(power,na.rm=TRUE),
+            coverage    = mean(T1_error, na.rm=TRUE),
+            purity      = mean(mean_purity, na.rm=TRUE),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            cs_size_est     = mean(cs_size,na.rm=TRUE),
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+  )
+
+gaussian= dfp[which(as.numeric(dfp$L)<15 ),] %>%
+  group_by_("prior")%>% 
+  summarise(power       = mean(power,na.rm=TRUE),
+            coverage    = mean(T1_error, na.rm=TRUE),
+            purity      = mean(mean_purity, na.rm=TRUE),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            cs_size_est     = mean(cs_size,na.rm=TRUE),
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+  )
+
+
+gaussian$sim=  "Gaussian"
+
+block$sim = " WGBS block"
+decay $sim = " WGBS decay"
+
+df_panel_C= rbind(gaussian,
+                  block,
+                  decay)
+
+#### Neww  ----
+df_panel_C$sim <- factor(df_panel_C$sim, levels = c("Gaussian", " WGBS block", " WGBS decay"))
+
+P_power = ggplot( df_panel_C,
+        aes(y=power, x=sim, col=prior))+
+  geom_point(position = position_dodge(.5), size = 2) +
+  theme_linedraw() +
+   theme(legend.position = "none")+
+  ylab("Power")+
+  xlab("")+
+  
+  
+  scale_color_manual(values=c(  "gold","magenta","dodgerblue" ))
+
+P_power
+ggsave(P_power, file = paste0(save_path, "power_1_15.pdf"),
+       width = 10.5, height = 10.5, units = "cm")
+P_coverage =  ggplot( df_panel_C,
+        aes(y=coverage, x=sim, col=prior))+
+  geom_point(position = position_dodge(.5), size = 2) +
+  theme_linedraw() +
+  theme(legend.position = "none")+
+  ylab("Coverage")+
+  xlab("")+
+  
+  scale_color_manual(values=c(  "gold","magenta","dodgerblue" ))
+P_coverage
+ggsave(P_coverage, file = paste0(save_path, "coverage_1_15.pdf"),
+       width = 10.5, height = 10.5, units = "cm")
+  
+P_cs_size =  ggplot( df_panel_C,
+                      aes(y=cs_size_est, x=sim, col=prior))+
+  geom_point(position = position_dodge(.5), size = 2) +
+  
+  ylab("CS size")+
+  xlab("")+
+  theme_linedraw() +
+  theme(legend.position = "none")+
+  geom_errorbar(aes(ymin = cs_size_low, ymax =cs_size_up), width = .2,
+                position = position_dodge(.5)) +
+  scale_color_manual(values=c(  "gold","magenta","dodgerblue" ))
+P_cs_size
+ggsave(P_cs_size, file = paste0(save_path, "cs_size_1_15.pdf"),
+       width = 10.5, height = 10.5, units = "cm")
+P_purity =  ggplot( df_panel_C,
+                     aes(y=purity, x=sim, col=prior))+
+  geom_point(position = position_dodge(.5), size = 2) +
+  theme(legend.position = "none")+
+  ylab("Purity")+
+  xlab("")+
+  theme_linedraw() +
+  theme(legend.position = "none")+
+  geom_errorbar(aes(ymin = purity_low, ymax =purity_up), width = .2,
+                position = position_dodge(.5)) +
+  scale_color_manual(values=c(  "gold","magenta","dodgerblue" ))
+P_purity
+
+ggsave(P_purity, file = paste0(save_path, "purity_1_15.pdf"),
+       width = 10.5, height = 10.5, units = "cm")
+
