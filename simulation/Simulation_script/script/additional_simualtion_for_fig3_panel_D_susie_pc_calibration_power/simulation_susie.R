@@ -49,6 +49,8 @@ for (o  in (length(res)+1):10000) {
   
   Number_effect = length( true_pos)
   n_cs      = length(res_susie$sets$cs)
+  purity= mean ( res_susie$sets$purity[,1])
+  cs_size= mean(lengths(res_susie$set$cs))
   
   if( n_cs>0){
     n_false_effect=Reduce("+", lapply( 1:n_cs, function(l){
@@ -58,7 +60,7 @@ for (o  in (length(res)+1):10000) {
     n_false_effect=0 
   }
   n_effect= n_cs- n_false_effect
-  out <-   c( Number_effect, n_cs, n_effect, n_false_effect)
+  out <-   c( Number_effect, n_cs, n_effect, n_false_effect,purity,cs_size)
   
  
   res[[o]] <- (out)

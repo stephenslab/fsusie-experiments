@@ -24,7 +24,7 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/comparison_susie_fusie_distdecay_
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
   set.seed (o)
-  L <- sample(1:5, size =1)#actual number of effect
+  L <- sample(5:15, size =1)#actual number of effect
   lf <-  list()
   R=2^7
   for(l in 1:L){

@@ -24,7 +24,7 @@ if(file.exists("/home/wdenault/fsusi_simu/sim3/comparison_susie_fusie_128_sd1.RD
 Rtrue <- cor (genotype )
 for (o  in (length(res)+1):10000) {
   set.seed (o)
-  L <- sample(1:5, size =1)#actual number of effect
+  L <- sample(5:15, size =1)#actual number of effect
   lf <-  list()
   for(l in 1:L){
     lf[[l]] <- simu_IBSS_per_level(lev_res=7)$sim_func #functional effect for effect l
