@@ -372,15 +372,15 @@ haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = 
                   data = matrix(0*pos , nrow=1), genome = "hg38", 
                   ylim =c( min( c(effect)),max(c(effect)  )) ,
                   type = "p", 
-                  col = "lightblue" ,
-                  cex= 1,# Use color column from df_plot
+                  col = "royalblue" ,
+                  cex= 0.6,# Use color column from df_plot
                   track.margin = 0.05, # Reduce margin between track and title
                   cex.title = 0.6,     # Reduce title size
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
                   col.title = "black", 
                   background.title = "white",
-                  name="PIP DNAm") ) # Change title color to black
+                  name="Effect H3k9ac") ) # Change title color to black
 
 
 
@@ -450,6 +450,7 @@ meQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                           groups= group_cred,
                           rotation.title = 90,
                           name ="Effect DNAm",
+                          ylim =c( min( c(effect)),max(c(effect))) ,
                           type = "l",
                           lwd= group_lwd,
                           col = group_colors,
@@ -471,13 +472,13 @@ meQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = 
                         
                        pch=20,
                        col = "royalblue" ,
-                       cex=  1,# Use color column from df_plot
+                       cex=  0.6,# Use color column from df_plot
                        track.margin = 0.05, # Reduce margin between track and title
                        cex.title = 0.6,     # Reduce title size
                        cex.axis = 0.6,      # Reduce axis text size
                        col.axis = "black",  # Change axis color to black
                        col.title = "black",
-                       background.title = "white" ,name="PIP DNAm") ) # Change title color to black
+                       background.title = "white" ,name="Effect DNAm") ) # Change title color to black
 
 
 
@@ -501,7 +502,7 @@ plotTracks(fsusie_me_plot  )
 list_track=  list( otAD,
                    otGALNT6,
                    otSLC4A8 ,
-                   t_me,t_ha,
+                   #t_me,t_ha,
                    
                    fsusie_me_plot ,
                    fsusie_ha_plot
@@ -620,18 +621,13 @@ list_track=  list( otAD,
 )
 
 #view_win <- c(5.12e7, 5.16e7) 
-plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2])
-
-
 
 plotTracks(list_track,
            from =view_win[1],
            to=view_win[2],  frame = TRUE)
 plotTracks(list_track,
            from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=51875000 ,
+            to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL"  & plot_df$region=="GALNT6")]) ,
            frame = TRUE,
          
            sizes = c(1, 1,1, 0.5, 0.5,1,1,1))
@@ -653,4 +649,26 @@ plotTracks(list_track,
            
            sizes = c(0.5, 0.5,0.5,  1,1,0.75))
 
- 
+
+
+folder_path=  paste0(getwd(),
+                     "/plot/"
+)
+file_path <- file.path(folder_path, "GALNT6.pdf")
+pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
+
+
+plotTracks(list_track,
+           #from =view_win[1],
+           #to=view_win[2], 
+           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
+           to=52209591,#max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL"  & plot_df$region=="GALNT6")]) ,
+           frame = TRUE,
+           
+           sizes = c(0.75, 0.75,0.75, 0.75,0.75,0.5),
+           #fontsize  = 15
+           cex.main=1.2, cex.title = 1.
+)
+
+dev.off()
+52209591

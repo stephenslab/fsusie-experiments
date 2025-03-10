@@ -34,7 +34,7 @@ data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1   ),]  #%
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg38", 
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
@@ -48,7 +48,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
@@ -84,7 +84,7 @@ data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg38", 
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
@@ -98,7 +98,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
@@ -132,7 +132,7 @@ data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = matrix(data_track$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track$z , nrow=1), genome = "hg38", 
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
@@ -146,7 +146,7 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
 
 
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos , end = data_track_CS1$pos )),
-                data = matrix(data_track_CS1$z , nrow=1), genome = "hg19", 
+                data = matrix(data_track_CS1$z , nrow=1), genome = "hg38", 
                 ylim =c( min(data_track$z), max(data_track$z)),
                 type = "p", col = "royalblue", cex=1.5,  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
@@ -169,10 +169,10 @@ data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.
 tdf= plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
 tdf$z=tdf$z*0
 t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = tdf$pos , end = tdf$pos )),
-                 data = matrix(tdf$z, nrow=1), genome = "hg19", 
+                 data = matrix(tdf$z, nrow=1), genome = "hg38", 
                  ylim =c( 0, 0.5),
                  type = "p", col = "black",
-                 cex=1.5,# Use color column from df_plot
+                # cex=1.5,# Use color column from df_plot
                  track.margin = 0.05, # Reduce margin between track and title
                  cex.title = 0.6,     # Reduce title size
                  cex.axis = 0.6,      # Reduce axis text size
@@ -182,7 +182,7 @@ t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = tdf$po
 #  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
 #data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
 t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
-                  data = matrix(data_ha$pip , nrow=1), genome = "hg19", 
+                  data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
                   ylim =c( 0, 0.5),
                   type = "p", col = "royalblue",
                   cex=1.5,# Use color column from df_plot
@@ -271,6 +271,7 @@ haQTL_track =   DataTrack(range = GRanges(seqnames = chr,
                                                            end = positions + 1)),
                           data = effect, genome = "hg38",
                           groups= group_cred,
+                          ylim =c( min( c(effect)),max(c(effect)  )) ,
                           lwd = group_lwd,
                           rotation.title = 90,
                           name ="effect H3k9ac",
@@ -295,7 +296,7 @@ haQTL_pos= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = 
                        ylim =c( min( c(effect)),max(c(effect)  )) ,
                        type = "p", 
                        col = "royalblue" ,
-                       cex= 1,# Use color column from df_plot
+                         cex=  0.6,# Use color column from df_plot
                        track.margin = 0.05, # Reduce margin between track and title
                        cex.title = 0.6,     # Reduce title size
                        cex.axis = 0.6,      # Reduce axis text size
@@ -443,4 +444,27 @@ plotTracks(list_track,
            to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
            frame = TRUE 
 )
+ 
+plotTracks(list_track,
+           from =206320523 ,
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
+           frame = TRUE ,
+           sizes = c(0.5,0.5, 0.5,0.3,  1, 0.75)
+)
+folder_path=  paste0(getwd(),
+                     "/plot/"
+)
+file_path <- file.path(folder_path, "CR1_CR2.pdf")
+pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
 
+
+plotTracks(list_track,
+           from =206320523 ,
+           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
+           frame = TRUE ,
+           sizes = c(0.75,0.75, 0.75,0.3,  0.75, 0.75),
+           #fontsize  = 15
+           cex.main=1.2, cex.title = 1.
+)
+
+dev.off()

@@ -23,7 +23,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+ df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -189,7 +189,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+ df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -354,7 +354,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+ df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -518,7 +518,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+ df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect

@@ -1,3 +1,4 @@
+library(ggplot2)
 set.seed(2)
 library(reshape2)
 L <- sample(1:5, size =1)#actual number of effect
