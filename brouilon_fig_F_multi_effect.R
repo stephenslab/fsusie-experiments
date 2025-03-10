@@ -36,13 +36,14 @@ sumstat <- data$f[[5]]
 pip_df <- data$f[[6]]
 QTL_data <- data$f[[7]] 
 
- 
+
+view_win <- c(5.12e7, 5.16e7)
 
 ### AD GWAS panel -----
 
 chr =  paste("chr", 12, sep = "")
 
- 
+
 
 study="AD_Bellenguez_2022"
 data_track = plot_df [ which(   plot_df $study == study   ),]
@@ -93,7 +94,7 @@ plotTracks( otAD )
 
 
 #### GALNT6 panel ---- 
- 
+
 
 gene_name="GALNT6"
 study="Oli_mega_eQTL" 
@@ -129,7 +130,7 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 col.title = "black",cex.title = cex,
                 rotation.title = 90,
                 background.title = "white",name="GALNT6") ) # Change title color to black
- 
+
 
 otGALNT6 <- OverlayTrack(trackList=list(    t1, t2 ),
                          background.title = "white")
@@ -197,10 +198,11 @@ plotTracks( otSLC4A8 )
 ####  PIP plot ------
 
 
+
 data_ha = pip_df %>%
   filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95 == 5)
 #pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
-t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
+t_ha1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                   data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
                   ylim =c( 0.5, 1.1),
                   type = "p", col = "royalblue",
@@ -210,7 +212,39 @@ t_ha= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
                   col.title = "black",rotation.title = 90,cex.title = cex,
+                  background.title = "white",name="PIP \n H3k4a9ac") )
+ 
+data_ha = pip_df %>%
+  filter(study %in% c("ROSMAP_DLPFC_haQTL") )
+#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
+ 
+
+
+
+sub1= data_ha [which( data_ha$cs_coverage_0.95==4),]
+t_ha2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
+                  data = matrix(sub1$pip , nrow=1), genome = "hg38", 
+                  ylim =c( 0.0, 1.1),
+                  type = "p", ,
+                  col = c( "#6A3D9A"  ),
+                  cex=1.5,# Use color column from df_plot
+                  track.margin = 0.05, # Reduce margin between track and title
+                  cex.title = 0.6,     # Reduce title size
+                  cex.axis = 0.6,      # Reduce axis text size
+                  col.axis = "black",  # Change axis color to black
+                  col.title = "black",rotation.title = 90,cex.title = cex,
                   background.title = "white",name="PIP \n H3k4a9ac") ) # Change title color to black
+
+plotTracks(t_ha1)
+
+plotTracks(t_ha2)
+ 
+
+
+t_ha= OverlayTrack(trackList = list(t_ha1,t_ha2),
+                   background.title = "white")
+
+plotTracks(t_ha )
 
 
 
@@ -220,10 +254,10 @@ data_me =  QTL_data %>%
   separate(col = variant_id, into = c("chrom", "pos"), remove = FALSE) %>%
   mutate(pos = as.numeric(pos))
 
-t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
+t_me2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
                   data = matrix(data_me$pip , nrow=1), genome = "hg38", 
                   ylim =c( 0.5, 1.1) ,
-                  type = "p", col = "maroon",
+                  type = "p", col = "royalblue",
                   cex=1.5,# Use color column from df_plot
                   track.margin = 0.05, # Reduce margin between track and title
                   cex.title = 0.6,     # Reduce title size
@@ -235,6 +269,30 @@ t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_
 
 
 
+data_me = pip_df %>%
+  filter(study %in% c( "MSBB_mQTL") )  
+
+sub= data_me [which(  data_me$pos > view_win[1] & data_me$pos < view_win[2]),]
+
+sub1=data_me [which (data_me $cs_coverage_0.95==2),]
+t_me1  = ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
+                    data = matrix(sub1$pip , nrow=1), genome = "hg38", 
+                    ylim =c( 0,1 ) ,
+                    type = "p", col = c(  "green4" ), 
+                    cex=1.5,# Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="PIP \n DNAm") ) # Change title color to black
+ 
+
+
+t_me  = OverlayTrack(trackList = list(t_me1,t_me2),
+                     background.title = "white")
+
+plotTracks(t_me )
 
 
 list_track=  list( otAD,
@@ -243,11 +301,7 @@ list_track=  list( otAD,
                    t_me,t_ha
                    
 )
-
-view_win <- c(5.12e7, 5.16e7)
-plotTracks(list_track,
-           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
+ 
 
 plotTracks(list_track,
            from =view_win[1],
@@ -258,7 +312,7 @@ plotTracks(list_track,
 
 res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
- rm(res)
+rm(res)
 #positions = fsusie_obj_ha$outing_grid
 
 
@@ -266,7 +320,7 @@ fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
 
 
 #haQTL_track = DataTrack(range = GRanges(seqnames = chr,
-                                        #                                        ranges = IRanges(start = positions ,
+#                                        ranges = IRanges(start = positions ,
 #                                                      end = positions   + 1)),
 ##                        data = effect , genome = "hg38",
 #                        type = "l",  col = "steelblue",
@@ -315,13 +369,13 @@ fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
 
 
 
- res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.input_data.rds")
- Y= as.data.frame(res_ha$residual_Y)
+res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+Y= as.data.frame(res_ha$residual_Y)
 
 
- X=as.data.frame(res_ha$residual_X)
- pos = as.data.frame(res_ha$Y_coordinates) #use start
- pos= pos$start
+X=as.data.frame(res_ha$residual_X)
+pos = as.data.frame(res_ha$Y_coordinates) #use start
+pos= pos$start
 
 
 map_data <- fsusieR:::remap_data(Y=Y,
@@ -380,7 +434,7 @@ for ( i in 2:(length(pos)-1))
   # DataTrack for effect size points (blue dots)
   dTrack_points <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
                              data = effect, name = "Effect Size", type = "p",
-                             ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                             ylim =c( -0.17,0.17  ) ,
                              col = "royalblue", pch = 16, cex =  .8,
                              background.title = "white" )
   
@@ -393,11 +447,10 @@ for ( i in 2:(length(pos)-1))
   error_bar_track <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
                                data = matrix(
                                  c(ci_lower, ci_upper), ncol=1
-                               ), name = "Effect Size", type = "l",
-                               ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                               ), name = "Effect Size", type = "l", 
                                col = "royalblue", pch = 16, cex = 1.2,
                                lwd=2,
-                               ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                               ylim =c( -0.17,0.17  ) ,
                                
                                background.title = "white"
   )
@@ -409,10 +462,9 @@ for ( i in 2:(length(pos)-1))
                          rep( ci_upper, (2*widthtick+1)), 
                          nrow= 1)  ,
                        name = "Effect Size", type = "l",
-                       lwd=2,
-                       ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                       lwd=2, 
                        col = "royalblue", pch = 16, cex = 1.2,
-                       ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                       ylim=c( -0.17,0.17  ) ,
                        background.title = "white"
   ) 
   
@@ -426,9 +478,8 @@ for ( i in 2:(length(pos)-1))
                           nrow= 1)  ,
                         lwd=2,
                         name = "Effect Size", type = "l",
-                        ylim =c( min( c(effect_s)),max(c(effect_s)  )),
                         col = "royalblue", pch = 16, cex = 1.2,
-                        ylim =c( min( c(effect_s)),max(c(effect_s)  ))
+                        ylim =c( -0.17,0.17  ) 
   ) 
   
   
@@ -446,11 +497,147 @@ for ( i in 2:(length(pos)-1))
 tt= do.call( rbind , df_list)
 
 idl= which( pos > view_win[1] & pos < view_win[2])-1
-total_overlay= OverlayTrack( trackList =plot_list[idl],
-                             background.title = "white")
+total_overlay1= OverlayTrack( trackList =plot_list[idl],
+                              background.title = "white")
 
 
 
+plotTracks(total_overlay1, from = view_win[1],
+           to= view_win[2])
+
+Y= as.data.frame(res_ha$residual_Y)
+
+
+X=as.data.frame(res_ha$residual_X)
+pos = as.data.frame(res_ha$Y_coordinates) #use start
+pos= pos$start
+
+
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
+
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y
+
+
+out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,1991], ncol=1),alpha=0.01)
+
+positions=outing_grid 
+effect_s=rbind(out$effect_estimate,
+               out$cred_band,
+               rep(0,length(out$effect_estimate)))
+
+
+
+
+
+
+
+chrom=12
+plot_list=list()
+df_list=list()
+widthtick=1000
+for ( i in 2:(length(pos)-1))
+  
+{
+  
+  
+  up =  which(positions>=  pos[i] )
+  low = which( pos[i] >=positions  ) 
+  
+  idx=   ifelse(  abs( pos[i]-positions[min(up)])<  abs( pos[i]-positions[ max(low)]),
+                  min(up),
+                  max(low))[1]
+  
+  
+  du = abs( pos[i]-positions[min(up)])
+  di = abs( pos[i]-positions[ max(low)])
+  dupdi=du+di
+  
+  effect =  (1 - du/dupdi ) *effect_s[1, min(up)]+ (1 - di/dupdi )* effect_s[1, max(low)]
+  ci_lower =   (1 - du/dupdi ) *effect_s[2, min(up)]+ (1 - di/dupdi ) *effect_s[2, max(low)]  
+  ci_upper =  (1 - du/dupdi )* effect_s[3, min(up)]+ (1 - di/dupdi )* effect_s[3, max(low)]  
+  df_list[[i-1]]= data.frame(effect=effect,
+                             ci_lower=ci_lower,
+                             ci_upper=ci_upper,
+                             pos=pos[i])
+  
+  
+  
+  # DataTrack for effect size points (blue dots)
+  dTrack_points <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
+                             data = effect, name = "Effect Size", type = "p",
+                             ylim =  c( -0.17,0.17  ) ,
+                             col = "#6A3D9A", pch = 16, cex =  .8,
+                             background.title = "white" )
+  
+  # Create GRanges for vertical error bars
+  gr_errors <- GRanges(seqnames = chrom,
+                       ranges = IRanges(start = pos[i ], end = pos[i ]),
+                       lower = ci_lower,
+                       upper = ci_upper)
+  # AnnotationTrack for vertical error bars
+  error_bar_track <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
+                               data = matrix(
+                                 c(ci_lower, ci_upper), ncol=1
+                               ), name = "Effect Size", type = "l", 
+                               col = "#6A3D9A", pch = 16, cex = 1.2,
+                               lwd=2,
+                               ylim = c( -0.17,0.17  ) ,
+                               
+                               background.title = "white"
+  )
+  
+  tick_up <- DataTrack(start = ( pos[i] +-widthtick:widthtick),
+                       end = pos[i] +-widthtick:widthtick+1,
+                       genome = "hg38", chromosome = chrom,
+                       data = matrix(
+                         rep( ci_upper, (2*widthtick+1)), 
+                         nrow= 1)  ,
+                       name = "Effect Size", type = "l",
+                       lwd=2,
+                       
+                       col = "#6A3D9A", pch = 16, cex = 1.2,
+                       ylim = c( -0.17,0.17  ) ,
+                       background.title = "white"
+  ) 
+  
+  
+  
+  tick_low <- DataTrack(start = ( pos[i] +-widthtick:widthtick),
+                        end = pos[i] +-widthtick:widthtick+1,
+                        genome = "hg38", chromosome = chrom,
+                        data = matrix(
+                          rep( ci_lower, (2*widthtick+1)), 
+                          nrow= 1)  ,
+                        lwd=2,
+                        name = "Effect Size", type = "l",
+                        
+                        col ="#6A3D9A", pch = 16, cex = 1.2,
+                        ylim = c( -0.17,0.17  ) 
+  ) 
+  
+  
+  tt = OverlayTrack(trackList = list( tick_low,tick_up,error_bar_track,  dTrack_points))
+  #plotTracks(tt)
+  
+  plot_list[[i-1]] <- OverlayTrack(trackList = tt,
+                                   background.title = "white")
+  
+  
+}
+
+
+
+tt= do.call( rbind , df_list)
+
+idl= which( pos > view_win[1] & pos < view_win[2])-1
+total_overlay2= OverlayTrack( trackList =plot_list[idl],
+                              background.title = "white")
+plotTracks(total_overlay2, from = view_win[1],
+           to= view_win[2])
 
 
 
@@ -464,7 +651,7 @@ haQTL_pos0 =   DataTrack(range = GRanges(seqnames = chr,
                                                           end = positions + 1)),
                          data = effect0, genome = "hg38",
                          groups= group_cred,
-                         ylim =c( min( c(effect_s)),max(c(effect_s)  )) ,
+                         ylim =c( -0.17,0.17  ) ,
                          lwd = group_lwd,
                          rotation.title = 90,
                          name ="effect H3k9ac",
@@ -483,18 +670,24 @@ haQTL_pos0 =   DataTrack(range = GRanges(seqnames = chr,
 )
 
 fsusie_ha_plot <- OverlayTrack(trackList = list( haQTL_pos0,
-                                                 OverlayTrack(trackList =plot_list[idl])
+                                                 total_overlay2,
+                                                 total_overlay1
 ),
 background.title = "white"
 )
 
+
 plotTracks(fsusie_ha_plot )
+
+
 
 #### meqtl -----
 
+
+
 res <-  readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.rds")
-  
-  fsusie_obj_me = res$`chr12:47653211-53108261`$MSBB_mQTL$fsusie_result
+
+fsusie_obj_me = res$`chr12:47653211-53108261`$MSBB_mQTL$fsusie_result
 
 
 rm(res)
@@ -641,226 +834,148 @@ for ( i in 2:(length(pos)-1))
 tt= do.call( rbind , df_list)
 
 idlme= which( pos > view_win[1] & pos < view_win[2])-1
-total_overlay= OverlayTrack( trackList =plot_listme[idl],
-                             background.title = "white")
+total_overlay1= OverlayTrack( trackList =plot_listme[idl],
+                              background.title = "white")
+
+
+
+
+Y= as.data.frame(res_me$residual_Y)
+
+
+X=as.data.frame(res_me$residual_X)
+pos = as.data.frame(res_me$Y_coordinates) #use start
+pos= pos$start
+
+
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
+
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y
+
+fsusie_obj_me$cs[[14]]
+out= fsusieR:::univariate_TI_regression(Y_w,X= matrix(X[,9812], ncol=1),alpha=0.01)
+plot( out$effect_estimate)
+lines(out$cred_band[1,])                                        
+lines(out$cred_band[2,])  
+
+
+
+positions=outing_grid 
+
+effect_s=rbind(out$effect_estimate,
+               out$cred_band,
+               rep(0,length(out$effect_estimate)))
 
 
 
 
 
 
-effect0=       rep(0,length(out$effect_estimate ))
-group_cred= c( 0)
-group_colors <- c("black"  )
 
-group_lwd= c(2)
-meQTL_pos0 =   DataTrack(range = GRanges(seqnames = chr,
-                                         ranges = IRanges(start = positions,
-                                                          end = positions + 1)),
-                         data = effect0, genome = "hg38",
-                         groups= group_cred,
-                         ylim =c( min( c(effect_s)),max(c(effect_s)  )) ,
-                         lwd = group_lwd,
-                         rotation.title = 90,
-                         name ="effect H3k9ac",
-                         type = c(  "l" ),
-                         col = group_colors,
-                         
-                         track.margin = 0.05,
-                         cex=1.5,# Use color column from df_plot
-                         track.margin = 0.05, # Reduce margin between track and title
-                         cex.title = 0.6,     # Reduce title size
-                         cex.axis = 0.6,      # Reduce axis text size
-                         col.axis = "black",  # Change axis color to black
-                         col.title = "black",
-                         background.title = "white",
-                         legend = FALSE  # Remove legend
-)
-
-fsusie_me_plot <- OverlayTrack(trackList = list( meQTL_pos0,
-                                                 OverlayTrack(trackList =plot_listme[idlme])
-),
-background.title = "white"
-)
-
-
-
-#fsusie_me_plot <- OverlayTrack(trackList=list( haQTL_track,haQTL_trackcb1, haQTL_trackcb2,
-#                                               meQTL_track,meQTL_trackcb1, meQTL_trackcb2 ),
-#                               background.title = "white")
-#plotTracks(fsusie_me_plot , from =view_win[1], to = view_win[2])
- 
-
-
-
-
-list_track=  list( otAD,
-                   otGALNT6,
-                   otSLC4A8 ,
-                   #t_me,t_ha,
-                   
-                   fsusie_me_plot ,
-                   fsusie_ha_plot
-)
-
-view_win <- c(5.12e7, 5.16e7)
-plotTracks(list_track,
-           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) )
-
-plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2])
-
- 
-
- 
-
-plotTracks(list_track,
-           from =view_win[1],
-           to=52000000 , frame = TRUE)
-                000000
- 
-library(biomaRt)
-library(GenomicRanges)
-
-# Define the genomic region
-chr <- "chr12"
-start_pos <-  min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")])
-end_pos <- max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL")]) 
-
-# Use biomaRt to fetch gene annotations from Ensembl
-mart <- useMart("ensembl", dataset="hsapiens_gene_ensembl")
-
-# Get gene and transcript information
-genes <- getBM(
-  attributes = c("chromosome_name", "start_position", "end_position", 
-                 "strand", "ensembl_gene_id", "ensembl_transcript_id", "external_gene_name"),
-  filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
-  mart = mart
-)
-
-# Get exon-level information
-exons <- getBM(
-  attributes = c("chromosome_name", "exon_chrom_start", "exon_chrom_end",
-                 "strand", "ensembl_gene_id", "ensembl_transcript_id", 
-                 "ensembl_exon_id", "external_gene_name"),
-  filters = c("chromosome_name", "start", "end"),
-  values = list("12", start_pos, end_pos),
-  mart = mart
-)
-
-# Check if any genes were retrieved
-if (nrow(genes) == 0) {
-  stop("No gene data retrieved. Check chromosome and coordinates.")
+chrom=12
+plot_listme=list()
+df_list=list()
+widthtick=1000
+for ( i in 2:(length(pos)-1))
+  
+{
+  
+  
+  up =  which(positions>=  pos[i] )
+  low = which( pos[i] >=positions  ) 
+  
+  idx=   ifelse(  abs( pos[i]-positions[min(up)])<  abs( pos[i]-positions[ max(low)]),
+                  min(up),
+                  max(low))[1]
+  
+  
+  du = abs( pos[i]-positions[min(up)])
+  di = abs( pos[i]-positions[ max(low)])
+  dupdi=du+di
+  
+  effect =  (1 - du/dupdi ) *effect_s[1, min(up)]+ (1 - di/dupdi )* effect_s[1, max(low)]
+  ci_lower =   (1 - du/dupdi ) *effect_s[2, min(up)]+ (1 - di/dupdi ) *effect_s[2, max(low)]  
+  ci_upper =  (1 - du/dupdi )* effect_s[3, min(up)]+ (1 - di/dupdi )* effect_s[3, max(low)]  
+  df_list[[i-1]]= data.frame(effect=effect,
+                             ci_lower=ci_lower,
+                             ci_upper=ci_upper,
+                             pos=pos[i])
+  
+  
+  
+  # DataTrack for effect size points (blue dots)
+  dTrack_points <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
+                             data = effect, name = "Effect Size", type = "p",
+                             ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                             col = "royalblue", pch = 16, cex =  .8,
+                             background.title = "white" )
+  
+  # Create GRanges for vertical error bars
+  gr_errors <- GRanges(seqnames = chrom,
+                       ranges = IRanges(start = pos[i ], end = pos[i ]),
+                       lower = ci_lower,
+                       upper = ci_upper)
+  # AnnotationTrack for vertical error bars
+  error_bar_track <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
+                               data = matrix(
+                                 c(ci_lower, ci_upper), ncol=1
+                               ), name = "Effect Size", type = "l",
+                               ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                               col = "royalblue", pch = 16, cex = 1.2,
+                               lwd=2,
+                               ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                               
+                               background.title = "white"
+  )
+  
+  tick_up <- DataTrack(start = ( pos[i] +-widthtick:widthtick),
+                       end = pos[i] +-widthtick:widthtick+1,
+                       genome = "hg38", chromosome = chrom,
+                       data = matrix(
+                         rep( ci_upper, (2*widthtick+1)), 
+                         nrow= 1)  ,
+                       name = "Effect Size", type = "l",
+                       lwd=2,
+                       ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                       col = "royalblue", pch = 16, cex = 1.2,
+                       ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                       background.title = "white"
+  ) 
+  
+  
+  
+  tick_low <- DataTrack(start = ( pos[i] +-widthtick:widthtick),
+                        end = pos[i] +-widthtick:widthtick+1,
+                        genome = "hg38", chromosome = chrom,
+                        data = matrix(
+                          rep( ci_lower, (2*widthtick+1)), 
+                          nrow= 1)  ,
+                        lwd=2,
+                        name = "Effect Size", type = "l",
+                        ylim =c( min( c(effect_s)),max(c(effect_s)  )),
+                        col = "royalblue", pch = 16, cex = 1.2,
+                        ylim =c( min( c(effect_s)),max(c(effect_s)  ))
+  ) 
+  
+  
+  tt = OverlayTrack(trackList = list( tick_low,tick_up,error_bar_track,  dTrack_points))
+  #plotTracks(tt)
+  
+  plot_listme[[i-1]] <- OverlayTrack(trackList = tt,
+                                     background.title = "white")
+  
+  
 }
 
-# Ensure strand is correctly formatted
-exons$strand <- ifelse(exons$strand == 1, "+", "-")
-
-# Keep only one isoform per gene (longest transcript)
-genes <- genes[order(genes$external_gene_name, genes$end_position - genes$start_position, decreasing = TRUE), ]
-genes <- genes[!duplicated(genes$external_gene_name), ]
-
-# Filter exons to match selected transcripts
-exons <- exons[exons$ensembl_transcript_id %in% genes$ensembl_transcript_id, ]
-
-# Rename columns to match GeneRegionTrack expectations
-exons <- exons[, c("chromosome_name", "exon_chrom_start", "exon_chrom_end", "strand", "ensembl_gene_id", "ensembl_transcript_id", "ensembl_exon_id", "external_gene_name")]
-colnames(exons) <- c("chromosome", "start", "end", "strand", "gene", "transcript", "exon", "symbol")
-
-# Convert to GeneRegionTrack-compatible data frame
-exons_df <- data.frame(
-  chromosome = paste0("chr", exons$chromosome),
-  start = exons$start,
-  end = exons$end,
-  strand = exons$strand,
-  gene = exons$gene,
-  transcript = exons$transcript,
-  exon = exons$exon,
-  symbol = exons$symbol,
-  feature = "exon"  # Mark exons so GViz can differentiate introns automatically
-)
-
-# Create the GeneRegionTrack with exon/intron display
-gene_track <- GeneRegionTrack(
-  exons_df,
-  genome = "hg38",
-  chromosome = chr,
-  start = start_pos,
-  end = end_pos,
-  name = "Genes",
-  showId = TRUE,
-  transcriptAnnotation = "symbol",
-  col = "black",
-  fill = "blue",
-  
-  col.axis = "black",col.title = "black",
-  rotation.title = 90,cex.title = cex,
-  col = "salmon",fill = "salmon",
-  background.title = "white"
-)
-
-  
 
 
-list_track=  list( otAD,
-                   otGALNT6,
-                   otSLC4A8 ,
-                    t_me,t_ha,
-                   
-                   fsusie_me_plot ,
-                   fsusie_ha_plot,
-                   gene_track
-)
+tt= do.call( rbind , df_list)
 
-#view_win <- c(5.12e7, 5.16e7) 
+idlme= which( pos > view_win[1] & pos < view_win[2])-1
+total_overlay2= OverlayTrack( trackList =plot_listme[idl],
+                              background.title = "white")
 
-plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2],  frame = TRUE)
-plotTracks(list_track,
-           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-            to=max( plot_df$pos[which(plot_df$study=="Oli_mega_eQTL"  & plot_df$region=="GALNT6")]) ,
-           frame = TRUE,
-         
-           sizes = c(1, 1,1, 0.5, 0.5,1,1,1))
-
-list_track=  list( otAD,
-                   otGALNT6,
-                   otSLC4A8 ,
-                   #t_me,t_ha,
-                   
-                   fsusie_me_plot ,
-                   fsusie_ha_plot,
-                   gene_track
-)
-
-plotTracks(list_track,
-           from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
-           to=51875000 ,
-           frame = TRUE,
-           
-           sizes = c(0.5, 0.5,0.5,  1,1,0.75))
-
-
-
-folder_path=  paste0(getwd(),
-                     "/plot/"
-)
-file_path <- file.path(folder_path, "GALNT6.pdf")
-pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
-
-
-plotTracks(list_track,
-            from =view_win[1],
-            to=view_win[2], 
-          frame = TRUE,
-           
-          # sizes = c(0.75, 0.75,0.75, 0.75),
-           #fontsize  = 15
-           cex.main=1.2, cex.title = 1.
-)
-
-dev.off() 
