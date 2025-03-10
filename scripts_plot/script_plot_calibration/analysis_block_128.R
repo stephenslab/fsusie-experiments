@@ -5,7 +5,7 @@ path <- getwd()
 load(paste( path,"/simulation/Simulation_results/block_L_accuracy_128_sd1.RData", 
             sep=""))
 
-
+colors= c(  "#FFC20A","#D41159" )
 
 
 df_simu <- do.call(rbind, res)
@@ -23,7 +23,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -123,6 +123,8 @@ P1_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   ylim(c(0 ,1))+
   ylab("Power")+
   ggtitle("PVE=10%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
 P1_p
 
@@ -133,8 +135,10 @@ P1_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
   ylab("Coverage")+
-  #ggtitle("Coverage PVE=10%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Coverage PVE=10%") + 
 
 P1_t1
 
@@ -144,8 +148,10 @@ P1_cs  <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
 
   ylim(c(1,17))+
   ylab("CS size")+
-  #ggtitle("CS size PVE=10%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("CS size PVE=10%") + 
 
 P1_cs
 
@@ -156,8 +162,10 @@ P1_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   ylim(c(0.9,1))+
 
   ylab("Purity")+
-  #ggtitle("Purity size PVE=10%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Purity size PVE=10%") + 
 
 P1_pur
 ### For PVE=20% ------
@@ -181,7 +189,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -279,6 +287,8 @@ P2_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
   ylim(c(0 ,1))+
   ylab(" ")+
   ggtitle("PVE=20%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
 P2_p
 
@@ -289,8 +299,10 @@ P2_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
   ylab(" ")+
-  #ggtitle("Coverage PVE=20%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Coverage PVE=20%") + 
 
 P2_t1
 
@@ -300,8 +312,10 @@ P2_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
 
   ylim(c(1,17))+
   ylab(" ")+
-  #ggtitle("CS size PVE=20%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("CS size PVE=20%") + 
 
 P2_cs
 
@@ -312,8 +326,10 @@ P2_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   ylim(c(0.9,1))+
 
   ylab(" ")+
-  #ggtitle("Purity size PVE=20%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Purity size PVE=20%") + 
 
 P2_pur
 ### For PVE=30% ----- 
@@ -338,7 +354,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -434,7 +450,9 @@ P3_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
                 position=position_dodge(.9) )+
   ylim(c(0 ,1))+
   ylab(" ")+
-  ggtitle("PVE=30%")  +
+  ggtitle("PVE=30%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
 P3_p
 
@@ -445,8 +463,10 @@ P3_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
   ylab(" ")+
-  #ggtitle("Coverage PVE=30%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Coverage PVE=30%") + 
 
 P3_t1
 
@@ -456,8 +476,11 @@ P3_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
 
   ylim(c(1,17))+
   ylab(" ")+
-  #ggtitle("PVE=30%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("PVE=30%") +
+  
 
 P3_cs
 
@@ -468,8 +491,10 @@ P3_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   ylim(c(0.9,1))+
 
   ylab(" ")+
-  #ggtitle("Purity size PVE=30%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Purity size PVE=30%") + 
 
 P3_pur
 ### For PVE=40% ------ 
@@ -493,7 +518,7 @@ colnames(df_simu) <- c("n_cs_nps",
                        "Number_effect",
                        "reg_sim")
 df_simu <- as.data.frame(df_simu)
-df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
+#df_simu <- df_simu[which(df_simu$Number_effect %in% c(1,2,4,8,12,16)),]
 df_simu <- df_simu[-which(df_simu$cs_size_ps>10),]
 library(dplyr)
 df_simu$power_nps <- df_simu$n_effect_nps/df_simu$Number_effect
@@ -589,7 +614,9 @@ P4_p <- ggplot(df_plot, aes( x=L, y= power, col=prior))+
                 position=position_dodge(.9) )+
   ylim(c(0 ,1))+
   ylab(" ")+
-  ggtitle(" PVE=40%") +
+  ggtitle(" PVE=40%")+
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
 P4_p
 
@@ -600,8 +627,10 @@ P4_t1 <- ggplot(df_plot, aes( x=L, y= T1_error, col=prior))+
   geom_hline(yintercept = 0.95)+
   ylim(c(0.8,1.01))+
   ylab(" ")+
-  #ggtitle("Coverage PVE=40%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Coverage PVE=40%") + 
 
 P4_t1
 
@@ -611,8 +640,11 @@ P4_cs <- ggplot(df_plot, aes( x=L, y= cs_size, col=prior))+
 
   ylim(c(1,17))+
   ylab(" ")+
-  #ggtitle("CS size PVE=40%") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("CS size PVE=40%") +
+ 
 
 P4_cs
 
@@ -621,9 +653,11 @@ P4_pur  <- ggplot(df_plot, aes( x=L, y= mean_purity, col=prior))+
   geom_point(position=position_dodge(.9),size=2)+
 
   ylim(c(0.9,1))+
-  ylab(" ")+
-  #ggtitle("Purity size PVE=40%") +
+  ylab(" ") +
+  xlab("Number of effects")+
+  scale_color_manual(values=colors)+
   theme_linedraw()
+  #ggtitle("Purity size PVE=40%") + 
 
 P4_pur
 
@@ -648,6 +682,10 @@ grid.arrange(P1_p,P2_p,P3_p, P4_p ,
 library(grid)
 
 library(ggpubr)
+path= getwd( )
+# Open a PDF device with A4 landscape dimensions
+ 
+pdf(paste0 (path, "/plot/simu_128_block.pdf") , width = 11.69, height = 8.27)  
 ggarrange(P1_p,P2_p,P3_p,P4_p,
           P1_t1,P2_t1,P3_t1,P4_t1,
           P1_cs,P2_cs,P3_cs,P4_cs,
@@ -661,4 +699,4 @@ id = c(1, 1    ,1               ,2   ,2   ,2 ,3         ,3   ,3       ,4   ,4   
 
 grid.polygon(x,y,id)
 
-
+dev.off()
