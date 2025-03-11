@@ -1358,7 +1358,7 @@ plot_colors <- c("black",  "orchid1"  ,"brown" , "#FF7F00", "green4" ,
                  "gold1", "skyblue2", "#FB9A99", "palegreen2", "#CAB2D6",
                  "#FDBF6F", "gray70", "khaki2", "maroon", "royalblue",
                  "deeppink1", "blue1", "steelblue4", "darkturquoise",
-                 "green1", "yellow4", "yellow3", "darkorange4", )
+                 "green1", "yellow4", "yellow3", "darkorange4"  )
 
 pos_SNP = pos_SNP_me
 obj     = fsusie_obj_me
