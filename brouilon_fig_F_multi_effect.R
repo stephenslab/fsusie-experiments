@@ -1344,7 +1344,7 @@ plotTracks(list_track,
 grid.text(
   "rs3782473",
   x = 0.7,
-  y =0.425,
+  y =0.45,
   gp = gpar(col = "black", fontsize = 10)
 )
 dev.off() 
