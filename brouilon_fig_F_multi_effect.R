@@ -216,158 +216,11 @@ plotTracks( otSLC4A8 )
 
 
 
-####  PIP plot ------
-
-
-
-data_ha = pip_df %>%
-  filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95 == 5)
-#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
-t_ha1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
-                  data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
-                  ylim =c( 0. , 1 ),
-                  type = "p", col = "black",
-                  pch=25,
-                  fill= "royalblue",
-                  cex=1.5,# Use color column from df_plot
-                  track.margin = 0.05, # Reduce margin between track and title
-                  cex.title = 0.6,     # Reduce title size
-                  cex.axis = 0.6,      # Reduce axis text size
-                  col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n H3k4a9ac") )
- 
-data_ha = pip_df %>%
-  filter(study %in% c("ROSMAP_DLPFC_haQTL") )
-#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
- 
-
-
-
-sub1= data_ha [which( data_ha$cs_coverage_0.95==4),]
-t_ha2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
-                  data = matrix(sub1$pip , nrow=1), genome = "hg38", 
-                  ylim =c( 0.0, 1 ),
-                  type = "p", ,
-                  col = c( "black"  ),
-                  pch=24,
-                  fill= "#6A3D9A",
-                  cex=1.5,# Use color column from df_plot
-                  track.margin = 0.05, # Reduce margin between track and title
-                  cex.title = 0.6,     # Reduce title size
-                  cex.axis = 0.6,      # Reduce axis text size
-                  col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n H3k4a9ac") ) # Change title color to black
-
-plotTracks(t_ha1)
-
-plotTracks(t_ha2)
- 
-t0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = 0*matrix(data_track$`-log10(P)` , nrow=1), genome = "hg19", 
-                ylim =c( 0.0, 1 ),
-                type = "p", col = "black",  # Use color column from df_plot
-                track.margin = 0.05, # Reduce margin between track and title
-                cex.title = 0.6,     # Reduce title size
-                cex.axis = 0.6,      # Reduce axis text size
-                col.axis = "black",  # Change axis color to black
-                col.title = "black",cex.title = cex,
-                rotation.title = 90,
-                background.title = "white",name="PIP \n H3k4a9ac") ) 
-
-
-
-t_ha= OverlayTrack(trackList = list( t_ha1,t_ha2,t0),
-                   background.title = "white")
-
-plotTracks(t_ha )
-
-
-
-data_me =  QTL_data %>%
-  filter(variant_id == "chr12:51362485:T:C", study == "MSBB_mQTL") %>%
-  mutate(study = "dmr-QTL") %>%
-  separate(col = variant_id, into = c("chrom", "pos"), remove = FALSE) %>%
-  mutate(pos = as.numeric(pos))
-
-t_me2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
-                  data = matrix(0.97  , nrow=1), genome = "hg38", 
-                  #I have hard coded instead of using data_me$pip
-                  #for visualiztion reason
-                  ylim =c( 0.5, 1) ,
-                  type = "p", col = "black",
-                  pch=24,
-                  fill= "royalblue",
-                  cex=1.5,# Use color column from df_plot
-                  track.margin = 0.05, # Reduce margin between track and title
-                  cex.title = 0.6,     # Reduce title size
-                  cex.axis = 0.6,      # Reduce axis text size
-                  col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n DNAm") ) # Change title color to black
-
-
-
-
-data_me = pip_df %>%
-  filter(study %in% c( "MSBB_mQTL") )  
-
-sub= data_me [which(  data_me$pos > view_win[1] & data_me$pos < view_win[2]),]
-
-sub1=data_me [which (data_me $cs_coverage_0.95==2),]
-t_me1  = ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
-                    data = matrix(sub1$pip , nrow=1), genome = "hg38", 
-                    ylim =c( 0,1 ) ,
-                    type = "p", col = c(  "black" ), 
-                    pch=24,
-                    fill= "green4",
-                    cex=1.5,# Use color column from df_plot
-                    track.margin = 0.05, # Reduce margin between track and title
-                    cex.title = 0.6,     # Reduce title size
-                    cex.axis = 0.6,      # Reduce axis text size
-                    col.axis = "black",  # Change axis color to black
-                    col.title = "black",rotation.title = 90,cex.title = cex,
-                    background.title = "white",name="PIP \n DNAm") ) # Change title color to black
- 
-
-t0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
-                data = 0*matrix(data_track$`-log10(P)` , nrow=1), genome = "hg19", 
-                ylim =c( 0.0, 1 ),
-                type = "p", col = "black",  # Use color column from df_plot
-                track.margin = 0.05, # Reduce margin between track and title
-                cex.title = 0.6,     # Reduce title size
-                cex.axis = 0.6,      # Reduce axis text size
-                col.axis = "black",  # Change axis color to black
-                col.title = "black",cex.title = cex,
-                rotation.title = 90,
-                background.title = "white",name="PIP \n DNAm") ) 
-
-
-
-t_me  = OverlayTrack(trackList = list(  t_me1,t_me2,t0),
-                     background.title = "white")
-
-plotTracks(t_me )
-
-
-list_track=  list( otAD,
-                   otGALNT6,
-                   otSLC4A8 ,
-                   t_me,t_ha
-                   
-)
- 
-
-plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2])
-
-
 #### ha ---- ----- 
 
 res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
+ 
 rm(res)
 #positions = fsusie_obj_ha$outing_grid
 
@@ -430,6 +283,12 @@ Y= as.data.frame(res_ha$residual_Y)
 
 
 X=as.data.frame(res_ha$residual_X)
+
+
+col_names <-        colnames(as.data.frame(res_ha$X_data)) 
+
+pos_SNP_HA <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
+
 pos = as.data.frame(res_ha$Y_coordinates) #use start
 pos= pos$start
 
@@ -825,6 +684,9 @@ res_me <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-e
 
 Y= as.data.frame(res_me$residual_Y)
 
+col_names <-        colnames(as.data.frame(res_me$X_data)) 
+
+pos_SNP_me <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
 
 X=as.data.frame(res_me$residual_X)
 pos = as.data.frame(res_me$Y_coordinates) #use start
@@ -1155,7 +1017,7 @@ meQTL_pos0 =   DataTrack(range = GRanges(seqnames = chr,
                                                           end = positions + 1)),
                          data = effect0, genome = "hg38",
                          groups= group_cred,
-                         ylim =c( min( c(effect_s)),max(c(effect_s)  )) ,
+                         ylim =c(-0.006176868,  0.065625264) ,
                          lwd = group_lwd,
                          rotation.title = 90,
                          name ="Effect DNAm",
@@ -1179,7 +1041,7 @@ meQTL_pos00 =   DataTrack(range = GRanges(seqnames = chr,
                                                           end = pos  )),
                          data = 0*pos, genome = "hg38",
                          groups= group_cred,
-                         ylim =c( min( c(effect_s)),max(c(effect_s)  )) ,
+                         ylim  =c(-0.006176868,  0.065625264) ,
                          lwd = group_lwd,
                          rotation.title = 90,
                          name ="Effect DNAm",
@@ -1198,7 +1060,7 @@ meQTL_pos00 =   DataTrack(range = GRanges(seqnames = chr,
 )
 
 fsusie_me_plot <- OverlayTrack(trackList = list( meQTL_pos0,
-                                                 meQTL_pos00,
+                                                  
                                                  total_overlay1,
                                                  total_overlay2 
 ),
@@ -1207,6 +1069,160 @@ background.title = "white"
 
 
 #plotTracks(fsusie_me_plot )
+
+
+####  PIP plot ------
+
+
+
+data_ha = pip_df %>%
+  filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95 == 5)
+
+
+
+#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
+t_ha1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
+                   data = matrix(data_ha$pip , nrow=1), genome = "hg38", 
+                   ylim =c( 0. , 1 ),
+                   type = "p", col = "black",
+                   pch=25,
+                   fill= "royalblue",
+                   cex=1.5,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n H3k4a9ac") )
+
+data_ha = pip_df %>%
+  filter(study %in% c("ROSMAP_DLPFC_haQTL") )
+#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
+
+
+
+
+sub1= data_ha [which( data_ha$cs_coverage_0.95==4),]
+t_ha2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
+                   data = matrix(sub1$pip , nrow=1), genome = "hg38", 
+                   ylim =c( 0.0, 1 ),
+                   type = "p", ,
+                   col = c( "black"  ),
+                   pch=24,
+                   fill= "#6A3D9A",
+                   cex=1.5,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n H3k4a9ac") ) # Change title color to black
+
+plotTracks(t_ha1)
+
+plotTracks(t_ha2)
+####" ici ------fsusie_obj_ha, pos_SNP = pos_SNP_HA
+t0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =  pos_SNP_HA , 
+                                                                 end =  pos_SNP_HA )),
+                data = matrix( fsusie_obj_ha$pip , nrow=1), genome = "hg19", 
+                ylim =c( 0.0, 1 ),
+                type = "p", col = "black",  # Use color column from df_plot
+                track.margin = 0.05, # Reduce margin between track and title
+                cex.title = 0.6,     # Reduce title size
+                cex.axis = 0.6,      # Reduce axis text size
+                col.axis = "black",  # Change axis color to black
+                col.title = "black",cex.title = cex,
+                rotation.title = 90,
+                background.title = "white",name="PIP \n H3k4a9ac") ) 
+
+
+
+t_ha= OverlayTrack(trackList = list(t0, t_ha1,t_ha2 ),
+                   background.title = "white")
+
+plotTracks(t_ha )
+
+
+
+data_me =  QTL_data %>%
+  filter(variant_id == "chr12:51362485:T:C", study == "MSBB_mQTL") %>%
+  mutate(study = "dmr-QTL") %>%
+  separate(col = variant_id, into = c("chrom", "pos"), remove = FALSE) %>%
+  mutate(pos = as.numeric(pos))
+
+t_me2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_me$pos , end = data_me$pos )),
+                   data = matrix(0.96  , nrow=1), genome = "hg38", 
+                   #I have hard coded instead of using data_me$pip
+                   #for visualiztion reason
+                   ylim =c( 0.5, 1) ,
+                   type = "p", col = "black",
+                   pch=24,
+                   fill= "royalblue",
+                   cex=1.5,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n DNAm") ) # Change title color to black
+
+
+
+
+data_me = pip_df %>%
+  filter(study %in% c( "MSBB_mQTL") )  
+
+sub= data_me [which(  data_me$pos > view_win[1] & data_me$pos < view_win[2]),]
+
+sub1=data_me [which (data_me $cs_coverage_0.95==2),]
+t_me1  = ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =sub1$pos , end =sub1$pos )),
+                     data = matrix(sub1$pip , nrow=1), genome = "hg38", 
+                     ylim =c( 0,1 ) ,
+                     type = "p", col = c(  "black" ), 
+                     pch=24,
+                     fill= "green4",
+                     cex=1.5,# Use color column from df_plot
+                     track.margin = 0.05, # Reduce margin between track and title
+                     cex.title = 0.6,     # Reduce title size
+                     cex.axis = 0.6,      # Reduce axis text size
+                     col.axis = "black",  # Change axis color to black
+                     col.title = "black",rotation.title = 90,cex.title = cex,
+                     background.title = "white",name="PIP \n DNAm") ) # Change title color to black
+
+
+t0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_SNP_me , end =pos_SNP_me )),
+                data =  matrix( fsusie_obj_me$pip , nrow=1), genome = "hg19", 
+                ylim =c( 0.0, 1 ),
+                type = "p", col = "black",  # Use color column from df_plot
+                track.margin = 0.05, # Reduce margin between track and title
+                cex.title = 0.6,     # Reduce title size
+                cex.axis = 0.6,      # Reduce axis text size
+                col.axis = "black",  # Change axis color to black
+                col.title = "black",cex.title = cex,
+                rotation.title = 90,
+                background.title = "white",name="PIP \n DNAm") ) 
+
+
+
+t_me  = OverlayTrack(trackList = list( t0, t_me1,t_me2 ),
+                     background.title = "white")
+
+plotTracks(t_me )
+
+
+list_track=  list( otAD,
+                   otGALNT6,
+                   otSLC4A8 ,
+                   t_me,t_ha
+                   
+)
+
+
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
+
+
 
 
 ###Gene track  ----
@@ -1311,7 +1327,7 @@ list_track=  list( otAD,
  
 
 folder_path=  paste0(getwd(),
-                     "/plot/"
+                     "/plot/GALNT6/"
 )
 file_path <- file.path(folder_path, "GALNT6.pdf")
 pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
@@ -1323,13 +1339,119 @@ plotTracks(list_track,
            frame = TRUE)
 grid.text(
   "rs3782473",
-  x = 0.5,
-  y =0.33,
+  x = 0.7,
+  y =0.425,
   gp = gpar(col = "black", fontsize = 10)
 )
 dev.off() 
 
 
 library(grid)
+#18473 fine mapp
 
+library( fsusieR)
+# Global _PIP ------
+library(cowplot)
+### me  ----- 
+
+plot_colors <- c("black",  "orchid1"  ,"brown" , "#FF7F00", "green4" ,   
+                 "gold1", "skyblue2", "#FB9A99", "palegreen2", "#CAB2D6",
+                 "#FDBF6F", "gray70", "khaki2", "maroon", "royalblue",
+                 "deeppink1", "blue1", "steelblue4", "darkturquoise",
+                 "green1", "yellow4", "yellow3", "darkorange4", )
+
+pos_SNP = pos_SNP_me
+obj     = fsusie_obj_me
+point_size = 1.25
+L <- obj$L
+y <- obj$pip
+font_size = 10
+col_y <- rep(0,length(y))
+for (l in 1:L) {
+  col_y[which(1:length(y) %in% obj$cs[[l]])] <- l
+}
+point_shape <- rep(19,length(pos_SNP))
+CS <- factor(col_y,
+             levels = 0:L,
+             labels = c("none",1:L))
+df <- data.frame(y = y,CS = CS,pos_SNP)
+P_pip_me = ggplot(df,aes(y = y,x = pos_SNP,color = CS)) +
+  geom_point(size =2.25,
+             shape = point_shape) +
+  scale_color_manual("CS",values = plot_colors) +
+  labs(x = "SNP",y = "PIP" )  +
+  theme_minimal( )+
+  theme(legend.position="none")+
  
+  geom_rect(aes(xmin = view_win[1], 
+                xmax = 51480000,
+                ymin = -0.01,
+                ymax = 1.02), 
+            alpha = 0.0, color = "red")
+
+folder_path=  paste0(getwd(),
+                     "/plot/GALNT6/"
+)
+file_path <- file.path(folder_path, "PIP_ha.pdf")
+pdf(file_path, width =  11.69, height =8.27 )  # A4 in inches
+
+
+P_pip_me 
+
+
+dev.off() 
+
+
+##length(pos_SNP)=16006
+
+### ha  ----- 
+
+
+SNP_in_cs = c(unlist( fsusie_obj_ha$cs)) 
+
+idx= which( fsusie_obj_ha$pip  >0.05  )
+fsusie_obj_ha$pip[idx[ -which(idx %in% SNP_in_cs  )] ]=0.0
+plot_colors <-          c("black" , "steelblue4", 
+                          "green4", "deeppink1",
+                          "#6A3D9A","royalblue",  
+                          "darkturquoise", "green1",
+                          "yellow4")
+pos_SNP =  pos_SNP_HA
+obj     = fsusie_obj_ha
+point_size = 1.25
+L <- obj$L
+y <- obj$pip
+font_size = 10
+col_y <- rep(0,length(y))
+for (l in 1:L) {
+  col_y[which(1:length(y) %in% obj$cs[[l]])] <- l
+}
+point_shape <- rep(19,length(pos_SNP))
+CS <- factor(col_y,
+             levels = 0:L,
+             labels = c("none",1:L))
+df <- data.frame(y = y,CS = CS,pos_SNP)
+P_pip_ha = ggplot(df,aes(y = y,x = pos_SNP,color = CS)) +
+  geom_point(size =2.25,
+             shape = point_shape) +
+  scale_color_manual("CS",values = plot_colors) +
+  labs(x = "SNP",y = "PIP" )  +
+  theme_minimal( )+
+  theme(legend.position="none")+
+  
+  geom_rect(aes(xmin = view_win[1], 
+                xmax = 51480000,
+                ymin = -0.01,
+                ymax = 1.02), 
+            alpha = 0.0, color = "red")
+folder_path=  paste0(getwd(),
+                     "/plot/GALNT6/"
+)
+file_path <- file.path(folder_path, "PIP_ha.pdf")
+pdf(file_path, width =  11.69, height =8.27)  # A4 in inches
+
+
+P_pip_ha  
+
+
+dev.off() 
