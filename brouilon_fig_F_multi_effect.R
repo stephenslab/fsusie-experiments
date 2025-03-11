@@ -1311,6 +1311,7 @@ gene_track <- GeneRegionTrack(
 
 
 
+gtrack <- GenomeAxisTrack()
 
 list_track=  list( otAD,
                    otGALNT6,
@@ -1319,7 +1320,8 @@ list_track=  list( otAD,
                    
                    fsusie_me_plot ,
                    fsusie_ha_plot,
-                   gene_track
+                   gene_track,
+                   gtrack
 )
 
 #view_win <- c(5.12e7, 5.16e7) 
@@ -1335,8 +1337,10 @@ pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
 
 plotTracks(list_track,
            from =view_win[1],
-           to=51480000, sizes = c(1,1, 1,0.5 , 0.5, 1,1,0.3),
-           frame = TRUE)
+           to=51480000, sizes = c(0.8,0.8, 0.8,0.5 , 0.5, 1,1,0.3,0.22),
+           frame = TRUE,
+           
+           cex.main=1.2, cex.title = 1.)
 grid.text(
   "rs3782473",
   x = 0.7,
@@ -1392,7 +1396,7 @@ P_pip_me = ggplot(df,aes(y = y,x = pos_SNP,color = CS)) +
 folder_path=  paste0(getwd(),
                      "/plot/GALNT6/"
 )
-file_path <- file.path(folder_path, "PIP_ha.pdf")
+file_path <- file.path(folder_path, "PIP_me.pdf")
 pdf(file_path, width =  11.69, height =8.27 )  # A4 in inches
 
 
