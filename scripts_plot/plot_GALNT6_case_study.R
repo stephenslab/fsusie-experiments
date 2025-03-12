@@ -97,7 +97,25 @@ t3= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 rotation.title = 90,
                 background.title = "white",name="AD") ) 
 
-otAD <- OverlayTrack(trackList=list(    t1,  t2,t3 ),
+tidx=which(data_track_CS1$pos==51362485)
+
+
+t4= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos[tidx] ,
+                                                                 end = data_track_CS1$pos[tidx] )),
+                data = matrix(data_track_CS1$`-log10(P)`[tidx] , nrow=1), genome = "hg19", 
+                ylim =c( min(data_track$`-log10(P)`), max(data_track$`-log10(P)`)+0.2),
+                type = "p", col = "red", cex=1.5,
+                fill=  "royalblue",
+                pch=c(24),# Use color column from df_plot
+                track.margin = 0.05, # Reduce margin between track and title
+                cex.title = 0.6,     # Reduce title size
+                cex.axis = 0.6,      # Reduce axis text size
+                col.axis = "black",  # Change axis color to black
+                col.title = "black",cex.title = cex,
+                rotation.title = 90,
+                background.title = "white",name="AD") ) 
+
+otAD <- OverlayTrack(trackList=list(    t1,  t2,t3,t4 ),
                      background.title = "white")
 
 
