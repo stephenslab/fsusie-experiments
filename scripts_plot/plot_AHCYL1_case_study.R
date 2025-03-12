@@ -79,12 +79,14 @@ Y  <- colScale(Y )
 #                     pos           = pos
 #)
 
-obj1 <-   TI_regression(
+obj1 <-   smash_regression(
   obj,
   Y             =     sweep(Y  , 2, attr(Y , "scaled:scale"),  "*"),
   X             = X,
   alpah=0.05
 )
+
+plot( obj1$fitted_func[[3]])
 
 out1=out
 
@@ -166,7 +168,7 @@ out1=out
   cex <- 0.6
   
   group_lwd= c(1,2,1,1)
-  
+  group_lty= c(1,1,2,2)
   effect_track <-
     DataTrack(range = GRanges(seqnames = chr,
                               ranges = IRanges(start = positions,
@@ -174,6 +176,7 @@ out1=out
               data = effect, genome = "hg38",
               groups= group_cred,
               lwd=group_lwd,
+              lty=group_lty,
               name = paste("Effect CS",cs),type = "l",col = group_colors,
               track.margin = 0.05,cex.title = cex,cex.axis = cex,
               col.axis = "black",col.title = "black",
