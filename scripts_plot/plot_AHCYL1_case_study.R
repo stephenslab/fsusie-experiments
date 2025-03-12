@@ -1,3 +1,5 @@
+rm(list=ls())
+
 path="D:/Document/Serieux/Travail/Data_analysis_and_papers/GTEX_analysis_Fsusie"
 source(paste0(path,"/code/plot_all_effect_log.R"))
 source(paste0(path,"/code/plot_log.R"))
@@ -12,92 +14,25 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
                 ymin = -0.01,
                 ymax = 1.02), 
             alpha = 0.0, color = "red")
-#fsusie_log_plot(out$res,chr = paste0("chr",out$chr),
-#                pos0 = out$locus[1],pos1 = out$locus[2],
-#                out$X,out$Y,snp_info = out$info_SNP,cs =3,
-#                effect_log=TRUE,
-#                log1p_count=TRUE )
+ 
 #lead SNP for the 3 CS
 #CS 1 rs376197939
 #CS 2 rs1400511103
 #CS 3 rs1557742436
 
 
-
-
-
-
 obj= out$res
 Y=log1p(as.matrix(out$Y/out$size_factor_local) )
-X=as.matrix(out$X)
-to="TI"
-verbose=TRUE
-max_scale=10
-filter_cs =FALSE
-filter.number = 10
-family =  "DaubLeAsymm"
+X=as.matrix(out$X) 
 
-
-post_processing=to
-if (is.null( obj$pos))
-{
-  pos <- 1:dim(Y)[2]
-}else{
-  pos=obj$pos
-}
-
-names_colX <-  colnames(X)
-tidx <- which(apply(X,2,var)==0)
-if( length(tidx)>0){
-  warning(paste("Some of the columns of X are constants, we removed" ,length(tidx), "columns"))
-  X <- X[,-tidx]
-}
-map_data <- remap_data(Y=Y,
-                       pos= pos,
-                       verbose=vebose,
-                       max_scale=max_scale)
-
-outing_grid <- map_data$outing_grid
-Y           <- map_data$Y
-X <- colScale(X)
-
-indx_lst <-  gen_wavelet_indx(log2(length( outing_grid)))
-# centering input
-#Y0 <-  colScale(Y , scale=FALSE)
-Y  <- colScale(Y )
-# out <- out_prep(     obj            = obj,
-#
-#                     X             = X,
-#                     indx_lst      = indx_lst,
-#                     filter_cs     = filter_cs,
-#                      outing_grid   = outing_grid,
-#                     filter.number = filter.number,
-#                     family        = family,
-#                      post_processing=  post_processing,
-#                     tidx          = tidx,
-#                     names_colX    = names_colX,
-#                     pos           = pos
-#)
-
-obj1 <-   smash_regression(
-  obj,
-  Y             =     sweep(Y  , 2, attr(Y , "scaled:scale"),  "*"),
-  X             = X,
-  alpah=0.01
-)
-
-
-
-plot( obj1$fitted_func[[1]])
-
-out1=out
-
- obj=obj1
+  
+ out1=out
+ obj1=out$res
+ obj=out$res
  chr= paste0("chr",out1$chr)
  pos0 =out1$locus[1]
  pos1=out1$locus[2]
- X=out1$X 
- Y=out1$Y
+ 
  snp_info=out1$info_SNP
  cs = 1
  log1p_count=TRUE
@@ -124,36 +59,19 @@ out1=out
   
   
   
-  if(log1p_count){
-    if (! length(which(x==2))>1){
+   
       read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
                            colMeans(log1p(Y[x == 1,])) )
-    }else{
-      read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                           colMeans(log1p(Y[x == 1,])),
-                           colMeans(log1p(Y[x == 2,])))
-    }
     
-  }else{
-    if (! length(which(x==2))>1){
-      
-      read_counts <- rbind(colMeans(Y[x == 0,]),
-                           colMeans(Y[x == 1,]) )
-    }else{
-      read_counts <- rbind(colMeans(Y[x == 0,]),
-                           colMeans(Y[x == 1,]),
-                           colMeans(Y[x == 2,]))
-    }
-    
-  }
-  
   ### CS1 -----
   
-  uni_res= univariate_functional_regression(Y=log1p(Y ),
+  uni_res= univariate_functional_regression(Y= Y  ,
                                             X=as.matrix(X[,obj$cs[[cs]][1]],
                                                         ncol=1),
                                             method="TI"
   )
+  
+  
   if (plot_cred_band){
     
     effect=rbind (uni_res$effect_estimate ,
@@ -171,7 +89,7 @@ out1=out
   
   
   # Create a "data track" to show the CS effect.
-  cex <- 0.6
+  cex <- 1
   
   group_lwd= c(1,2,1,1)
   group_lty= c(1,1,2,2)
@@ -299,7 +217,7 @@ out1=out
                        "/plot/"
   )
   file_path <- file.path(folder_path, "AHCYL1_cs1.pdf")
-  pdf(file_path, width =11.69, height = 8.27 )  # A4 in inches
+  pdf(file_path, width =16.69, height = 8.27 )  # A4 in inches
   
   
   
@@ -315,15 +233,39 @@ out1=out
  
  ## CS 2 -----
  cs=2
- uni_res= univariate_functional_regression(Y=log1p(Y ),
-                                           X=as.matrix(X[,obj$cs[[cs]][1]],
+ Y=log1p(as.matrix(out$Y/out$size_factor_local) )
+ X=as.matrix(out$X)
+ 
+ markers <- obj$cs[[cs]]
+ j       <- which.max(obj$pip[markers])
+ marker  <- markers[j]
+ x       <- X[,marker]
+ n0  <- sum(x == 0)
+ n1  <- sum(x == 1)
+ n2  <- sum(x == 2)
+ id  <- "rs1400511103" #snp_info[marker,"ID"]
+ ref <- "CC"#snp_info[marker,"REF"]
+ alt <- "CT" #snp_info[marker,"ALT"]
+ 
+ 
+ groups <- c(sprintf("    %s %s (n = %d)",id, ref,n0),
+             sprintf("    %s %s (n = %d)",id, alt,n1) )
+ geno_colors <- c("turquoise","navyblue" )
+ 
+ 
+ read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
+                      colMeans(log1p(Y[x == 1,])) )
+ 
+ which(x==2
+       )
+ uni_res= univariate_functional_regression(Y=log1p(Y[-65,]/out$size_factor_local[-65] ),
+                                           X=as.matrix(X[-65,obj$cs[[cs]][1]],
                                                        ncol=1),
                                            method="TI"
  )
- uni_res= smash_regression(obj, Y= log1p(Y)  ,
-                                           X=  X  
+ uni_res= smash_regression(obj, Y= log1p(Y[-65,]/out$size_factor_local[-65])  ,
+                                           X=  X  [-65,]
  ) 
- 
  plot( uni_res$fitted_func[[2]], type="l")
  plot( uni_res$effect_estimate, type="l")
  
@@ -349,7 +291,7 @@ out1=out
  
  
  # Create a "data track" to show the CS effect.
- cex <- 0.6
+ cex <- 1
  
  group_lwd= c(1,2,1,1)
  group_lty= c(1,1,2,2)
@@ -372,26 +314,6 @@ out1=out
  plotTracks(effect_track)
  # Create another "data track" to show the read counts.
  
- 
- markers <- obj$cs[[cs]]
- j       <- which.max(obj$pip[markers])
- marker  <- markers[j]
- x       <- X[,marker]
- n0  <- sum(x == 0)
- n1  <- sum(x == 1)
- n2  <- sum(x == 2)
- id  <- "rs1400511103" #snp_info[marker,"ID"]
- ref <- "CC"#snp_info[marker,"REF"]
- alt <- "CT" #snp_info[marker,"ALT"]
- 
-  
-   groups <- c(sprintf("    %s %s (n = %d)",id, ref,n0),
-               sprintf("    %s %s (n = %d)",id, alt,n1) )
-   geno_colors <- c("turquoise","navyblue" )
- 
- 
-   read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                        colMeans(log1p(Y[x == 1,])) )
  
    groups <- factor(groups,rev(groups))
   # geno_colors <- rev(geno_colors)
@@ -429,7 +351,7 @@ out1=out
                       "/plot/"
  )
  file_path <- file.path(folder_path, "AHCYL1_cs2.pdf")
- pdf(file_path, width =11.69, height = 8.27 )  # A4 in inches
+ pdf(file_path, width =16.69, height = 8.27 )  # A4 in inches
  
  
  
@@ -468,7 +390,7 @@ out1=out
  
  
  # Create a "data track" to show the CS effect.
- cex <- 0.6
+ cex <- 1
  
  group_lwd= c(1,2,1,1)
  group_lty= c(1,1,2,2)
@@ -594,7 +516,7 @@ out1=out
                       "/plot/"
  )
  file_path <- file.path(folder_path, "AHCYL1_cs3.pdf")
- pdf(file_path, width =11.69, height = 8.27 )  # A4 in inches
+ pdf(file_path, width =16.69, height = 8.27 )  # A4 in inches
  
  
  
