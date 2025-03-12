@@ -12,11 +12,11 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
                 ymin = -0.01,
                 ymax = 1.02), 
             alpha = 0.0, color = "red")
-fsusie_log_plot(out$res,chr = paste0("chr",out$chr),
-                pos0 = out$locus[1],pos1 = out$locus[2],
-                out$X,out$Y,snp_info = out$info_SNP,cs =3,
-                effect_log=TRUE,
-                log1p_count=TRUE )
+#fsusie_log_plot(out$res,chr = paste0("chr",out$chr),
+#                pos0 = out$locus[1],pos1 = out$locus[2],
+#                out$X,out$Y,snp_info = out$info_SNP,cs =3,
+#                effect_log=TRUE,
+#                log1p_count=TRUE )
 #lead SNP for the 3 CS
 #CS 1 rs376197939
 #CS 2 rs1400511103
@@ -88,15 +88,15 @@ obj1 <-   TI_regression(
 
 out1=out
 
- obj=out$res
+ obj=obj1
  chr= paste0("chr",out1$chr)
  pos0 =out1$locus[1]
  pos1=out1$locus[2]
  X=out1$X 
  Y=out1$Y
  snp_info=out1$info_SNP
- cs = 3
- log1p_count=FALSE
+ cs = 1
+ log1p_count=TRUE
  data_splice=NULL
  plot_cred_band=TRUE
  type_data="p"
@@ -165,7 +165,7 @@ out1=out
   # Create a "data track" to show the CS effect.
   cex <- 0.6
   
-  
+  group_lwd= c(1,2,1,1)
   
   effect_track <-
     DataTrack(range = GRanges(seqnames = chr,
@@ -173,27 +173,28 @@ out1=out
                                                end = positions + 1)),
               data = effect, genome = "hg38",
               groups= group_cred,
-              name = paste("CS",cs),type = "l",col = group_colors,
+              lwd=group_lwd,
+              name = paste("Effect CS",cs),type = "l",col = group_colors,
               track.margin = 0.05,cex.title = cex,cex.axis = cex,
               col.axis = "black",col.title = "black",
               fontface = "plain",background.title = "white",
-              fontface.title = 1)
+              fontface.title = 1,,
+              legend = FALSE )
   
   
-  
-  
+  plotTracks(effect_track)
   # Create another "data track" to show the read counts.
   
   n0  <- sum(x == 0)
   n1  <- sum(x == 1)
   n2  <- sum(x == 2)
-  id  <- snp_info[marker,"ID"]
-  ref <- snp_info[marker,"REF"]
-  alt <- snp_info[marker,"ALT"]
+  id  <- "rs376197939" #snp_info[marker,"ID"]
+  ref <- "AA"#snp_info[marker,"REF"]
+  alt <- "AT" #snp_info[marker,"ALT"]
   
   if (! length(which(x==2))>1){
-    groups <- c(sprintf("%s %s%s (n = %d)",id,ref,ref,n0),
-                sprintf("%s %s%s (n = %d)",id,ref,alt,n1) )
+    groups <- c(sprintf("\t    %s %s (n = %d)",id, ref,n0),
+                sprintf("\t    %s %s (n = %d)",id, alt,n1) )
     geno_colors <- c("navyblue","turquoise" )
   }else{
     groups <- c(sprintf("%s %s%s (n = %d)",id,ref,ref,n0),
@@ -210,7 +211,7 @@ out1=out
     groups <- factor(groups,groups)
   }
   
-  
+  ### ici -----
   lab_y =ifelse(log1p_count, "Avg. log1p count","Avg. count")
   data_track <- DataTrack(range = GRanges(seqnames = chr,
                                           ranges = IRanges(start = positions,
@@ -220,9 +221,24 @@ out1=out
                           name = lab_y  , type = type_data, #"p",#type = "l",
                           col = geno_colors  ,
                           track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                         
                           col.axis = "black",col.title = "black",
                           fontface = "plain",background.title = "white",
-                          fontface.title = 1,cex.legend = cex, cex=0.2)
+                          fontface.title = 1,cex.legend = cex, cex=2)
+  
+  data_track <-DataTrack(range = GRanges(seqnames = chr,
+                                       ranges = IRanges(start = positions,
+                                                        end = positions + 1)),
+                       data = read_counts,genome = "hg38",
+                       groups = groups,
+                       name = lab_y , type = type_data,  col = geno_colors ,track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                       
+                       col.axis = "black",col.title = "black",
+                       fontface = "plain",background.title = "white", 
+                       fontface.title = 1, cex= .6,cex.legend = 1.1)
+             
+  
+  plotTracks(data_track)
   
   # Create an "ideogram" track.
   ideo_track <- IdeogramTrack(genome = "hg38",chromosome = chr)
@@ -236,7 +252,7 @@ out1=out
                                 showId = TRUE,geneSymbol = TRUE,
                                 col.axis = "black",col.title = "black",
                                 transcriptAnnotation = "symbol",
-                                rotation.title = 0,cex.title = cex,
+                                rotation.title = 0,cex.title = 2,
                                 col = "salmon",fill = "salmon",
                                 background.title = "white")
   
@@ -257,54 +273,30 @@ out1=out
     }
   }
   
-  
-  if( !is.null(data_splice)){
-    junction_ranges <- GRanges(
-      seqnames = chr,
-      ranges = IRanges(
-        start = as.numeric(sub(".*_(\\d+)_.*", "\\1", data_splice$Name)),
-        end = as.numeric(sub(".*_(\\d+)$", "\\1", data_splice$Name))
-      ),
-      names = data_splice$Description
-    )
-    
-    # Offset overlapping junctions for better visualization
-    # Create AnnotationTrack for splicing junctions with adjusted thickness
-    junction_track <- AnnotationTrack(
-      range = junction_ranges,
-      genome = "hg38",
-      chromosome = chr,
-      name = "Splicing Junctions",
-      stacking = "squish",
-      col = "darkgreen",
-      fill = "lightgreen",
-      track.margin = 0.05,
-      cex.title = cex,
-      cex.axis = cex,
-      col.axis = "black",
-      col.title = "black",
-      fontface = "plain",
-      background.title = "white",
-      height = 0.3  # Adjust height here to make rectangles thinner
-    )
-    # Combine all tracks into a single plot
-    tracks <- c(
-      ideo_track,
-      genome_track,
-      effect_track,
-      data_track,
-      gene_track,
-      junction_track
-    )
-    
-    # Plot the tracks
-    return(plotTracks(tracks, from = pos0, to = pos1, sizes = c(1, 1.75, 2, 4, 5, 1)))
-  }else{
+   
     # Combine all tracks into a single plot.
     tracks <- c(ideo_track,
                 genome_track,
                 effect_track,
                 data_track,
                 gene_track)
- plotTracks(tracks,from = pos0,to = pos1,sizes = c(1,1.75,2,4,5)) 
   
+  
+  plotTracks(tracks,from = pos0,to = pos1,sizes = c(1,1.75,2,4,2)) 
+  
+  folder_path=  paste0(getwd(),
+                       "/plot/"
+  )
+  file_path <- file.path(folder_path, "AHCYL1_cs1.pdf")
+  pdf(file_path, width =11.69, height = 8.27 )  # A4 in inches
+  
+  
+  
+  plotTracks(tracks,from = pos0-200,
+             to = pos1+200,
+             sizes = c(1,1 ,4,4,2),
+             cex.main=1.2, cex.title = 1.
+             ) 
+ dev.off()
+ 
+ 
