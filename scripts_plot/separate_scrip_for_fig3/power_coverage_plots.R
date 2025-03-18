@@ -570,11 +570,11 @@ decay = dfp_decay[which(as.numeric(dfp_decay$L)<15 ),] %>%
   summarise(power       = mean(power,na.rm=TRUE),
             coverage    = mean(T1_error, na.rm=TRUE),
             purity      = mean(mean_purity, na.rm=TRUE),
-            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
-            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
             cs_size_est     = mean(cs_size,na.rm=TRUE),
-            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
-            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE))),# /300)),
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)))# /300)),
             )
 decay 
 block= dfp_block[which(as.numeric(dfp_block$L)<15),] %>%
@@ -582,11 +582,11 @@ block= dfp_block[which(as.numeric(dfp_block$L)<15),] %>%
   summarise(power       = mean(power,na.rm=TRUE),
             coverage    = mean(T1_error, na.rm=TRUE),
             purity      = mean(mean_purity, na.rm=TRUE),
-            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
-            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
             cs_size_est     = mean(cs_size,na.rm=TRUE),
-            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
-            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE))),# /300)),
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)))# /300)),
   )
 
 gaussian= dfp[which(as.numeric(dfp$L)<15 ),] %>%
@@ -594,11 +594,11 @@ gaussian= dfp[which(as.numeric(dfp$L)<15 ),] %>%
   summarise(power       = mean(power,na.rm=TRUE),
             coverage    = mean(T1_error, na.rm=TRUE),
             purity      = mean(mean_purity, na.rm=TRUE),
-            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
-            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE)/300)),
+            purity_up   = mean(mean_purity, na.rm=TRUE)+ mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
+            purity_low  = mean(mean_purity, na.rm=TRUE)- mean( 1.96*sqrt( var(mean_purity,na.rm=TRUE))),# /300)),
             cs_size_est     = mean(cs_size,na.rm=TRUE),
-            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 ))  ,
-            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)/300 )) 
+            cs_size_up  =cs_size_est +1.96*   mean( 1.96*sqrt( var(cs_size,na.rm=TRUE))),# /300)),
+            cs_size_low =cs_size_est -1.96*    mean( 1.96*sqrt( var(cs_size,na.rm=TRUE)))# /300)),
   )
 
 
