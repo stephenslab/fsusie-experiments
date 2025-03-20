@@ -1,0 +1,19 @@
+---
+title: Examine fsusie results on the ROSMAP data
+author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
+output: workflowr::wflow_html
+---
+
+*Add some text here giving an overview of this analysis.*
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load some packges used in the code below:
+
+```{r load-pkgs}
+library(ggplot2)
+library(cowplot)
+```
