@@ -1,5 +1,5 @@
 ---
-title: Examine fsusie results on the ROSMAP data
+title: Examine results on the ROSMAP data
 author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
@@ -11,9 +11,23 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
 ```
 
+**Note:** To run this analysis on your computer, you will first need
+to download the fine-mapping outputs. They can be downloaded from
+[here][box-download-link]. Once you have downloaded the files, copy
+them to the "outputs" subdirectory.
+
 Load some packges used in the code below:
 
 ```{r load-pkgs, message=FALSE}
+library(data.table)
 library(ggplot2)
 library(cowplot)
 ```
+
+## Methylation fine-mapping
+
+```{r}
+
+```
+
+[box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
