@@ -57,12 +57,12 @@ methyl_snps_susie$region <-
   sapply(strsplit(methyl_snps_susie$cs,":",fixed = TRUE),"[[",2)
 methyl_snps_susie  <- transform(methyl_snps_susie,
                                 region = factor(region),
-                                cs = factor(cs),
-			  				    pc = factor(pc))
+                                cs     = factor(cs),
+			  				    pc     = factor(pc))
 methyl_snps_fsusie <- transform(methyl_snps_fsusie,
-                                cs = factor(cs),
+                                cs     = factor(cs),
 								region = factor(region),
-								study = factor(study))
+								study  = factor(study))
 ```
 
 Add text here.
@@ -103,13 +103,40 @@ plot_tad_sizes(tads) +
 More on TAD sizes:
 
 ```{r}
+tad_size <- get_tad_sizes(tads)
+sum(tad_size > 9)
 ```
 
 Create plots showing number of CSs by TAD.
 
+```{r, fig.height=2.5, fig.width=2.5, warning=FALSE}
+get_cs_vs_tad_size <- function (dat) {
+  tads <- levels(dat$region)
+  out <- data.frame(tad      = tads,
+                    tad_size = get_tad_sizes(tads),
+                    num_cs   = tapply(dat$cs,dat$region,
+					                  function (x) length(unique(x))))
+  rownames(out) <- NULL
+  return(out)
+}
+pdat <- get_cs_vs_tad_size(methyl_snps_susie)
+pdat <- transform(pdat,num_cs = factor(num_cs,1:16))
+ggplot(pdat,aes(x = num_cs)) +
+  geom_histogram(stat = "count",color = "white",fill = "darkblue") +
+  scale_x_discrete(drop = FALSE) +
+  theme_cowplot(font_size = 10)
+```
+
+```{r, fig.height=2.5, fig.width=2.5, warning=FALSE}
+pdat <- get_cs_vs_tad_size(methyl_snps_fsusie)
+pdat <- transform(pdat,num_cs = factor(num_cs,1:20))
+ggplot(pdat,aes(x = num_cs)) +
+  geom_histogram(stat = "count",color = "white",fill = "darkblue") +
+  scale_x_discrete(drop = FALSE) +
+  theme_cowplot(font_size = 10)
+```
+
 ```{r}
-tad_size <- get_tad_sizes(tads)
-sum(tad_size > 9)
 ```
 
 ## H3K27ac fine-mapping
