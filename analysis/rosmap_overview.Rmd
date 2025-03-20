@@ -127,6 +127,8 @@ ggplot(pdat,aes(x = num_cs)) +
   theme_cowplot(font_size = 10)
 ```
 
+Add text here.
+
 ```{r, fig.height=2.5, fig.width=2.5, warning=FALSE}
 pdat <- get_cs_vs_tad_size(methyl_snps_fsusie)
 pdat <- transform(pdat,num_cs = factor(num_cs,1:20))
@@ -136,7 +138,27 @@ ggplot(pdat,aes(x = num_cs)) +
   theme_cowplot(font_size = 10)
 ```
 
-```{r}
+Add text here.
+
+```{r, fig.height=3, fig.width=3, warning=FALSE}
+dat1 <- get_cs_vs_tad_size(methyl_snps_susie)
+dat2 <- get_cs_vs_tad_size(methyl_snps_fsusie)
+dat1 <- dat1[c(1,3)]
+dat2 <- dat2[c(1,3)]
+names(dat1) <- c("tad","num_cs_susie")
+names(dat2) <- c("tad","num_cs_fsusie")
+dat <- merge(dat1,dat2,all = TRUE)
+rows <- which(is.na(dat$num_cs_susie))
+dat[rows,"num_cs_susie"] <- 0
+pdat <- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+rows <- which(pdat$value == 0)
+pdat[rows,"value"] <- NA
+ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+  geom_point(color = "white",fill = "darkblue",shape = 21) +
+  scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  labs(x = "SuSiE-topPC",y = "fSuSiE") +
+  theme_cowplot(font_size = 10)
 ```
 
 ## H3K27ac fine-mapping
