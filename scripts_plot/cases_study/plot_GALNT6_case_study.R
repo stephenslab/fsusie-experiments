@@ -236,7 +236,7 @@ plotTracks( otSLC4A8 )
 
 #### ha ---- ----- 
 
-res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.rds")
+res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_ha=res$`chr12:50815042-54677408`$ROSMAP_DLPFC_haQTL$fsusie_result
  
 rm(res)
@@ -296,7 +296,7 @@ rm(res)
 
 
 
-res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+res_ha <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr12_50815042_54677408.fsusie_mixture_normal_top_pc_weights.input_data.rds")
 Y= as.data.frame(res_ha$residual_Y)
 
 
@@ -687,7 +687,7 @@ background.title = "white"
 
 
 
-res <-  readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.rds")
+res <-  readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.rds")
 
 fsusie_obj_me = res$`chr12:47653211-53108261`$MSBB_mQTL$fsusie_result
 
@@ -698,7 +698,7 @@ rm(res)
 #out=list(effect= fsusie_obj_me$fitted_func[[14]],
 #         cred_band=  fsusie_obj_me$cred_band[[14]]  )
 
-res_me <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/MSBB_mQTL.chr12_47653211_53108261.fsusie_mixture_normal_top_pc_weights.input_data.rds")
 
 Y= as.data.frame(res_me$residual_Y)
 

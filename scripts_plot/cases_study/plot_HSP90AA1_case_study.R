@@ -14,7 +14,8 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
                 xmax =out$locus[2],
                 ymin = -0.01,
                 ymax = 1.02), 
-            alpha = 0.0, color = "red")
+            alpha = 0.0, color = "red")+
+  xlim(c(out$locus[1] -150000,out$locus[2] +150000 )  ) 
 
 
 
@@ -32,7 +33,16 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
                 xmax =out$locus[2],
                 ymin = -0.01,
                 ymax = 1.02), 
-            alpha = 0.0, color = "red")
+            alpha = 0.0, color = "red")+
+  xlim(c(out$locus[1] -150000,out$locus[2] +150000 )  ) +
+  theme(
+    axis.text = element_text(size = 14),       # Increase axis text size
+    axis.title = element_text(size = 16, face = "bold"), # Increase axis labels size
+    legend.text = element_text(size = 14),     # Increase legend text size
+    legend.title = element_text(size = 16, face = "bold"), # Increase legend title size
+    egend.key.size = unit(1.5, "cm"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5) # Increase title size
+  )
 
 dev.off()
 
@@ -40,6 +50,24 @@ obj= out$res
 Y=log1p(as.matrix(out$Y/out$size_factor_local) )
 X=as.matrix(out$X) 
  
+
+
+m1 <-susieR::susie(X=X,
+                   y=rowSums(Y),
+                   L=5
+)
+m1$sets
+ 
+
+PCA <- svd(Y)
+m2 <-susieR::susie(X=X,
+                   y=PCA$u[,1],
+                   L=5
+)
+
+m2$sets
+
+
 
 
 out1=out
