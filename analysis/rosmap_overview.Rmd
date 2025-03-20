@@ -65,4 +65,55 @@ methyl_snps_fsusie <- transform(methyl_snps_fsusie,
 								study = factor(study))
 ```
 
+Add text here.
+
+```{r}
+nlevels(methyl_snps_susie$region)
+nlevels(methyl_snps_fsusie$region)
+```
+
+Get the TAD sizes.
+
+```{r}
+get_tad_sizes <- function (tads) {
+  tads <- strsplit(tads,"_",fixed = TRUE)
+  pos0 <- as.numeric(sapply(tads,"[[",2))
+  pos1 <- as.numeric(sapply(tads,"[[",3))
+  return((pos1 - pos0)/1e6)
+}
+```
+
+Plot the TAD sizes.
+
+```{r, fig.height=2.75, fig.width=2.75, warning=FALSE}
+plot_tad_sizes <- function (tads) {
+  tad_size <- get_tad_sizes(tads)
+  pdat <- data.frame(tad_size = tad_size)
+  return(ggplot(pdat,aes(x = tad_size)) +
+         geom_histogram(color = "white",fill = "darkblue",bins = 48) +
+         labs(x = "size (Mb)",y = "number of TADs") +
+         theme_cowplot(font_size = 10))
+}
+tads <- levels(methyl_snps_fsusie$region)
+plot_tad_sizes(tads) +
+  scale_x_continuous(limits = c(2,9),breaks = 1:10) +
+  scale_y_continuous(breaks = seq(0,100,10))
+```
+
+More on TAD sizes:
+
+```{r}
+```
+
+Create plots showing number of CSs by TAD.
+
+```{r}
+tad_size <- get_tad_sizes(tads)
+sum(tad_size > 9)
+```
+
+## H3K27ac fine-mapping
+
+TO DO.
+
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
