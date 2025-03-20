@@ -127,7 +127,7 @@ get_cs_vs_tad_size <- function (dat) {
 }
 pdat1 <- get_cs_vs_tad_size(methyl_snps_susie)
 pdat2 <- get_cs_vs_tad_size(methyl_snps_fsusie)
-pdat1 <- transform(pdat1,num_cs = factor(num_cs,1:16))
+pdat1 <- transform(pdat1,num_cs = factor(num_cs,1:20))
 pdat2 <- transform(pdat2,num_cs = factor(num_cs,1:20))
 p1 <- ggplot(pdat1,aes(x = num_cs)) +
   geom_histogram(stat = "count",color = "white",fill = "darkblue") +
@@ -214,6 +214,82 @@ ha_snps_fsusie <- transform(ha_snps_fsusie,
                             cs     = factor(cs),
 						    region = factor(region),
 						    study  = factor(study))
+```
+
+There is no need to look at the TAD sizes because the same TADs were analyzed
+for both molecular traits, methylation and H3K27ac.
+
+These histograms summarize the number of CSs per TAD:
+
+```{r num-cs-per-tad-ha, fig.height=2, fig.width=5, warning=FALSE}
+pdat1 <- get_cs_vs_tad_size(ha_snps_susie)
+pdat2 <- get_cs_vs_tad_size(ha_snps_fsusie)
+pdat1 <- transform(pdat1,num_cs = factor(num_cs,1:20))
+pdat2 <- transform(pdat2,num_cs = factor(num_cs,1:20))
+p1 <- ggplot(pdat1,aes(x = num_cs)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato") +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = "number of CSs",y = "number of TADs",title = "SuSiE-topPC") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+p2 <- ggplot(pdat2,aes(x = num_cs)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato") +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = "number of CSs",y = "number of TADs",title = "fSuSiE") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
+and fSuSiE analyses:
+
+```{r compare-num-cs-per-tad-ha, fig.height=2.75, fig.width=3.75, warning=FALSE}
+dat1 <- get_cs_vs_tad_size(ha_snps_susie)
+dat2 <- get_cs_vs_tad_size(ha_snps_fsusie)
+dat1 <- dat1[c(1,3)]
+dat2 <- dat2[c(1,3)]
+names(dat1) <- c("tad","num_cs_susie")
+names(dat2) <- c("tad","num_cs_fsusie")
+dat <- merge(dat1,dat2,all = TRUE)
+rows <- which(is.na(dat$num_cs_susie))
+dat[rows,"num_cs_susie"] <- 0
+pdat <- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+rows <- which(pdat$value == 0)
+pdat[rows,"value"] <- NA
+ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+  geom_point(color = "white",fill = "tomato",shape = 21) +
+  geom_abline(intercept = 0,slope = 1,color = "black",linetype = "dotted") +
+  scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_size(breaks = c(1,10,100)) +
+  labs(x = "SuSiE-topPC",y = "fSuSiE",size = "number of TADs") +
+  theme_cowplot(font_size = 10)
+```
+
+Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
+
+```{r cs-sizes-ha, fig.height=2, fig.width=4, warning=FALSE}
+bins <- c(0,1,2,5,10,20,Inf)
+cs_size_susie  <- as.numeric(table(ha_snps_susie$cs))
+cs_size_fsusie <- as.numeric(table(ha_snps_fsusie$cs))
+cs_size_susie  <- cut(cs_size_susie,bins)
+cs_size_fsusie <- cut(cs_size_fsusie,bins)
+levels(cs_size_susie) <- bins[-1]
+levels(cs_size_fsusie) <- bins[-1]
+p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs",title = "SuSiE-topPC") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
