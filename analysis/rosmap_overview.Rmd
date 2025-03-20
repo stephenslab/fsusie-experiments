@@ -1,10 +1,10 @@
 ---
-title: Examine results on the ROSMAP data
+title: Examine methylation and H3K27ac fine-mapping results from the ROSMAP data
 author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
 
-*Add some text here giving an overview of this analysis.*
+ADD SOME TEXT HERE GIVING AN OVERVIEW OF THIS ANALYSIS.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -65,16 +65,18 @@ methyl_snps_fsusie <- transform(methyl_snps_fsusie,
 								study  = factor(study))
 ```
 
-Add text here.
+This is the number of fine-mapping regions (TADs) that contained at
+least one CS in each of the analyses:
 
-```{r}
+```{r tad-counts}
 nlevels(methyl_snps_susie$region)
 nlevels(methyl_snps_fsusie$region)
 ```
 
-Get the TAD sizes.
+This is a function we will use below to get the sizes of the TADs
+(in Mb):
 
-```{r}
+```{r get-tad-sizes}
 get_tad_sizes <- function (tads) {
   tads <- strsplit(tads,"_",fixed = TRUE)
   pos0 <- as.numeric(sapply(tads,"[[",2))
@@ -83,9 +85,10 @@ get_tad_sizes <- function (tads) {
 }
 ```
 
-Plot the TAD sizes.
+This plot summarizes the sizes of the TADs that were analyzed by
+SuSiE-topPC and fSuSiE:
 
-```{r, fig.height=2.75, fig.width=2.75, warning=FALSE}
+```{r plot-tad-sizes, fig.height=2.75, fig.width=2.75, warning=FALSE}
 plot_tad_sizes <- function (tads) {
   tad_size <- get_tad_sizes(tads)
   pdat <- data.frame(tad_size = tad_size)
@@ -100,16 +103,19 @@ plot_tad_sizes(tads) +
   scale_y_continuous(breaks = seq(0,100,10))
 ```
 
-More on TAD sizes:
+Some more useful statistics on the TAD sizes:
 
-```{r}
+```{r summarize-tad-sizes}
 tad_size <- get_tad_sizes(tads)
+range(tad_size)
+mean(tad_size)
+median(tad_size)
 sum(tad_size > 9)
 ```
 
-Create plots showing number of CSs by TAD.
+These histograms summarize the number of CSs per TAD:
 
-```{r, fig.height=2.5, fig.width=2.5, warning=FALSE}
+```{r num-cs-per-tad, fig.height=2, fig.width=5, warning=FALSE}
 get_cs_vs_tad_size <- function (dat) {
   tads <- levels(dat$region)
   out <- data.frame(tad      = tads,
@@ -119,28 +125,27 @@ get_cs_vs_tad_size <- function (dat) {
   rownames(out) <- NULL
   return(out)
 }
-pdat <- get_cs_vs_tad_size(methyl_snps_susie)
-pdat <- transform(pdat,num_cs = factor(num_cs,1:16))
-ggplot(pdat,aes(x = num_cs)) +
+pdat1 <- get_cs_vs_tad_size(methyl_snps_susie)
+pdat2 <- get_cs_vs_tad_size(methyl_snps_fsusie)
+pdat1 <- transform(pdat1,num_cs = factor(num_cs,1:16))
+pdat2 <- transform(pdat2,num_cs = factor(num_cs,1:20))
+p1 <- ggplot(pdat1,aes(x = num_cs)) +
   geom_histogram(stat = "count",color = "white",fill = "darkblue") +
   scale_x_discrete(drop = FALSE) +
+  labs(x = "number of CSs",y = "number of TADs",title = "SuSiE-topPC") +
   theme_cowplot(font_size = 10)
-```
-
-Add text here.
-
-```{r, fig.height=2.5, fig.width=2.5, warning=FALSE}
-pdat <- get_cs_vs_tad_size(methyl_snps_fsusie)
-pdat <- transform(pdat,num_cs = factor(num_cs,1:20))
-ggplot(pdat,aes(x = num_cs)) +
+p2 <- ggplot(pdat2,aes(x = num_cs)) +
   geom_histogram(stat = "count",color = "white",fill = "darkblue") +
   scale_x_discrete(drop = FALSE) +
+  labs(x = "number of CSs",y = "number of TADs",title = "fSuSiE") +
   theme_cowplot(font_size = 10)
+plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-Add text here.
+Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
+and fSuSiE analyses:
 
-```{r, fig.height=3, fig.width=3, warning=FALSE}
+```{r compare-num-cs-per-tad, fig.height=2.75, fig.width=3.75, warning=FALSE}
 dat1 <- get_cs_vs_tad_size(methyl_snps_susie)
 dat2 <- get_cs_vs_tad_size(methyl_snps_fsusie)
 dat1 <- dat1[c(1,3)]
@@ -155,11 +160,15 @@ rows <- which(pdat$value == 0)
 pdat[rows,"value"] <- NA
 ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   geom_point(color = "white",fill = "darkblue",shape = 21) +
+  geom_abline(intercept = 0,slope = 1,color = "black",linetype = "dotted") +
   scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
   scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
-  labs(x = "SuSiE-topPC",y = "fSuSiE") +
+  scale_size(breaks = c(1,10,100)) +
+  labs(x = "SuSiE-topPC",y = "fSuSiE",size = "number of TADs") +
   theme_cowplot(font_size = 10)
 ```
+
+TO DO NEXT: Look at CS sizes.
 
 ## H3K27ac fine-mapping
 
