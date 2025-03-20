@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1c8eeb7f07827e141d64f671b8a38821e1ac7c86targetblank1c8eeb7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1ad355ae94d1bb9a770faeb0ac56392549a38b4ctargetblank1ad355aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/1c8eeb7f07827e141d64f671b8a38821e1ac7c86" target="_blank">1c8eeb7</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/1ad355ae94d1bb9a770faeb0ac56392549a38b4c" target="_blank">1ad355a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1c8eeb7f07827e141d64f671b8a38821e1ac7c86targetblank1c8eeb7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1ad355ae94d1bb9a770faeb0ac56392549a38b4ctargetblank1ad355aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/1c8eeb7f07827e141d64f671b8a38821e1ac7c86" target="_blank">1c8eeb7</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/1ad355ae94d1bb9a770faeb0ac56392549a38b4c" target="_blank">1ad355a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -519,6 +519,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/1ad355ae94d1bb9a770faeb0ac56392549a38b4c/analysis/rosmap_overview.Rmd" target="_blank">1ad355a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+wflow_publish("rosmap_overview.Rmd", view = FALSE, verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/rosmap_overview.html" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Rebuilt the rosmap_overview analysis with the new results.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -773,6 +807,43 @@ plot_tad_sizes(tads) +
   scale_x_continuous(limits = c(2,9),breaks = 1:10) +
   scale_y_continuous(breaks = seq(0,100,10))</code></pre>
 <p><img src="figure/rosmap_overview.Rmd/plot-methyl-tad-sizes-1.png" width="330" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-methyl-tad-sizes-1">
+Past versions of plot-methyl-tad-sizes-1.png
+</button>
+</p>
+<div id="fig-plot-methyl-tad-sizes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/plot-methyl-tad-sizes-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Some more useful statistics on the TAD sizes:</p>
 <pre class="r"><code>tad_size &lt;- get_tad_sizes(tads)
 range(tad_size)
@@ -795,7 +866,7 @@ sum(tad_size &gt; 9)
 }
 pdat1 &lt;- get_cs_vs_tad_size(methyl_snps_susie)
 pdat2 &lt;- get_cs_vs_tad_size(methyl_snps_fsusie)
-pdat1 &lt;- transform(pdat1,num_cs = factor(num_cs,1:16))
+pdat1 &lt;- transform(pdat1,num_cs = factor(num_cs,1:20))
 pdat2 &lt;- transform(pdat2,num_cs = factor(num_cs,1:20))
 p1 &lt;- ggplot(pdat1,aes(x = num_cs)) +
   geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;) +
@@ -811,6 +882,43 @@ p2 &lt;- ggplot(pdat2,aes(x = num_cs)) +
   theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
 plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
 <p><img src="figure/rosmap_overview.Rmd/num-cs-per-tad-methyl-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-num-cs-per-tad-methyl-1">
+Past versions of num-cs-per-tad-methyl-1.png
+</button>
+</p>
+<div id="fig-num-cs-per-tad-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/num-cs-per-tad-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
 and fSuSiE analyses:</p>
 <pre class="r"><code>dat1 &lt;- get_cs_vs_tad_size(methyl_snps_susie)
@@ -834,6 +942,43 @@ ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
 <p><img src="figure/rosmap_overview.Rmd/compare-num-cs-per-tad-methyl-1.png" width="450" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-compare-num-cs-per-tad-methyl-1">
+Past versions of compare-num-cs-per-tad-methyl-1.png
+</button>
+</p>
+<div id="fig-compare-num-cs-per-tad-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/compare-num-cs-per-tad-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
 analyses:</p>
 <pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
@@ -857,6 +1002,43 @@ p2 &lt;- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
   theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
 plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
 <p><img src="figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cs-sizes-methyl-1">
+Past versions of cs-sizes-methyl-1.png
+</button>
+</p>
+<div id="fig-cs-sizes-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="h3k27ac-fine-mapping" class="section level2">
 <h2>H3K27ac fine-mapping</h2>
@@ -875,6 +1057,73 @@ ha_snps_fsusie &lt;- transform(ha_snps_fsusie,
                             cs     = factor(cs),
                             region = factor(region),
                             study  = factor(study))</code></pre>
+<p>There is no need to look at the TAD sizes because the same TADs were
+analyzed for both molecular traits, methylation and H3K27ac.</p>
+<p>These histograms summarize the number of CSs per TAD:</p>
+<pre class="r"><code>pdat1 &lt;- get_cs_vs_tad_size(ha_snps_susie)
+pdat2 &lt;- get_cs_vs_tad_size(ha_snps_fsusie)
+pdat1 &lt;- transform(pdat1,num_cs = factor(num_cs,1:20))
+pdat2 &lt;- transform(pdat2,num_cs = factor(num_cs,1:20))
+p1 &lt;- ggplot(pdat1,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(pdat2,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/num-cs-per-tad-ha-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
+and fSuSiE analyses:</p>
+<pre class="r"><code>dat1 &lt;- get_cs_vs_tad_size(ha_snps_susie)
+dat2 &lt;- get_cs_vs_tad_size(ha_snps_fsusie)
+dat1 &lt;- dat1[c(1,3)]
+dat2 &lt;- dat2[c(1,3)]
+names(dat1) &lt;- c(&quot;tad&quot;,&quot;num_cs_susie&quot;)
+names(dat2) &lt;- c(&quot;tad&quot;,&quot;num_cs_fsusie&quot;)
+dat &lt;- merge(dat1,dat2,all = TRUE)
+rows &lt;- which(is.na(dat$num_cs_susie))
+dat[rows,&quot;num_cs_susie&quot;] &lt;- 0
+pdat &lt;- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+rows &lt;- which(pdat$value == 0)
+pdat[rows,&quot;value&quot;] &lt;- NA
+ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+  geom_point(color = &quot;white&quot;,fill = &quot;tomato&quot;,shape = 21) +
+  geom_abline(intercept = 0,slope = 1,color = &quot;black&quot;,linetype = &quot;dotted&quot;) +
+  scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_size(breaks = c(1,10,100)) +
+  labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/compare-num-cs-per-tad-ha-1.png" width="450" style="display: block; margin: auto;" /></p>
+<p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
+analyses:</p>
+<pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
+cs_size_susie  &lt;- as.numeric(table(ha_snps_susie$cs))
+cs_size_fsusie &lt;- as.numeric(table(ha_snps_fsusie$cs))
+cs_size_susie  &lt;- cut(cs_size_susie,bins)
+cs_size_fsusie &lt;- cut(cs_size_fsusie,bins)
+levels(cs_size_susie) &lt;- bins[-1]
+levels(cs_size_fsusie) &lt;- bins[-1]
+p1 &lt;- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/cs-sizes-ha-1.png" width="480" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
