@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang" />
+
+
+<title>Examine methylation and H3K27ac fine-mapping results from the ROSMAP data</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">fsusie experiments</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Overview</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/stephenslab/fsusie-experiments">source</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Examine methylation and H3K27ac
+fine-mapping results from the ROSMAP data</h1>
+<h4 class="author">William Denault, Hao Sun, Angjing Liu, Peter
+Carbonetto, Gao Wang</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-03-20
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fsusie-experiments/analysis/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed1code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(1)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed1code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(1)</code> was run prior to running the
+code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1ad355ae94d1bb9a770faeb0ac56392549a38b4ctargetblank1ad355aa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/1ad355ae94d1bb9a770faeb0ac56392549a38b4c" target="_blank">1ad355a</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree1ad355ae94d1bb9a770faeb0ac56392549a38b4ctargetblank1ad355aa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/1ad355ae94d1bb9a770faeb0ac56392549a38b4c" target="_blank">1ad355a</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Untracked files:
+    Untracked:  data/analysis_result/Fungen_xQTL.ENSG00000163808.cis_results_db.export.rds
+    Untracked:  data/analysis_result/ROSMAP_haQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
+    Untracked:  data/analysis_result/ROSMAP_mQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
+    Untracked:  outputs/ROSMAP_haQTL_cs_snp_annotation.tsv.gz
+    Untracked:  outputs/ROSMAP_haQTL_cs_snp_toppc1_annotation.tsv.gz
+    Untracked:  outputs/ROSMAP_mQTL_cs_snp_annotation.tsv.gz
+    Untracked:  outputs/ROSMAP_mQTL_cs_snp_toppc1_annotation.tsv.gz
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/rosmap_overview.Rmd</code>) and
+HTML (<code>docs/rosmap_overview.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/1ad355ae94d1bb9a770faeb0ac56392549a38b4c/analysis/rosmap_overview.Rmd" target="_blank">1ad355a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+wflow_publish("rosmap_overview.Rmd", view = FALSE, verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/rosmap_overview.html" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Rebuilt the rosmap_overview analysis with the new results.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/1c8eeb7f07827e141d64f671b8a38821e1ac7c86/analysis/rosmap_overview.Rmd" target="_blank">1c8eeb7</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+wflow_publish("rosmap_overview.Rmd", view = FALSE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/acfadd18f631b80fc953f7c282ada7aeeba48c68/analysis/rosmap_overview.Rmd" target="_blank">acfadd1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Made a few improvements to the code and text of the rosmap_analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c102af90b142616368e65e5deddab968daea046f/analysis/rosmap_overview.Rmd" target="_blank">c102af9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Added a scatterplot comparing number of CSs per TAD (susie vs. fsusie).
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/12f2fd34bb981b86976ea16a9d293b4b6a0c55e7/analysis/rosmap_overview.Rmd" target="_blank">12f2fd3</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Added some histograms on TAD CS sizes.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c69e187bb6e7fd10716665e4c59ebdf0fb927d84/analysis/rosmap_overview.Rmd" target="_blank">c69e187</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Created plot showing TAD sizes from the methylation fine-mapping
+results.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/2a5c7060bfea715430e3f822a89a1ded9791f816/analysis/rosmap_overview.Rmd" target="_blank">2a5c706</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Added code to the rosmap_overview analysis to load the methylation SNP
+results.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c3a01c7e937d5a86509a699d9e57504d6c583587/analysis/rosmap_overview.Rmd" target="_blank">c3a01c7</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Added link for downloading data to rosmap_overview analysis.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/5c446c08a11735474bd94ded6e641065aff07171/docs/rosmap_overview.html" target="_blank">5c446c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+First build of the rosmap_overview analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/7532908fe0418cc52f231593c2a621e8fc7719eb/analysis/rosmap_overview.Rmd" target="_blank">7532908</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+workflowr::wflow_publish("rosmap_overview.Rmd", verbose = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/bc6d0a16f7dfe114a6a17d5cff05ab2eb457497f/analysis/rosmap_overview.Rmd" target="_blank">bc6d0a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+<td>
+Started working on rosmap_overview analysis.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>ADD SOME TEXT HERE GIVING AN OVERVIEW OF THIS ANALYSIS.</p>
+<p><strong>Note:</strong> If you would like to run this analysis on your
+computer, you will first need to download the fine-mapping outputs. They
+can be downloaded from <a
+href="https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo">here</a>.
+Once you have downloaded the files, copy them to the “outputs”
+subdirectory.</p>
+<p>Load some packges used in the code below:</p>
+<pre class="r"><code>library(data.table)
+library(ggplot2)
+library(cowplot)</code></pre>
+<div id="methylation-fine-mapping" class="section level2">
+<h2>Methylation fine-mapping</h2>
+<p>First I define a helper function for loading the enrichment
+results:</p>
+<pre class="r"><code># The &quot;n&quot; argument specifies the number of &quot;meta data&quot; columns.
+# Columns after that are treated as the enrichment results. These
+# columns contain only binary data (0 or 1) indicating whether or not
+# the genomic feature (genetic variant or molecular trait location)
+# is assigned that specific annotation.
+read_enrichment_results &lt;- function (filename, n) {
+  out &lt;- fread(filename,sep = &quot;\t&quot;,stringsAsFactors = FALSE,header = TRUE)
+  class(out) &lt;- &quot;data.frame&quot;
+  out &lt;- transform(out,chr = factor(chr))
+  cols &lt;- seq(n + 1,ncol(out))
+  for (i in cols)
+    out[[i]] &lt;- factor(out[[i]])
+  return(out)
+}</code></pre>
+<p>Next I load methylation SNP results generated by SuSiE-topPC and
+fSuSiE:</p>
+<pre class="r"><code>methyl_snps_susie_file &lt;-
+  &quot;../outputs/ROSMAP_mQTL_cs_snp_toppc1_annotation.tsv.gz&quot;
+methyl_snps_fsusie_file &lt;- &quot;../outputs/ROSMAP_mQTL_cs_snp_annotation.tsv.gz&quot;
+methyl_snps_susie  &lt;- read_enrichment_results(methyl_snps_susie_file,n = 6)
+methyl_snps_fsusie &lt;- read_enrichment_results(methyl_snps_fsusie_file,n = 7)
+methyl_snps_susie$region &lt;-
+  sapply(strsplit(methyl_snps_susie$cs,&quot;:&quot;,fixed = TRUE),&quot;[[&quot;,2)
+methyl_snps_susie  &lt;- transform(methyl_snps_susie,
+                                region = factor(region),
+                                cs     = factor(cs),
+                                pc     = factor(pc))
+methyl_snps_fsusie &lt;- transform(methyl_snps_fsusie,
+                                cs     = factor(cs),
+                                region = factor(region),
+                                study  = factor(study))</code></pre>
+<p>This is the number of fine-mapping regions (TADs) that contained at
+least one CS in each of the analyses:</p>
+<pre class="r"><code>nlevels(methyl_snps_susie$region)
+nlevels(methyl_snps_fsusie$region)
+# [1] 1236
+# [1] 1327</code></pre>
+<p>This is a function we will use below to get the sizes of the TADs (in
+Mb):</p>
+<pre class="r"><code>get_tad_sizes &lt;- function (tads) {
+  tads &lt;- strsplit(tads,&quot;_&quot;,fixed = TRUE)
+  pos0 &lt;- as.numeric(sapply(tads,&quot;[[&quot;,2))
+  pos1 &lt;- as.numeric(sapply(tads,&quot;[[&quot;,3))
+  return((pos1 - pos0)/1e6)
+}</code></pre>
+<p>This plot summarizes the sizes of the TADs that were analyzed by
+SuSiE-topPC and fSuSiE:</p>
+<pre class="r"><code>plot_tad_sizes &lt;- function (tads) {
+  tad_size &lt;- get_tad_sizes(tads)
+  pdat &lt;- data.frame(tad_size = tad_size)
+  return(ggplot(pdat,aes(x = tad_size)) +
+         geom_histogram(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 48) +
+         labs(x = &quot;size (Mb)&quot;,y = &quot;number of TADs&quot;) +
+         theme_cowplot(font_size = 10))
+}
+tads &lt;- levels(methyl_snps_fsusie$region)
+plot_tad_sizes(tads) +
+  scale_x_continuous(limits = c(2,9),breaks = 1:10) +
+  scale_y_continuous(breaks = seq(0,100,10))</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/plot-methyl-tad-sizes-1.png" width="330" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-methyl-tad-sizes-1">
+Past versions of plot-methyl-tad-sizes-1.png
+</button>
+</p>
+<div id="fig-plot-methyl-tad-sizes-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/plot-methyl-tad-sizes-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Some more useful statistics on the TAD sizes:</p>
+<pre class="r"><code>tad_size &lt;- get_tad_sizes(tads)
+range(tad_size)
+mean(tad_size)
+median(tad_size)
+sum(tad_size &gt; 9)
+# [1]  2.320952 34.727189
+# [1] 4.54465
+# [1] 4.154266
+# [1] 19</code></pre>
+<p>These histograms summarize the number of CSs per TAD:</p>
+<pre class="r"><code>get_cs_vs_tad_size &lt;- function (dat) {
+  tads &lt;- levels(dat$region)
+  out &lt;- data.frame(tad      = tads,
+                    tad_size = get_tad_sizes(tads),
+                    num_cs   = tapply(dat$cs,dat$region,
+                                      function (x) length(unique(x))))
+  rownames(out) &lt;- NULL
+  return(out)
+}
+pdat1 &lt;- get_cs_vs_tad_size(methyl_snps_susie)
+pdat2 &lt;- get_cs_vs_tad_size(methyl_snps_fsusie)
+pdat1 &lt;- transform(pdat1,num_cs = factor(num_cs,1:20))
+pdat2 &lt;- transform(pdat2,num_cs = factor(num_cs,1:20))
+p1 &lt;- ggplot(pdat1,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(pdat2,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/num-cs-per-tad-methyl-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-num-cs-per-tad-methyl-1">
+Past versions of num-cs-per-tad-methyl-1.png
+</button>
+</p>
+<div id="fig-num-cs-per-tad-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/num-cs-per-tad-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
+and fSuSiE analyses:</p>
+<pre class="r"><code>dat1 &lt;- get_cs_vs_tad_size(methyl_snps_susie)
+dat2 &lt;- get_cs_vs_tad_size(methyl_snps_fsusie)
+dat1 &lt;- dat1[c(1,3)]
+dat2 &lt;- dat2[c(1,3)]
+names(dat1) &lt;- c(&quot;tad&quot;,&quot;num_cs_susie&quot;)
+names(dat2) &lt;- c(&quot;tad&quot;,&quot;num_cs_fsusie&quot;)
+dat &lt;- merge(dat1,dat2,all = TRUE)
+rows &lt;- which(is.na(dat$num_cs_susie))
+dat[rows,&quot;num_cs_susie&quot;] &lt;- 0
+pdat &lt;- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+rows &lt;- which(pdat$value == 0)
+pdat[rows,&quot;value&quot;] &lt;- NA
+ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+  geom_point(color = &quot;white&quot;,fill = &quot;darkblue&quot;,shape = 21) +
+  geom_abline(intercept = 0,slope = 1,color = &quot;black&quot;,linetype = &quot;dotted&quot;) +
+  scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_size(breaks = c(1,10,100)) +
+  labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/compare-num-cs-per-tad-methyl-1.png" width="450" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-compare-num-cs-per-tad-methyl-1">
+Past versions of compare-num-cs-per-tad-methyl-1.png
+</button>
+</p>
+<div id="fig-compare-num-cs-per-tad-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/compare-num-cs-per-tad-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
+analyses:</p>
+<pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
+cs_size_susie  &lt;- as.numeric(table(methyl_snps_susie$cs))
+cs_size_fsusie &lt;- as.numeric(table(methyl_snps_fsusie$cs))
+cs_size_susie  &lt;- cut(cs_size_susie,bins)
+cs_size_fsusie &lt;- cut(cs_size_fsusie,bins)
+levels(cs_size_susie) &lt;- bins[-1]
+levels(cs_size_fsusie) &lt;- bins[-1]
+p1 &lt;- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cs-sizes-methyl-1">
+Past versions of cs-sizes-methyl-1.png
+</button>
+</p>
+<div id="fig-cs-sizes-methyl-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">c84e5c0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="h3k27ac-fine-mapping" class="section level2">
+<h2>H3K27ac fine-mapping</h2>
+<p>Load the H3K27ac SNP results generated by SuSiE-topPC and fSuSiE:</p>
+<pre class="r"><code>ha_snps_susie_file &lt;- &quot;../outputs/ROSMAP_haQTL_cs_snp_toppc1_annotation.tsv.gz&quot;
+ha_snps_fsusie_file &lt;- &quot;../outputs/ROSMAP_haQTL_cs_snp_annotation.tsv.gz&quot;
+ha_snps_susie  &lt;- read_enrichment_results(ha_snps_susie_file,n = 6)
+ha_snps_fsusie &lt;- read_enrichment_results(ha_snps_fsusie_file,n = 7)
+ha_snps_susie$region &lt;-
+  sapply(strsplit(ha_snps_susie$cs,&quot;:&quot;,fixed = TRUE),&quot;[[&quot;,2)
+ha_snps_susie  &lt;- transform(ha_snps_susie,
+                            region = factor(region),
+                            cs     = factor(cs),
+                            pc     = factor(pc))
+ha_snps_fsusie &lt;- transform(ha_snps_fsusie,
+                            cs     = factor(cs),
+                            region = factor(region),
+                            study  = factor(study))</code></pre>
+<p>There is no need to look at the TAD sizes because the same TADs were
+analyzed for both molecular traits, methylation and H3K27ac.</p>
+<p>These histograms summarize the number of CSs per TAD:</p>
+<pre class="r"><code>pdat1 &lt;- get_cs_vs_tad_size(ha_snps_susie)
+pdat2 &lt;- get_cs_vs_tad_size(ha_snps_fsusie)
+pdat1 &lt;- transform(pdat1,num_cs = factor(num_cs,1:20))
+pdat2 &lt;- transform(pdat2,num_cs = factor(num_cs,1:20))
+p1 &lt;- ggplot(pdat1,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(pdat2,aes(x = num_cs)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = &quot;number of CSs&quot;,y = &quot;number of TADs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/num-cs-per-tad-ha-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>Compare discovery of causal SNPs (number of CSs) in the SuSiE-topPC
+and fSuSiE analyses:</p>
+<pre class="r"><code>dat1 &lt;- get_cs_vs_tad_size(ha_snps_susie)
+dat2 &lt;- get_cs_vs_tad_size(ha_snps_fsusie)
+dat1 &lt;- dat1[c(1,3)]
+dat2 &lt;- dat2[c(1,3)]
+names(dat1) &lt;- c(&quot;tad&quot;,&quot;num_cs_susie&quot;)
+names(dat2) &lt;- c(&quot;tad&quot;,&quot;num_cs_fsusie&quot;)
+dat &lt;- merge(dat1,dat2,all = TRUE)
+rows &lt;- which(is.na(dat$num_cs_susie))
+dat[rows,&quot;num_cs_susie&quot;] &lt;- 0
+pdat &lt;- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+rows &lt;- which(pdat$value == 0)
+pdat[rows,&quot;value&quot;] &lt;- NA
+ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+  geom_point(color = &quot;white&quot;,fill = &quot;tomato&quot;,shape = 21) +
+  geom_abline(intercept = 0,slope = 1,color = &quot;black&quot;,linetype = &quot;dotted&quot;) +
+  scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
+  scale_size(breaks = c(1,10,100)) +
+  labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/compare-num-cs-per-tad-ha-1.png" width="450" style="display: block; margin: auto;" /></p>
+<p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
+analyses:</p>
+<pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
+cs_size_susie  &lt;- as.numeric(table(ha_snps_susie$cs))
+cs_size_fsusie &lt;- as.numeric(table(ha_snps_fsusie$cs))
+cs_size_susie  &lt;- cut(cs_size_susie,bins)
+cs_size_fsusie &lt;- cut(cs_size_fsusie,bins)
+levels(cs_size_susie) &lt;- bins[-1]
+levels(cs_size_fsusie) &lt;- bins[-1]
+p1 &lt;- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;SuSiE-topPC&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+p2 &lt;- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;tomato&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;fSuSiE&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
+plot_grid(p1,p2,nrow = 1,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/cs-sizes-ha-1.png" width="480" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()
+# R version 4.3.3 (2024-02-29)
+# Platform: aarch64-apple-darwin20 (64-bit)
+# Running under: macOS Sonoma 14.7.1
+# 
+# Matrix products: default
+# BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+# LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+# 
+# locale:
+# [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+# 
+# time zone: America/Chicago
+# tzcode source: internal
+# 
+# attached base packages:
+# [1] stats     graphics  grDevices utils     datasets  methods   base     
+# 
+# other attached packages:
+# [1] cowplot_1.1.3     ggplot2_3.5.0     data.table_1.15.2
+# 
+# loaded via a namespace (and not attached):
+#  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.3    
+#  [5] digest_0.6.34     magrittr_2.0.3    evaluate_0.23     grid_4.3.3       
+#  [9] fastmap_1.1.1     plyr_1.8.9        R.oo_1.26.0       rprojroot_2.0.4  
+# [13] workflowr_1.7.1   jsonlite_1.8.8    R.utils_2.12.3    whisker_0.4.1    
+# [17] promises_1.2.1    fansi_1.0.6       scales_1.3.0      jquerylib_0.1.4  
+# [21] cli_3.6.4         rlang_1.1.5       R.methodsS3_1.8.2 munsell_0.5.0    
+# [25] withr_3.0.0       cachem_1.0.8      yaml_2.3.8        tools_4.3.3      
+# [29] reshape2_1.4.4    dplyr_1.1.4       colorspace_2.1-0  httpuv_1.6.14    
+# [33] vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4   git2r_0.33.0     
+# [37] stringr_1.5.1     fs_1.6.5          pkgconfig_2.0.3   pillar_1.9.0     
+# [41] bslib_0.6.1       later_1.3.2       gtable_0.3.4      glue_1.8.0       
+# [45] Rcpp_1.0.12       xfun_0.42         tibble_3.2.1      tidyselect_1.2.1 
+# [49] highr_0.10        knitr_1.45        farver_2.1.1      htmltools_0.5.8.1
+# [53] rmarkdown_2.26    labeling_0.4.3    compiler_4.3.3</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
