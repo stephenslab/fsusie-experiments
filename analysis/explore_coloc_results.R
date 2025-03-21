@@ -48,11 +48,13 @@ dat <- subset(dat,
 dat_methyl <- subset(dat,non_ad == "ROSMAP_DLPFC_mQTL")
 dat_ha     <- subset(dat,non_ad == "ROSMAP_DLPFC_haQTL")
 
-# Narrow down to the cases where the evidence for colocalization is quite strong.
+# Narrow down to the cases where the evidence for colocalization is
+# quite strong.
 dat_methyl <- subset(dat_methyl,PP.H4.abf > 0.5)
 dat_ha     <- subset(dat_ha,PP.H4.abf > 0.5)
 
-# Narrow down to cases where the molecular QTL CS has 4 SNPs or fewer.
+# Narrow down to cases where the methylation CS has 4 SNPs or fewer,
+# and "hit1" or "hit2" overlap with one of the SNPs in the CS.
 cs_size     <- table(methyl_snps$cs)
 small_cs    <- names(which(cs_size < 5))
 methyl_snps <- subset(methyl_snps,is.element(cs,small_cs))
@@ -60,6 +62,8 @@ dat_methyl  <- subset(dat_methyl,
                       is.element(hit1,methyl_snps$variant_id) |
                       is.element(hit2,methyl_snps$variant_id))
 
+# Narrow down to cases where the H3K27ac CS has 4 SNPs or fewer,
+# and "hit1" or "hit2" overlap with one of the SNPs in the CS.
 cs_size  <- table(ha_snps$cs)
 small_cs <- names(which(cs_size < 5))
 ha_snps  <- subset(ha_snps,is.element(cs,small_cs))
@@ -67,10 +71,12 @@ dat_ha   <- subset(dat_ha,
                    is.element(hit1,ha_snps$variant_id) |
                    is.element(hit2,ha_snps$variant_id))
 
+# Display the results that remain.
 options(width = 120)
 cols <- c("ad","non_ad_region","hit2","PP.H4.abf","idx2")
 print(dat_ha[cols])
 print(dat_methyl[cols])
+
 #
 #                      ad          non_ad_region              hit2 PP.H4.abf idx2
 # AD_Bellenguez_EADB_2022 chr5_82637805_88412930 chr5:87121196:C:T    0.6652    1
@@ -87,6 +93,8 @@ print(dat_methyl[cols])
 #    AD_Bellenguez_2022   chr21_24561908_27573286  chr21:25870258:A:T    0.8984    7
 #
 
+# Inspect the fSuSiE results on methylation for some of these
+# candidates that emerged from this analysis.
 interesting_cs <- c("ROSMAP_DLPFC_mQTL:chr6_44880827_48309905:13",
                     "ROSMAP_DLPFC_mQTL:chr12_111405189_114438276:3",
                     "ROSMAP_DLPFC_mQTL:chr16_24031743_30613717:13",
