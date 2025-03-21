@@ -325,6 +325,44 @@ ha_peak_fsusie <- transform(ha_peak_fsusie,
 						    context = factor(context))
 ```
 
+Add text here.
 
+```{r}
+num_tad_peaks_fsusie <-
+  with(ha_peak_fsusie,tapply(ID,region,function (x) length(unique(x))))
+```
+
+Add text here.
+
+```{r}
+tads <- levels(ha_peak_fsusie$region)
+tads <- strsplit(tads,"_")
+tads <- data.frame(tad   = levels(ha_peak_fsusie$region),
+                   chr   = sapply(tads,"[[",1),
+                   start = as.numeric(sapply(tads,"[[",2)),
+				   end   = as.numeric(sapply(tads,"[[",3)))
+tads <- transform(tads,chr = factor(chr))
+n <- nrow(tads)
+num_tad_peaks_assoc <- rep(0,n)
+names(num_tad_peaks_assoc) <- tads$tad
+for (i in 1:n) {
+  rows <- which(ha_peak_assoc$chr == tads[i,"chr"] &
+                ha_peak_assoc$pos >= tads[i,"start"] &
+				ha_peak_assoc$pos <= tads[i,"end"])
+  num_tad_peaks_assoc[i] <-
+    length(unique(ha_peak_assoc[rows,"molecular_trait_id"]))
+}
+```
+
+Plots showing the results...
+
+```{r}
+```
+
+Summarize the number of affected peaks by SNP:
+
+```{r}
+TO DO.
+```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
