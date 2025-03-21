@@ -10,13 +10,21 @@ source(paste0(path,"/code/plot_log.R"))
 library(fsusieR)
 library(ggplot2)
 load(paste0(path,"/output/local/ENSG00000104435.csv.gz.RData"))
+
+out$locus[1] -min(as.numeric(out$info_SNP$POS))
+out$locus[2] -max(as.numeric(out$info_SNP$POS))
+
+-200000
+id1= which(  as.numeric(out$info_SNP$POS) < out$locus[1]-150000)  
+
 plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
   
   geom_rect(aes(xmin = out$locus[1], 
                 xmax =out$locus[2],
                 ymin = -0.01,
                 ymax = 1.02), 
-            alpha = 0.0, color = "red")
+            alpha = 0.0, color = "red")+
+  xlim(c(out$locus[1] -150000,out$locus[2] +150000 )  ) 
 
 
 folder_path=  paste0(getwd(),
@@ -31,12 +39,20 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
                 xmax =out$locus[2],
                 ymin = -0.01,
                 ymax = 1.02), 
-            alpha = 0.0, color = "red")
-
+            alpha = 0.0, color = "red")+
+  xlim(c(out$locus[1] -150000,out$locus[2] +150000 )  ) +
+  theme(
+    axis.text = element_text(size = 14),       # Increase axis text size
+    axis.title = element_text(size = 16, face = "bold"), # Increase axis labels size
+    legend.text = element_text(size = 14),     # Increase legend text size
+    legend.title = element_text(size = 16, face = "bold"), # Increase legend title size
+    egend.key.size = unit(1.5, "cm"),
+    plot.title = element_text(size = 18, face = "bold", hjust = 0.5) # Increase title size
+  )
 dev.off()
 
 #lead SNP for the 3 CS
-#CS 1 rs376197939
+#CS 1 rs191117801
 #CS 2 rs1400511103
 #CS 3 rs1557742436
 
@@ -44,6 +60,29 @@ dev.off()
 obj= out$res
 Y=log1p(as.matrix(out$Y/out$size_factor_local) )
 X=as.matrix(out$X) 
+
+
+
+
+
+m1 <-susieR::susie(X=X,
+                   y=rowSums(Y),
+                   L=5
+)
+m1$sets
+
+
+PCA <- svd(Y)
+m2 <-susieR::susie(X=X,
+                   y=PCA$u[,1],
+                   L=5
+)
+
+m2$sets
+
+
+
+
 
  rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
                         X= fsusieR:::colScale(X   ))
@@ -84,8 +123,8 @@ x       <- X[,marker]
 
 
 
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])) )
 
 ### CS1 -----
 
@@ -105,8 +144,10 @@ effect=rbind (rest$fitted_func[[1]]/2,
               rep(0, length(obj$fitted_func[[cs]])))
 
 t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                         sigma=sqrt(0.015))
+                         sigma= sqrt(0.015) )
+ 
 
+var(read_counts[2,]-read_counts[1,])
 
 plot(t_effect$mu.est)
 cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
@@ -189,9 +230,9 @@ plotTracks(obs_effect_track)
 n0  <- sum(x == 0)
 n1  <- sum(x == 1)
 n2  <- sum(x == 2)
-id  <- "rs376197939" #snp_info[marker,"ID"]
-ref <- "AA"#snp_info[marker,"REF"]
-alt <- "AT" #snp_info[marker,"ALT"]
+id  <- "rs191117801" #snp_info[marker,"ID"]
+ref <- "GG"#snp_info[marker,"REF"]
+alt <- "GA" #snp_info[marker,"ALT"]
 
 
 groups <- c(sprintf("\t    %s %s (n = %d)",id, ref,n0),
@@ -298,9 +339,9 @@ x       <- X[,marker]
 n0  <- sum(x == 0)
 n1  <- sum(x == 1)
 n2  <- sum(x == 2)
-id  <- "rs1400511103" #snp_info[marker,"ID"]
-ref <- "CC"#snp_info[marker,"REF"]
-alt <- "CT" #snp_info[marker,"ALT"]
+id  <- "rs191117801" #snp_info[marker,"ID"]
+ref <- "GG"#snp_info[marker,"REF"]
+alt <- "GA" #snp_info[marker,"ALT"]
 
 
 groups <- c(sprintf("    %s %s (n = %d)",id, ref,n0),
@@ -308,8 +349,8 @@ groups <- c(sprintf("    %s %s (n = %d)",id, ref,n0),
 geno_colors <- c("lightgreen","darkgreen" )
 
 
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])) )
 
 which(x==2
 )# removing only individual with 2 variant
@@ -323,7 +364,7 @@ effect=rbind (rest$fitted_func[[2]],
               rep(0, length(obj$fitted_func[[cs]])))
 
 t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                         sigma=sqrt(0.01))
+                         sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
 
 cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                    t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -474,11 +515,11 @@ effect=rbind (rest$fitted_func[[3]]/2,
 
 
 group_cred= c(1:3,0)
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])),
-                     colMeans(log1p(Y[x == 2,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])),
+                     colMeans(log1p(out$Y[x == 2,])) )
 t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                         sigma=sqrt(0.01))
+                         sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
 
 cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                    t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -555,21 +596,18 @@ n0  <- sum(x == 0)
 n1  <- sum(x == 1)
 
 n2  <- sum(x == 2)
-id  <- "rs376197939" #snp_info[marker,"ID"]
-ref <- "AA"#snp_info[marker,"REF"]
-alt <- "AT" #snp_info[marker,"ALT"]
+id  <- "rs116400557" #snp_info[marker,"ID"]
+ref <- "TT"#snp_info[marker,"REF"]
+alt <- "TC" #snp_info[marker,"ALT"]
 alt2 <- "AA" #snp_info[marker,"ALT"]
 
 groups <- c(sprintf("\t    %s %s (n = %d)",id, ref,n0),
-            sprintf("\t    %s %s (n = %d)",id, alt,n1),
-            
-            sprintf("\t    %s %s (n = %d)",id, alt2,n2))
-geno_colors <- c("purple4","#B08AE3","pink" )
+            sprintf("\t    %s %s (n = %d)",id, alt,n1) )
+geno_colors <- c("purple4","#B08AE3"  )
 
 
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])),
-                     colMeans(log1p(Y[x == 2,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,]))  )
 
 groups <- factor(groups,rev(groups))
 geno_colors <- rev(geno_colors)
@@ -633,3 +671,186 @@ plotTracks(tracks,from = pos0-200,
 dev.off()
 
 
+## CS 4 
+
+
+
+
+
+
+
+## CS 4 -----
+cs=4
+Y=log1p(as.matrix(out$Y/out$size_factor_local) )
+X=as.matrix(out$X)
+
+markers <- obj$cs[[cs]]
+j       <- which.max(obj$pip[markers])
+marker  <- markers[j]
+x       <- X[,marker]
+n0  <- sum(x == 0)
+n1  <- sum(x == 1)
+n2  <- sum(x == 2)
+
+
+effect=rbind (rest$fitted_func[[3]]/2,
+              rest$cred_band[[3]]/2 ,
+              rep(0, length(obj$fitted_func[[cs]])))
+
+
+
+group_cred= c(1:3,0)
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])),
+                     colMeans(log1p(out$Y[x == 2,])) )
+t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
+                         sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
+
+cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
+                   t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
+effect=rbind (t_effect$mu.est,
+              cred_band ,
+              rep(0, length(obj$fitted_func[[cs]])) )
+
+group_colors <- c("black" ,"orange2","orange2","orange2" )
+ 
+# Create a "data track" to show the CS effect.
+cex <- 1
+
+group_lwd= c(1,2,1,1)
+group_lty= c(1,1,2,2)
+effect_track <-
+  DataTrack(range = GRanges(seqnames = chr,
+                            ranges = IRanges(start = positions,
+                                             end = positions + 1)),
+            data = effect, genome = "hg38",
+            groups= group_cred,
+            lwd=group_lwd,
+            lty=group_lty,
+            name = paste("Effect CS",cs),type = "l",col = group_colors,
+            track.margin = 0.05,cex.title = cex,cex.axis = cex,
+            col.axis = "black",col.title = "black",
+            fontface = "plain",background.title = "white",
+            fontface.title = 1,,
+            legend = FALSE )
+
+
+plotTracks(effect_track)
+# Create another "data track" to show the read counts.
+
+obs_effect=rbind ((read_counts[2,]-read_counts[1,]) ,
+                  rep(0, length(obj$fitted_func[[cs]])) )
+
+
+obs_effect_track <-
+  DataTrack(range = GRanges(seqnames = chr,
+                            ranges = IRanges(start = positions,
+                                             end = positions + 1)),
+            data =read_counts[2,]-read_counts[1,], genome = "hg38",
+            
+            
+            
+            name ="Observed difference ",type = c("p"  ),col = c("orange1"),
+            track.margin = 0.05,cex.title = cex,cex.axis = cex,
+            col.axis = "black",col.title = "black",
+            fontface = "plain",background.title = "white",
+            fontface.title = 1,,
+            legend = FALSE )
+tt=read_counts[2,]-read_counts[1,]
+
+obs_effect_track2 <-
+  DataTrack(range = GRanges(seqnames = chr,
+                            ranges = IRanges(start = positions,
+                                             end = positions + 1)),
+            data =  rep(0, length(obj$fitted_func[[cs]])), genome = "hg38",
+            
+            ylim= c( min(tt),max(tt) ),
+            name ="Observed difference ",type = c("l"  ),col = c("black" ),
+            track.margin = 0.05,cex.title = cex,cex.axis = cex,
+            col.axis = "black",col.title = "black",
+            fontface = "plain",background.title = "white",
+            fontface.title = 1,,
+            legend = FALSE )
+
+obs_effect_track =OverlayTrack(trackList = list(obs_effect_track,
+                                                obs_effect_track2),background.title = "white")
+
+plotTracks(obs_effect_track)
+n0  <- sum(x == 0)
+n1  <- sum(x == 1)
+
+n2  <- sum(x == 2)
+  
+id  <- "rs561814839" #snp_info[marker,"ID"]
+ref <- "GG"#snp_info[marker,"REF"]
+alt <- "GA" #snp_info[marker,"ALT"]
+alt2 <- "AA" #snp_info[marker,"ALT"]
+
+groups <- c(sprintf("\t    %s %s (n = %d)",id, ref,n0),
+            sprintf("\t    %s %s (n = %d)",id, alt,n1) )
+geno_colors <- c("orange2","gold1"  )
+
+
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,]))  )
+
+groups <- factor(groups,rev(groups))
+geno_colors <- rev(geno_colors)
+
+
+lab_y =ifelse(log1p_count, "Avg. log1p count","Avg. count")
+data_track <- DataTrack(range = GRanges(seqnames = chr,
+                                        ranges = IRanges(start = positions,
+                                                         end = positions + 1)),
+                        data = read_counts,genome = "hg38",
+                        groups = groups,
+                        name = lab_y  , type = type_data, #"p",#type = "l",
+                        col = geno_colors  ,
+                        track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                        
+                        col.axis = "black",col.title = "black",
+                        fontface = "plain",background.title = "white",
+                        fontface.title = 1,cex.legend = cex, cex=2)
+
+data_track <-DataTrack(range = GRanges(seqnames = chr,
+                                       ranges = IRanges(start = positions,
+                                                        end = positions + 1)),
+                       data = read_counts,genome = "hg38",
+                       groups = groups,
+                       name = lab_y , type = type_data,  col = geno_colors ,track.margin = 0.05,cex.title = cex,cex.axis = cex,
+                       
+                       col.axis = "black",col.title = "black",
+                       fontface = "plain",background.title = "white", 
+                       fontface.title = 1, cex= .6,cex.legend = 1.1)
+
+
+plotTracks(data_track)
+
+
+
+# Combine all tracks into a single plot.
+tracks <- c(ideo_track,
+            genome_track,
+            effect_track,
+            obs_effect_track ,
+            data_track,
+            gene_track)
+
+
+
+plotTracks(tracks,from = pos0,to = pos1,sizes = c(1,1.75,1.75,2,4,2)) 
+
+folder_path=  paste0(getwd(),
+                     "/plot/STMN2/"
+)
+file_path <- file.path(folder_path, "STMN2_cs4.pdf")
+pdf(file_path, width =16.69, height = 8.27 )  # A4 in inches
+
+
+
+plotTracks(tracks,from = pos0-200,
+           to = pos1+200,
+           sizes = c(1,1,4 ,4,4,2),
+           cex.main=1.2, cex.title = 1.
+) 
+dev.off()

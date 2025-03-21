@@ -42,8 +42,8 @@ plot_susiF_pip(out$res, pos_SNP = as.numeric(out$info_SNP$POS))+
 
 dev.off()
 
-plot (out$res$outing_grid, rest$fitted_func[[1]])
-abline(v=109999704 )
+#plot (out$res$outing_grid, rest$fitted_func[[1]])
+#abline(v=109999704 )
 ### buidling zscore
  
 
@@ -110,8 +110,8 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
   
   
    
-      read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                           colMeans(log1p(Y[x == 1,])) )
+      read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                           colMeans(log1p(out$Y[x == 1,])) )
     
   ### CS1 -----
   
@@ -132,7 +132,7 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
     
     
     t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                             sigma=sqrt(0.012))
+                             sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
     
     cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                        t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -335,8 +335,8 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
  geno_colors <- c("lightgreen","darkgreen" )
  
  
- read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                      colMeans(log1p(Y[x == 1,])) )
+ read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                      colMeans(log1p(out$Y[x == 1,])) )
  
  which(x==2
        )# removing only individual with 2 variant
@@ -350,7 +350,7 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
                rep(0, length(obj$fitted_func[[cs]])))
  
  t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                          sigma=sqrt(0.003))
+                          sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
  
  cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                     t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -502,7 +502,7 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
  
  
  t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                          sigma=sqrt(0.004))
+                          sigma=sqrt(var(read_counts[2,]-read_counts[1,]))+0.01)
  
  cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                     t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -598,9 +598,9 @@ rest =smash_regression(obj, Y=  fsusieR:::colScale(Y , scale = FALSE)  ,
    geno_colors <- c("purple4","#B08AE3","pink" )
  
    
-   read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                        colMeans(log1p(Y[x == 1,])),
-                        colMeans(log1p(Y[x == 2,])) )
+   read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                        colMeans(log1p(out$Y[x == 1,])),
+                        colMeans(log1p(out$Y[x == 2,])) )
   
    groups <- factor(groups,rev(groups))
    geno_colors <- rev(geno_colors)

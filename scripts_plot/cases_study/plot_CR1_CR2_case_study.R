@@ -64,8 +64,22 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_tr
                 background.title = "white",name="AD") ) # Change title color to black
 
 
+t3= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos [c(2,4,5)]   ,
+                                                                 end = data_track_CS1$pos [c(2,4,5)]  )),
+                data = matrix(data_track_CS1$`-log10(P)`[c(2,4,5)]  , nrow=1), genome = "hg19", 
+                ylim =c( min(data_track$`-log10(P)`), max(data_track$`-log10(P)`)+0.2),
+                type = "p", col = "red", cex=1.5,
+                fill=  "royalblue",
+                pch=c(25 ),# Use color column from df_plot
+                track.margin = 0.05, # Reduce margin between track and title
+                cex.title = 0.6,     # Reduce title size
+                cex.axis = 0.6,      # Reduce axis text size
+                col.axis = "black",  # Change axis color to black
+                col.title = "black",cex.title = cex,
+                rotation.title = 90,
+                background.title = "white",name="AD") ) # Change title color to black
 
-otAD <- OverlayTrack(trackList=list(    t1,  t2  ),
+otAD <- OverlayTrack(trackList=list(    t1,  t2,t3  ),
                      background.title = "white")
 
 
@@ -177,7 +191,7 @@ plotTracks( otCR2 )
 
 ##### effect plot  -----
 
-res <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
+res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 rm(res)
 
@@ -186,7 +200,7 @@ rm(res)
 fsusie_obj_ha$cs[[5]]
 
 
-res_ha <- readRDS("D:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data (1).rds")
+res_ha <- readRDS("c:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data (1).rds")
 Y= as.data.frame(res_ha$residual_Y)
 
 
@@ -456,6 +470,8 @@ t_ha0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data
 HA_cs=data_ha
 
 tidx= which( HA_cs$pos %in%AD_cs$pos )
+
+#which( AD_cs$pos  %in% HA_cs$pos )#2 4 5
 t_ha1= ( DataTrack(range = GRanges(seqnames = chr, 
                                   ranges = IRanges(start = data_ha$pos[tidx] , end = data_ha$pos[ tidx] )),
                   data = matrix(data_ha$pip[tidx]+0.03 , nrow=1), genome = "hg38", 

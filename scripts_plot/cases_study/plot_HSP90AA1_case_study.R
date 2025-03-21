@@ -104,8 +104,8 @@ x       <- X[,marker]
 
 
 
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])) )
 
 ### CS1 -----
 
@@ -134,7 +134,7 @@ effect= rbind(rest$fitted_func[[1]]/2,
               rest$cred_band[[1]] /2,
               rep(0, length(obj$fitted_func[[cs]])) )
 t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                         sigma=sqrt(0.004))
+                         sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
 
 cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                    t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
@@ -339,8 +339,8 @@ groups <- c(sprintf("    %s %s (n = %d)",id, ref,n0),
 geno_colors <- c("lightgreen","darkgreen" )
 
 
-read_counts <- rbind(colMeans(log1p(Y[x == 0,])),
-                     colMeans(log1p(Y[x == 1,])) )
+read_counts <- rbind(colMeans(log1p(out$Y[x == 0,])),
+                     colMeans(log1p(out$Y[x == 1,])) )
 
 which(x==2
 )# removing only individual with 2 variant
@@ -365,7 +365,7 @@ effect=rbind (rest$fitted_func[[2]]/2,
               rest$cred_band[[2]]/2 ,
               rep(0, length(obj$fitted_func[[cs]])))
 t_effect=  smashr::smash(read_counts[2,]-read_counts[1,], post.var=TRUE,
-                         sigma=sqrt(0.015))
+                         sigma=sqrt(var(read_counts[2,]-read_counts[1,])))
 
 cred_band = rbind( t_effect$mu.est+1.98*sqrt(t_effect$mu.est.var),
                    t_effect$mu.est-1.98*sqrt(t_effect$mu.est.var))
