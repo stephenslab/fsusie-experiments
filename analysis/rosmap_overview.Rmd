@@ -261,7 +261,7 @@ tads <- get_tad_info(levels(methyl_cpg_fsusie$region))
 cpgs_per_tad_assoc <- count_features_per_tad(methyl_cpg_assoc,tads)
 ```
 
-ADD TEXT HERE.
+These plots summarize the number of affected CpGs per TAD:
 
 ```{r plot-cpgs-per-tad, fig.height=2, fig.width=5, warning=FALSE}
 cpgs_per_tad_assoc[cpgs_per_tad_assoc == 0] <- NA
@@ -284,14 +284,15 @@ p2 <- ggplot(pdat2,aes(x = x)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-ADD TEXT HERE.
+A small number of TADs have more than 2,000 affected CpGs:
 
 ```{r cpgs-per-tad-more}
 sum(cpgs_per_tad_assoc > 2000,na.rm = TRUE)
 sum(cpgs_per_tad_fsusie > 2000,na.rm = TRUE)
 ```
 
-ADD TEXT HERE.
+This plot compares the number of affected CpGs identified by fSuSiE
+and the CpG-SNP association tests:
 
 ```{r compare-cpgs-per-tad, fig.height=3, fig.width=3, warning=FALSE}
 pdat <- data.frame(assoc  = cpgs_per_tad_assoc,
@@ -305,10 +306,16 @@ ggplot(pdat,aes(x = assoc,y = fsusie)) +
   theme_cowplot(font_size = 10)
 ```
 
-ADD TEXT HERE.
+One advantage of fSuSiE is that it is able to tell us which molecular
+features are affected by which SNPs, and therefore it provides a more
+coherent summary of how the SNPs affect methylation levels at a locus.
+To examine this quantitatively, we compare the number of affected CpGs
+per CS for fSuSiE to the number of affected CpGs per SNP from the
+association tests. The result is much fewer CSs and many more
+affected CpGs per CS:
 
 ```{r count-cpgs-per-snp, fig.height=2, fig.width=4}
-x <- factor(variant_id)
+x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 cpgs_per_snp_fsusie <-
@@ -332,7 +339,8 @@ p2 <- ggplot(pdat2,aes(x = x)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-ADD TEXT HERE.
+A small proportion of the SNPs and CSs are not plotted because they
+have an unusually large number of CpGs:
 
 ```{r count-cpgs-per-snp-more}
 mean(cpgs_per_snp_assoc > 25)
