@@ -294,7 +294,7 @@ sum(cpgs_per_tad_fsusie > 2000,na.rm = TRUE)
 This plot compares the number of affected CpGs identified by fSuSiE
 and the CpG-SNP association tests:
 
-```{r compare-cpgs-per-tad, fig.height=3, fig.width=3, warning=FALSE}
+```{r compare-cpgs-per-tad, fig.height=2.5, fig.width=2.5, warning=FALSE}
 pdat <- data.frame(assoc  = cpgs_per_tad_assoc,
                    fsusie = cpgs_per_tad_fsusie)
 ggplot(pdat,aes(x = assoc,y = fsusie)) +
@@ -314,10 +314,11 @@ per CS for fSuSiE to the number of affected CpGs per SNP from the
 association tests. The result is much fewer CSs and many more
 affected CpGs per CS:
 
-```{r count-cpgs-per-snp, fig.height=2, fig.width=4}
+```{r count-cpgs-per-snp, fig.height=2, fig.width=4.5}
 x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
+rm(x)
 cpgs_per_snp_fsusie <-
   with(methyl_cpg_fsusie,
        tapply(ID,cs,function (x) length(unique(x))))
@@ -436,7 +437,7 @@ p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
-  geom_histogram(stat = "count",color = "white",fill = "tomato",
+geom_histogram(stat = "count",color = "white",fill = "tomato",
                  width = 0.65) +
   labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
@@ -494,12 +495,13 @@ for (i in 1:n) {
 Plots showing the results...
 
 ```{r}
+# TO DO.
 ```
 
 Summarize the number of affected peaks by SNP:
 
 ```{r}
-TO DO.
+# TO DO.
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
