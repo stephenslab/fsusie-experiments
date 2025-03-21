@@ -319,7 +319,6 @@ ha_peak_assoc  <- read_enrichment_results(ha_peak_assoc_file,n = 8)
 ha_peak_fsusie <- read_enrichment_results(ha_peak_fsusie_file,n = 9)
 ha_peak_fsusie$region <-
   sapply(strsplit(ha_peak_fsusie$cs,":",fixed = TRUE),"[[",2)
-ha_peak_assoc <- transform(ha_peak_assoc,region  = factor(region))
 ha_peak_fsusie <- transform(ha_peak_fsusie,
                             cs      = factor(cs), 
  						    region  = factor(region),
