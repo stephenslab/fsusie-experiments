@@ -197,6 +197,8 @@ p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
+TO DO: Add "distance to TSS" plot.
+
 ## Affected CpGs
 
 Now let's turn to the recovery of affected CpGs. Load the results
