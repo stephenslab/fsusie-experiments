@@ -245,8 +245,105 @@ p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-TO DO: Add "distance to TSS" plots, comparing susie-toppc, fsusie,
-and the "lead SNP" for each CpG.
+We expect that most of the causal SNPs to be very close to the nearest
+TSS. Let's check this. This will involve a couple of intermediate
+calculations.
+
+This function adds a column to the SNP results containing the minimum
+distance to the nearest TSS.
+
+```{r add-min-dist-to-tss}
+add_min_dist_to_tss <- function (dat, genes) {
+  n <- nrow(dat)
+  dat$min_dist_to_tss <- rep(Inf,n)
+  n <- nrow(genes)
+  for (i in 1:n) {
+    rows <- which(as.character(genes[i,"chromosome"]) == as.character(dat$chr))
+	if (length(rows) > 0) {
+      if (genes[i,"strand"] == "+")
+        d <- genes[i,"start"] - dat[rows,"pos"]
+      else
+        d <- dat[rows,"pos"] - genes[i,"end"]
+	  i <- which(abs(d) < abs(dat[rows,"min_dist_to_tss"]))
+  	  if (length(i) > 0) {
+	    d    <- d[i]
+	    rows <- rows[i]
+	    dat[rows,"min_dist_to_tss"] <- d
+      }
+    }
+  }
+  return(dat)
+}
+```
+
+This function is used to extract the top SNP per location (e.g., CpG)
+from the association tests.
+
+```{r get-top-snp-per-location}
+get_top_snp_per_location <- function (dat) {
+  x <- factor(dat$molecular_trait_id)
+  qval <- dat$qvalue
+  names(qval) <- with(dat,paste(chr,pos,sep = "_"))
+  res <- tapply(qval,x,function (x) names(which.min(x)))
+  res <- strsplit(res,"_",fixed = TRUE)
+  out <- data.frame(chr = factor(sapply(res,"[[",1)),
+                    pos = as.numeric(sapply(res,"[[",2)))
+  out <- transform(out,chr = factor(chr))
+  rownames(out) <- levels(x)
+  return(out)
+}
+```
+
+With these functions, we can compile the data needed for this plot.
+
+```{r add-min-dist-to-tss-methyl-fsusie}
+methyl_snps_assoc  <- get_top_snp_per_location(methyl_cpg_assoc)
+methyl_snps_assoc  <- add_min_dist_to_tss(methyl_snps_assoc,genes)
+methyl_snps_susie  <- add_min_dist_to_tss(methyl_snps_susie,genes)
+methyl_snps_fsusie <- add_min_dist_to_tss(methyl_snps_fsusie,genes)
+```
+
+For SuSiE-topPC and fSuSiE, we calculate "weighted" counts of SNPs,
+in which the weights are given by the PIPs.
+
+```{r compute-weighted-distance-to-tss}
+bin_size <- 10000
+bins <- c(-Inf,seq(-2e5,2e5,bin_size),Inf)
+bins <- bins + bin_size/2
+counts_assoc <- as.numeric(table(cut(methyl_snps_assoc$min_dist_to_tss,bins)))
+counts_susie <- tapply(methyl_snps_susie$pip,
+                       cut(methyl_snps_susie$min_dist_to_tss,bins),
+					   function (x) sum(x,na.rm = TRUE))
+counts_fsusie <- tapply(methyl_snps_fsusie$pip,
+                        cut(methyl_snps_fsusie$min_dist_to_tss,bins),
+						function (x) sum(x,na.rm = TRUE))
+```
+
+Now we can plot the result:
+
+```{r plot-weighted-distance-to-tss, fig.height=2.5, fig.width=3.5}
+n <- length(bins)
+i <- seq(2,n-2)
+bin_centers   <- bins[i] + bin_size/2
+counts_assoc  <- counts_assoc[i]
+counts_susie  <- counts_susie[i]
+counts_fsusie <- counts_fsusie[i]
+counts_assoc  <- counts_assoc/sum(counts_assoc)
+counts_susie  <- counts_susie/sum(counts_susie)
+counts_fsusie <- counts_fsusie/sum(counts_fsusie)
+pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),each = length(bin_centers)),
+                   dist   = rep(bin_centers/1000,times = 3),
+                   freq   = c(counts_assoc,counts_susie,counts_fsusie),
+				   stringsAsFactors = TRUE)
+ggplot(pdat,aes(x = dist,y = freq,color = method)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 1) +
+  scale_x_continuous(breaks = seq(-200,200,50)) +
+  scale_y_continuous(breaks = seq(0,1,0.05)) +
+  scale_color_manual(values = c("darkblue","darkorange","dodgerblue")) +
+  labs(x = "distance to TSS (kb)",y = "proportion of SNPs") +
+  theme_cowplot(font_size = 10)
+```
 
 ## Affected CpGs
 
@@ -556,5 +653,8 @@ Summarize the number of affected peaks by SNP:
 ```{r}
 # TO DO.
 ```
+
+
+TO DO: Examine 
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
