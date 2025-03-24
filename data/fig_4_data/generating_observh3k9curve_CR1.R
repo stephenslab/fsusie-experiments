@@ -90,7 +90,7 @@ h3k9$SNP [which (h3k9$IDsample %in% row.names(binarized_SNP)[which(binarized_SNP
 
 
 h3k9$SNP [which (h3k9$IDsample %in% row.names(binarized_SNP)[which(binarized_SNP==2)])]=2
-
+table(h3k9$SNP)
 
 unique(h3k9$samples)
 
@@ -139,7 +139,9 @@ for ( i in 1: length(idx )){
   
   print(i)
   
-}
+} 
+
+
 mean_func2=mean_func2/length(idx )
 
 
@@ -181,7 +183,7 @@ for ( i in 1: length(idx )){
     sub_pos = which( obs_pos>=  sub$start[k ] & obs_pos  <= sub$end[k ])
     if (length(sub_pos)>0){
       
-      mean_func1[ sub_pos]= mean_func1[ sub_pos]+sub$normalized_reading[k]
+      mean_func0[ sub_pos]= mean_func0[ sub_pos]+sub$normalized_reading[k]
     }
     
   }
