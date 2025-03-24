@@ -296,7 +296,7 @@ get_top_snp_per_location <- function (dat) {
 
 With these functions, we can compile the data needed for this plot.
 
-```{r add-min-dist-to-tss-methyl-fsusie}
+```{r add-min-dist-to-tss-methyl}
 methyl_snps_assoc  <- get_top_snp_per_location(methyl_cpg_assoc)
 methyl_snps_assoc  <- add_min_dist_to_tss(methyl_snps_assoc,genes)
 methyl_snps_susie  <- add_min_dist_to_tss(methyl_snps_susie,genes)
@@ -306,7 +306,7 @@ methyl_snps_fsusie <- add_min_dist_to_tss(methyl_snps_fsusie,genes)
 For SuSiE-topPC and fSuSiE, we calculate "weighted" counts of SNPs,
 in which the weights are given by the PIPs.
 
-```{r compute-weighted-distance-to-tss}
+```{r compute-weighted-distance-to-tss-methyl}
 bin_size <- 10000
 bins <- c(-Inf,seq(-2e5,2e5,bin_size),Inf)
 bins <- bins + bin_size/2
@@ -321,7 +321,7 @@ counts_fsusie <- tapply(methyl_snps_fsusie$pip,
 
 Now we can plot the result:
 
-```{r plot-weighted-distance-to-tss, fig.height=2.5, fig.width=3.5}
+```{r plot-weighted-distance-to-tss-methyl, fig.height=2.5, fig.width=3.5}
 n <- length(bins)
 i <- seq(2,n-2)
 bin_centers   <- bins[i] + bin_size/2
@@ -591,6 +591,56 @@ geom_histogram(stat = "count",color = "white",fill = "tomato",
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+ADD TEXT HERE.
+
+```{r add-min-dist-to-tss-ha}
+ha_snps_assoc  <- get_top_snp_per_location(ha_peak_assoc)
+ha_snps_assoc  <- add_min_dist_to_tss(ha_snps_assoc,genes)
+ha_snps_susie  <- add_min_dist_to_tss(ha_snps_susie,genes)
+ha_snps_fsusie <- add_min_dist_to_tss(ha_snps_fsusie,genes)
+```
+
+ADD TEXT HERE.
+
+```{r compute-weighted-distance-to-tss-ha}
+bin_size <- 5e4
+bins <- c(-Inf,seq(-5e5,5e5,bin_size),Inf)
+bins <- bins + bin_size/2
+counts_assoc <- as.numeric(table(cut(ha_snps_assoc$min_dist_to_tss,bins)))
+counts_susie <- tapply(ha_snps_susie$pip,
+                       cut(ha_snps_susie$min_dist_to_tss,bins),
+					   function (x) sum(x,na.rm = TRUE))
+counts_fsusie <- tapply(ha_snps_fsusie$pip,
+                        cut(ha_snps_fsusie$min_dist_to_tss,bins),
+						function (x) sum(x,na.rm = TRUE))
+```
+
+ADD TEXT HERE.
+
+```{r plot-weighted-distance-to-tss-ha, fig.height=2.5, fig.width=3.5}
+n <- length(bins)
+i <- seq(2,n-2)
+bin_centers   <- bins[i] + bin_size/2
+counts_assoc  <- counts_assoc[i]
+counts_susie  <- counts_susie[i]
+counts_fsusie <- counts_fsusie[i]
+counts_assoc  <- counts_assoc/sum(counts_assoc)
+counts_susie  <- counts_susie/sum(counts_susie)
+counts_fsusie <- counts_fsusie/sum(counts_fsusie)
+pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),each = length(bin_centers)),
+                   dist   = rep(bin_centers/1000,times = 3),
+                   freq   = c(counts_assoc,counts_susie,counts_fsusie),
+				   stringsAsFactors = TRUE)
+ggplot(pdat,aes(x = dist,y = freq,color = method)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 1) +
+  scale_x_continuous(breaks = seq(-500,500,100)) +
+  scale_y_continuous(breaks = seq(0,1,0.1)) +
+  scale_color_manual(values = c("darkblue","darkorange","dodgerblue")) +
+  labs(x = "distance to TSS (kb)",y = "proportion of SNPs") +
+  theme_cowplot(font_size = 10)
 ```
 
 ## Affected H3K27ac peaks
