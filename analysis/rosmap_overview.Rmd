@@ -690,14 +690,14 @@ ha_peaks_per_tad_fsusie[ha_peaks_per_tad_fsusie == 0] <- NA
 pdat1 <- data.frame(x = ha_peaks_per_tad_assoc)
 pdat2 <- data.frame(x = ha_peaks_per_tad_fsusie)
 p1 <- ggplot(pdat1,aes(x = x)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  geom_histogram(color = "white",fill = "tomato",bins = 64) +
   xlim(0,200) +
   labs(x = "number of H3K27ac peaks",y = "number of TADs",
        title = "SNP-peak association tests") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 p2 <- ggplot(pdat2,aes(x = x)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 64) +
+  geom_histogram(color = "white",fill = "tomato",bins = 64) +
   xlim(0,200) +
   labs(x = "number of H3K27ac peaks",y = "number of TADs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
@@ -719,7 +719,7 @@ fSuSiE and the SNP-peak association tests:
 pdat <- data.frame(assoc  = ha_peaks_per_tad_assoc,
                    fsusie = ha_peaks_per_tad_fsusie)
 ggplot(pdat,aes(x = assoc,y = fsusie)) +
-  geom_point(color = "darkblue") +
+  geom_point(color = "tomato") +
   geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
   labs(x = "SNP-peak association tests",y = "fSusiE") +
   xlim(0,200) + 
@@ -745,13 +745,13 @@ pdat1 <- subset(pdat1,x <= 10)
 pdat2 <- subset(pdat2,x <= 40)
 pdat1 <- transform(pdat1,x = factor(x))
 p1 <- ggplot(pdat1,aes(x = x)) +
-  geom_bar(color = "white",fill = "darkblue") +
+  geom_bar(color = "white",fill = "tomato") +
   labs(x = "number of H3K27ac peaks",y = "number of SNPs",
        title = "SNP-peak association tests") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 p2 <- ggplot(pdat2,aes(x = x)) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 25) +
+  geom_histogram(color = "white",fill = "tomato",bins = 25) +
   labs(x = "number of H3K27ac peaks",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
