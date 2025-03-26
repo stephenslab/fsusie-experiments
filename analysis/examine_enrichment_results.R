@@ -52,12 +52,11 @@ pdat <- rbind(data.frame(method = "SuSiE-topPC",
 pdat <- transform(pdat,
                   method     = factor(method),
                   annotation = factor(annotation),
-                  enrichment = log10(enrichment))
+                  enrichment = log2(enrichment))
 print(ggplot(pdat,aes(x = enrichment,y = annotation,color = method)) +
       geom_point(shape = 20,size = 3) +
       scale_color_manual(values = c("magenta","dodgerblue")) +
-      xlim(c(-0.5,1.1)) + 
-      labs(y = "",title = trait) +
+      labs(x = "log2 enrichment",y = "",title = trait) +
       theme_cowplot(font_size = 10) +
       theme(panel.grid.major.y = element_line(linewidth = 0.5,
                                               color = "darkgray")))
