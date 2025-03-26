@@ -165,5 +165,4 @@ plotTracks( oteqTL, from= view_win[1],
 # pip plot  -----
 
 res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/CD2AP/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.input_data.rds")
-
-res$
+ 
