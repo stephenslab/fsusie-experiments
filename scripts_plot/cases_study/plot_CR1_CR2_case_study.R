@@ -339,7 +339,7 @@ for ( i in 2:(length(pos)-1))
     plot_list[[i-1]] <-   DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
                                     data = 0*effect, name = "Effect Size", type = "p",
                                     ylim =c( min( c(effect_s)),max(c(effect_s)  )),
-                                    col = "black", pch = 16, cex =  .41,
+                                    col = "black", pch = 16, cex =  .7,
                                     background.title = "white" )
   }
   
@@ -510,6 +510,122 @@ list_track=  list( otAD,
 )
 
 view_win <- c(207317782, 207895513)
+
+
+### Count ----- 
+load(paste0(path ,"/data/fig_4_data/row_count_CR1.RData"))
+df =do.call(cbind,obs_curve )
+
+# Convert matrix to data frame
+df <- as.data.frame(df)
+
+
+bin_size=1 
+# Create a bin column
+df$bin <- floor(df$obs_pos / bin_size)
+
+# Load dplyr and aggregate
+library(dplyr)
+
+binned_df <- df %>%
+  group_by(bin) %>%
+  summarise(
+    mean_func0 = mean(mean_func0, na.rm = TRUE),
+    mean_func1 = mean(mean_func1, na.rm = TRUE),
+    mean_func2 = mean(mean_func2, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(bin_start_pos = bin * bin_size)
+
+# View result
+head(binned_df)
+
+
+
+plot(binned_df$mean_func2, type="l")
+lines(binned_df$mean_func1, col="green")
+lines(binned_df$mean_func0, col="red")
+
+binned_df$mean_func2= (binned_df$mean_func2)
+binned_df$mean_func1= (binned_df$mean_func1)
+
+binned_df$mean_func0= (binned_df$mean_func0)
+
+
+
+library(Gviz)
+
+# Example: assume your binned data is in `binned_df` from previous step
+# with columns: bin_start_pos, mean_func0, mean_func1, mean_func2
+
+# Create a GRanges object for each track
+gr_func0 <- GRanges(
+  seqnames = "chr1",  # use real chromosome if you have it
+  ranges = IRanges(start = binned_df$bin_start_pos,
+                   width = bin_size),
+  score = binned_df$mean_func0
+)
+
+gr_func1 <- gr_func0
+mcols(gr_func1)$score <- binned_df$mean_func1
+
+gr_func2 <- gr_func0
+mcols(gr_func2)$score <- binned_df$mean_func2
+  # Change title color to black
+
+
+
+# Create DataTracks
+track0 <- DataTrack(gr_func0, 
+                    type = "hist",  
+                    fill = "turquoise",
+                    col.histogram = NA, 
+                    ylim = c(0, 25 ),#max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+track1 <- DataTrack(gr_func1, 
+                    type = "hist",  
+                    col.histogram = NA, 
+                    fill = "turquoise",
+                    ylim = c(0, 25 ),#max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+track2 <- DataTrack(gr_func2, 
+                    type = "hist", 
+                    col.histogram = NA, 
+                    fill = "royalblue" ,
+                    ylim = c(0, 25 ),#max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+
+# Plot
+ot_count =OverlayTrack(trackList =  list(  track2,track1 ),track.margin = 0.05,
+                       background.title = "white")
+#plotTracks(  ot_count )  
+
+
+list_track=  list( otAD,
+                   otCR1,
+                   otCR2,
+                   t_ha,
+                   ot_count
+)
+
 plotTracks(list_track,
            from = min( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]),
            to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) )
@@ -617,15 +733,17 @@ list_track=  list(
                     
                     t_ha,
                     fsusie_ha_plot ,
+  ot_count,
                    gene_track,
   gtrack 
                  
 )
 
+
 #view_win <- c(5.12e7, 5.16e7) 
-#plotTracks(list_track,
-#           from =view_win[1],
-#           to=view_win[2])
+ plotTracks(list_track,
+            from =view_win[1],
+            to=view_win[2])
 
 #plotTracks(list_track,
 #           from = min( plot_df$pos[which( 
@@ -652,30 +770,30 @@ pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
 
 
 plotTracks(list_track,
-           from =view_win[1],
-           to=view_win[2]  ,
+           from =207441000 ,   #view_win[1],
+           to=   207683000  ,  #view_win[2]  ,
            frame = TRUE ,
-           sizes = c(0.75,0.75, 0.75,0.35,  0.75, 0.75,0.3),
+           sizes = c(0.75,0.75, 0.75,0.35,  0.5,0.75, 0.5,0.3),
            #fontsize  = 15
            cex.main=1.2, cex.title = 1.
 )
 
 grid.text(
   "rs679515",
-  x = 0.45,
-  y =0.45,
+  x = 0.65,
+  y =0.46,
   gp = gpar(col = "black", fontsize = 10)
 )
 grid.text(
   "rs10863418",
-  x = 0.55,
-  y =0.4 ,
+  x = 0.75,
+  y =0.43 ,
   gp = gpar(col = "black", fontsize = 10)
 )
 grid.text(
   "rs4844610",
-  x = 0.64,
-  y =0.44,
+  x = 0.84,
+  y =0.49,
   gp = gpar(col = "black", fontsize = 10)
 )
 
