@@ -1,7 +1,7 @@
 library(ggplot2)
 library(cowplot)
-# trait <- "mQTL"
-trait <- "haqtl"
+trait <- "mQTL"
+# trait <- "haQTL"
 infile1 <-
   file.path("../outputs",
     paste(trait,"cs_snp_toppc1_pip0.5.enrichment_results_summary.tsv.gz",
