@@ -261,7 +261,7 @@ We expect that most of the causal SNPs to be very close to the nearest
 TSS. Let's check this. This will involve a couple of intermediate
 calculations.
 
-```{r cs-sizes-methyl, echo=FALSE, warning=FALSE}
+```{r cs-sizes-methyl-ggsave, echo=FALSE, warning=FALSE}
 ggsave("cs_sizes_methyl.pdf",
        plot_grid(p1,p2,nrow = 1,ncol = 2),
 	   height = 2,width = 4)
@@ -593,7 +593,7 @@ p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   theme_cowplot(font_size = 10)
 ```
 
-```{r compare-num-cs-per-tad-methyl-ggsave, echo=FALSE, warning=FALSE}
+```{r compare-num-cs-per-tad-ha-ggsave, echo=FALSE, warning=FALSE}
 ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
 ```
 
