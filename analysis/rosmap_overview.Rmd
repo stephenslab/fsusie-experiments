@@ -225,6 +225,7 @@ p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   scale_size(breaks = c(1,10,100)) +
   labs(x = "SuSiE-topPC",y = "fSuSiE",size = "number of TADs") +
   theme_cowplot(font_size = 10)
+print(p)
 ```
 
 ```{r compare-num-cs-per-tad-methyl-ggsave, echo=FALSE, warning=FALSE}
@@ -360,6 +361,7 @@ p <- ggplot(pdat,aes(x = dist,y = freq,color = method)) +
   scale_color_manual(values = c("darkblue","darkorange","dodgerblue")) +
   labs(x = "distance to TSS (kb)",y = "proportion of SNPs") +
   theme_cowplot(font_size = 10)
+print(p)
 ```
 
 ```{r ggsave-weighted-distance-to-tss-methyl, echo=FALSE, warning=FALSE}
