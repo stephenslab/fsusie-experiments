@@ -349,7 +349,8 @@ counts_fsusie <- counts_fsusie[i]
 counts_assoc  <- counts_assoc/sum(counts_assoc)
 counts_susie  <- counts_susie/sum(counts_susie)
 counts_fsusie <- counts_fsusie/sum(counts_fsusie)
-pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),each = length(bin_centers)),
+pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),
+                                each = length(bin_centers)),
                    dist   = rep(bin_centers/1000,times = 3),
                    freq   = c(counts_assoc,counts_susie,counts_fsusie),
 				   stringsAsFactors = TRUE)
@@ -582,7 +583,7 @@ dat[rows,"num_cs_susie"] <- 0
 pdat <- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
 rows <- which(pdat$value == 0)
 pdat[rows,"value"] <- NA
-ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
+p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   geom_point(color = "white",fill = "tomato",shape = 21) +
   geom_abline(intercept = 0,slope = 1,color = "black",linetype = "dotted") +
   scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
@@ -590,6 +591,10 @@ ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   scale_size(breaks = c(1,10,100)) +
   labs(x = "SuSiE-topPC",y = "fSuSiE",size = "number of TADs") +
   theme_cowplot(font_size = 10)
+```
+
+```{r compare-num-cs-per-tad-methyl-ggsave, echo=FALSE, warning=FALSE}
+ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
 ```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
@@ -609,7 +614,7 @@ p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
-geom_histogram(stat = "count",color = "white",fill = "tomato",
+  geom_histogram(stat = "count",color = "white",fill = "tomato",
                  width = 0.65) +
   labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
@@ -619,6 +624,13 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 
 We expect that the vast majority of the causal SNPs will be very close
 to the TSS. Let's verify this empirically.
+
+
+```{r cs-sizes-h3k27ac, echo=FALSE, warning=FALSE}
+ggsave("cs_sizes_h3k27ac.pdf",
+       plot_grid(p1,p2,nrow = 1,ncol = 2),
+	   height = 2,width = 4)
+```
 
 First, add a "min_dist_to_TSS" column to each set of results:
 
@@ -633,8 +645,8 @@ This next code chunk computes the histogram for the TSS plot:
 
 ```{r compute-weighted-distance-to-tss-ha}
 bin_size <- 5e4
-bins <- c(-Inf,seq(-5e5,5e5,bin_size),Inf)
-bins <- bins + bin_size/2
+bins <- c(-Inf,seq(-5e5,5.5e5,bin_size),Inf)
+bins <- bins - bin_size/2
 counts_assoc <- as.numeric(table(cut(ha_snps_assoc$min_dist_to_tss,bins)))
 counts_susie <- tapply(ha_snps_susie$pip,
                        cut(ha_snps_susie$min_dist_to_tss,bins),
@@ -656,11 +668,12 @@ counts_fsusie <- counts_fsusie[i]
 counts_assoc  <- counts_assoc/sum(counts_assoc)
 counts_susie  <- counts_susie/sum(counts_susie)
 counts_fsusie <- counts_fsusie/sum(counts_fsusie)
-pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),each = length(bin_centers)),
+pdat <- data.frame(method = rep(c("assoc","susie","fsusie"),
+                                each = length(bin_centers)),
                    dist   = rep(bin_centers/1000,times = 3),
                    freq   = c(counts_assoc,counts_susie,counts_fsusie),
 				   stringsAsFactors = TRUE)
-ggplot(pdat,aes(x = dist,y = freq,color = method)) +
+p <- ggplot(pdat,aes(x = dist,y = freq,color = method)) +
   geom_line(linewidth = 0.5) +
   geom_point(size = 1) +
   scale_x_continuous(breaks = seq(-500,500,100),limits = c(-500,500)) +
@@ -668,6 +681,11 @@ ggplot(pdat,aes(x = dist,y = freq,color = method)) +
   scale_color_manual(values = c("darkblue","darkorange","dodgerblue")) +
   labs(x = "distance to TSS (kb)",y = "proportion of SNPs") +
   theme_cowplot(font_size = 10)
+print(p)
+```
+
+```{r ggsave-weighted-distance-to-tss-ha, echo=FALSE, warning=FALSE}
+ggsave("dist_to_tss_h3k27ac.pdf",p,height = 2.5,width = 3.5)
 ```
 
 ## Affected H3K27ac peaks
