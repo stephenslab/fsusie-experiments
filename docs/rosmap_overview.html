@@ -302,7 +302,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-03-27
+<strong>Last updated:</strong> 2025-03-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -442,15 +442,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree2bd0de32c1e91e3107a779a9ec9a564199d940e2targetblank2bd0de3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreedcece5bb310e360ec5007a6e5d0e9d03f672748ftargetblankdcece5ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/2bd0de32c1e91e3107a779a9ec9a564199d940e2" target="_blank">2bd0de3</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/dcece5bb310e360ec5007a6e5d0e9d03f672748f" target="_blank">dcece5b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree2bd0de32c1e91e3107a779a9ec9a564199d940e2targetblank2bd0de3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreedcece5bb310e360ec5007a6e5d0e9d03f672748ftargetblankdcece5ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -460,7 +460,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/2bd0de32c1e91e3107a779a9ec9a564199d940e2" target="_blank">2bd0de3</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/dcece5bb310e360ec5007a6e5d0e9d03f672748f" target="_blank">dcece5b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -534,6 +534,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dcece5bb310e360ec5007a6e5d0e9d03f672748f/analysis/rosmap_overview.Rmd" target="_blank">dcece5b</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-28
+</td>
+<td>
+Added code chunks to rosmap_overview.Rmd to save some more plots to PDF.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/a70588c212c06901e4b8b90a29735c9424ad9fbc/analysis/rosmap_overview.Rmd" target="_blank">a70588c</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-28
+</td>
+<td>
+Added code chunks to rosmap_overview.Rmd to save a couple plots to PDFs.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/c07956874db10cbee93e0c44ce20bfc946db2004/docs/rosmap_overview.html" target="_blank">c079568</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-27
+</td>
+<td>
+Ran wflow_publish("rosmap_overview.Rmd").
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1703,13 +1754,14 @@ sum(cpgs_per_tad_fsusie &gt; 2000,na.rm = TRUE)
 and the SNP-CpG association tests:</p>
 <pre class="r"><code>pdat &lt;- data.frame(assoc  = cpgs_per_tad_assoc,
                    fsusie = cpgs_per_tad_fsusie)
-ggplot(pdat,aes(x = assoc,y = fsusie)) +
+p &lt;- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   geom_point(color = &quot;darkblue&quot;) +
   geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
   labs(x = &quot;SNP-CpG association tests&quot;,y = &quot;fSusiE&quot;) +
   xlim(0,4100) + 
   ylim(0,4100) + 
-  theme_cowplot(font_size = 10)</code></pre>
+  theme_cowplot(font_size = 10)
+print(p)</code></pre>
 <p><img src="figure/rosmap_overview.Rmd/compare-cpgs-per-tad-1.png" width="300" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-compare-cpgs-per-tad-1">
@@ -2050,6 +2102,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c07956874db10cbee93e0c44ce20bfc946db2004/docs/figure/rosmap_overview.Rmd/plot-weighted-distance-to-tss-ha-1.png" target="_blank">c079568</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-03-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/aece910973f3984cf07ffbe6089a898f58910c41/docs/figure/rosmap_overview.Rmd/plot-weighted-distance-to-tss-ha-1.png" target="_blank">aece910</a>
 </td>
 <td>
@@ -2151,51 +2214,13 @@ sum(ha_peaks_per_tad_fsusie &gt; 200,na.rm = TRUE)
 fSuSiE and the SNP-peak association tests:</p>
 <pre class="r"><code>pdat &lt;- data.frame(assoc  = ha_peaks_per_tad_assoc,
                    fsusie = ha_peaks_per_tad_fsusie)
-ggplot(pdat,aes(x = assoc,y = fsusie)) +
+p &lt;- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   geom_point(color = &quot;tomato&quot;) +
   geom_abline(intercept = 0,slope = 1,color = &quot;magenta&quot;,linetype = &quot;dotted&quot;) +
   labs(x = &quot;SNP-peak association tests&quot;,y = &quot;fSusiE&quot;) +
   xlim(0,200) + 
   ylim(0,200) + 
   theme_cowplot(font_size = 10)</code></pre>
-<p><img src="figure/rosmap_overview.Rmd/compare-ha-peaks-per-tad-1.png" width="300" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-compare-ha-peaks-per-tad-1">
-Past versions of compare-ha-peaks-per-tad-1.png
-</button>
-</p>
-<div id="fig-compare-ha-peaks-per-tad-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/stephenslab/fsusie-experiments/blob/aece910973f3984cf07ffbe6089a898f58910c41/docs/figure/rosmap_overview.Rmd/compare-ha-peaks-per-tad-1.png" target="_blank">aece910</a>
-</td>
-<td>
-Peter Carbonetto
-</td>
-<td>
-2025-03-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
 <p>These next two plots compare the number of affected peaks per CS for
 fSuSiE to the number of affected peaks per SNP from the association
 tests:</p>
