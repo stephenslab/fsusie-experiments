@@ -53,17 +53,20 @@ chr =  paste("chr",6, sep = "")
 
 47472829
  
+pdat =fread(paste0(path,"/data/fig_4_data/GWAS_eQTL_sumstat.chr6_44880827_48309905.tsv"))
 
-
-
+dim(pdat)
 ### AD GWAS panel -----
 
- 
-pdat1$X.log10.P. 
+study="AD_Bellenguez_2022"
+idx=which (pdat$study == study )
+pdat1= pdat[idx, ]
+dim(pdat1)
+#pdat1$X.log10.P. 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =pdat1$pos ,
                                                                  end = pdat1$pos )),
-                data = matrix(pdat1$X.log10.P. , nrow=1), genome = "hg19",
-                ylim =c( min(pdat1$X.log10.P.), max(pdat1$X.log10.P.)+0.2),
+                data = matrix(-log10(pdat1$pvalue) , nrow=1), genome = "hg19",
+                ylim =c( min(-log10(pdat1$pvalue)), max(-log10(pdat1$pvalue))+0.2),
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
@@ -78,8 +81,8 @@ plotTracks(t1)
 pdat1CS = pdat1[which(pdat1$CS1),]
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat1CS$pos   , 
                                                                  end = pdat1CS$pos   )),
-                data = matrix(pdat1CS$X.log10.P.  , nrow=1), genome = "hg19", 
-                ylim =c( min(pdat1$X.log10.P.), max(pdat1$X.log10.P.)+0.2),
+                data = matrix(-log10(pdat1CS$pvalue) , nrow=1), genome = "hg19", 
+                ylim =c( min(-log10(pdat1$pvalue)), max(-log10(pdat1$pvalue))+0.2),
                 type = "p", col = "black", cex=1.5,
                 fill=  "royalblue",
                 pch=c(24 ),# Use color column from df_plot
@@ -90,7 +93,7 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat1CS
                 col.title = "black",cex.title = cex,
                 rotation.title = 90,
                 background.title = "white",name="AD") ) # Change title color to black
- 
+plotTracks(t2)
  
 
 t4= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos[tidx] ,
@@ -116,7 +119,7 @@ otAD <- OverlayTrack(trackList=list(    t1,  t2  ),
 plotTracks( otAD , from= view_win[1],
             to= view_win[2])
 
-## EQTL panel ----- 
+## CD2AP panel ----- 
 
 
 
@@ -162,7 +165,112 @@ plotTracks( oteqTL, from= view_win[1],
 
 
 
+
+
+
+ 
+
 # pip plot  -----
 
+
+
+
+
+res$
+
+
+
+
+
+
+
+#### meqtl -----
+
+
+
 res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/CD2AP/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+
+fsusie_obj_me = res$`chr6:44880827-48309905`$ROSMAP_DLPFC_mQTL$fsusie_result
+rm(res)
+
+res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.input_data.rds")
+## to work from here
+snp_names=attr( fsusie_obj_me$pip, "names")
+pos_SNP_me <- as.numeric(sub("chr[0-9XY]+:([0-9]+):.*", "\\1", snp_names))
  
+ 
+
+#pip_df %>% filter(study %in% c("ROSMAP_DLPFC_mQTL", ""), cs_coverage_0.95 == 7) 
+t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_SNP_me , end = pos_SNP_me )),
+                   data = matrix(fsusie_obj_me$pip , nrow=1), genome = "hg38", 
+                   ylim =c( 0. , 1 ),
+                   type = "p", col = "black",
+                  
+                   cex=1 ,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n H3k4a9ac") )
+
+
+list_cs_plot=list()
+
+list_cs_plot[[1]]=t_me
+for ( l in 1 :length(fsusie_obj_me$cs)){
+  
+  idx=fsusie_obj_me$cs[[l]]
+  
+  list_cs_plot[[l+1]]= ( DataTrack(range = GRanges(seqnames = chr,
+                                                 ranges = IRanges(start = pos_SNP_me[idx] ,
+                                                                  end = pos_SNP_me[idx] )),
+                                 data = matrix(fsusie_obj_me$pip[idx] , nrow=1), genome = "hg38", 
+                                 ylim =c( 0. , 1 ),
+                                 type = "p", col = l+1,
+                                 
+                                 cex=1.5,# Use color column from df_plot
+                                 track.margin = 0.05, # Reduce margin between track and title
+                                 cex.title = 0.6,     # Reduce title size
+                                 cex.axis = 0.6,      # Reduce axis text size
+                                 col.axis = "black",  # Change axis color to black
+                                 col.title = "black",rotation.title = 90,cex.title = cex,
+                                 background.title = "white",name="PIP \n H3k4a9ac") )
+}
+
+
+
+pip_overlay= OverlayTrack( trackList =list_cs_plot,
+                             background.title = "white")
+
+plotTracks(pip_overlay)
+
+list_track=  list( otAD,
+                   oteqTL,
+                   pip_overlay 
+)
+
+## reprendre de la WW---- 
+plotTracks(list_track)
+
+plot
+
+Y= as.data.frame(res_me$residual_Y)
+
+col_names <-        colnames(as.data.frame(res_me$X_data)) 
+
+pos_SNP_me <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
+
+
+X=as.data.frame(res_me$residual_X)
+pos = as.data.frame(res_me$Y_coordinates) #use start
+pos= pos$start
+
+
+map_data <- fsusieR:::remap_data(Y=Y,
+                                 pos=pos,
+                                 
+                                 max_scale=10)
+
+outing_grid <- map_data$outing_grid
+Y_w= map_data$Y

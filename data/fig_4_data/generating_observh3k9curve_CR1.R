@@ -61,7 +61,7 @@ plot(data$start[1:20000],
 res_ha <- readRDS("c:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data (1).rds")
 
 
-X=as.data.frame(res_ha$residual_X) 
+X=as.data.frame(res_ha$X) 
 
 
 lead_SNP= matrix(X[,10765 ], ncol=1)
@@ -69,15 +69,10 @@ lead_SNP= matrix(X[,10765 ], ncol=1)
 hist(lead_SNP)
 
 binarized_SNP=0* lead_SNP 
+binarized_SNP[which(lead_SNP ==0)]=2
 
-for ( i in 1:nrow(lead_SNP)){
-  if(lead_SNP[i]<0){
-    binarized_SNP[i]=1
-    if(lead_SNP[i]< -0.8){
-       binarized_SNP[i]=2
-    }
-  }
-}
+binarized_SNP[which(lead_SNP ==1)]=1
+ 
 
 table(binarized_SNP)
 
