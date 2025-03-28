@@ -467,13 +467,18 @@ and the SNP-CpG association tests:
 ```{r compare-cpgs-per-tad, fig.height=2.5, fig.width=2.5, warning=FALSE}
 pdat <- data.frame(assoc  = cpgs_per_tad_assoc,
                    fsusie = cpgs_per_tad_fsusie)
-ggplot(pdat,aes(x = assoc,y = fsusie)) +
+p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   geom_point(color = "darkblue") +
   geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
   labs(x = "SNP-CpG association tests",y = "fSusiE") +
   xlim(0,4100) + 
   ylim(0,4100) + 
   theme_cowplot(font_size = 10)
+print(p)
+```
+
+```{r compare-cpgs-per-tad-ggsave, echo=FALSE, warning=FALSE}
+ggsave("affected_cpgs_per_tad.pdf",p,height = 2.5,width = 2.5)
 ```
 
 One advantage of fSuSiE is that it is able to tell us which molecular
@@ -508,6 +513,12 @@ p2 <- ggplot(pdat2,aes(x = x)) +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+```{r, count-cpgs-per-snp-ggave, echo=FALSE, warning=FALSE}
+ggsave("affected_cpgs_per_snp.pdf",
+       plot_grid(p1,p2,nrow = 1,ncol = 2),
+       height = 2,width = 4.5)
 ```
 
 A small proportion of the SNPs and CSs are not plotted because they
