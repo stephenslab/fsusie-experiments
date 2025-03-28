@@ -24,16 +24,14 @@ library(dplyr)
 cex=0.6
 chr=1
 study="AD_Bellenguez_2022"
-
+ #### AD   -----
 
 plot_df= obj_plot$ plot_df 
 view_win= obj_plot$ view_win
 
 data_track = plot_df [ which(   plot_df $study == study   ),]
-#data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
-
-data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1   ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
-
+ 
+data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1   ),]   
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
@@ -97,10 +95,8 @@ plotTracks( otAD )
 gene_name="CR1"
 study="DLPFC_DeJager_eQTL" 
 data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
-#data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
-
-data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
-
+ 
+data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  
 
 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
@@ -147,8 +143,7 @@ plotTracks( otCR1 )
 gene_name="CR2"
 study="DLPFC_DeJager_eQTL" 
 data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
-#data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
-
+ 
 data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
 
 
@@ -201,6 +196,11 @@ chrom=1
 plot_list=list()
 df_list=list()
 widthtick=2500
+
+
+#here I need to redo the error bar my self
+#I create all the plot separately for each error bar
+#then I stack then for the one I am interested in
 for ( i in 2:(length(pos)-1))
   
 {
@@ -303,7 +303,7 @@ for ( i in 2:(length(pos)-1))
     plot_list[[i-1]] <-   DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
                                     data = 0*effect, name = "Effect Size", type = "p",
                                     ylim =c( min( c(effect_s)),max(c(effect_s)  )),
-                                    col = "black", pch = 16, cex =  .7,
+                                    col = "black", pch = 16, cex =  2,
                                     background.title = "white" )
   }
   
@@ -315,7 +315,9 @@ for ( i in 2:(length(pos)-1))
 tt= do.call( rbind , df_list)
 
 view_win <- c(207317782, 207895513)
+#Keeping the plot within the region of interest
 idl= which( pos > view_win[1] & pos < view_win[2])-1
+#stack then into a single plot
 total_overlay= OverlayTrack( trackList =plot_list[idl],
                              background.title = "white")
 
@@ -351,29 +353,7 @@ haQTL_pos0 =   DataTrack(range = GRanges(seqnames = chr,
                          legend = FALSE  # Remove legend
 )
 
-
-haQTL_pos00 =   DataTrack(range = GRanges(seqnames = chr,
-                                          ranges = IRanges(start = positions,
-                                                           end = positions  )),
-                          data = 0* positions, genome = "hg38",
-                          groups= group_cred,
-                          ylim =c( min( c(effect_s)),max(c(effect_s)  )) ,
-                          lwd = group_lwd,
-                          rotation.title = 90,
-                          name ="effect H3k9ac",
-                          type = c(  "l" ),
-                          col = group_colors,
-                          cex=0.41,
-                          track.margin = 0.05,
-                          cex=1.5,# Use color column from df_plot
-                          track.margin = 0.05, # Reduce margin between track and title
-                          cex.title = 0.6,     # Reduce title size
-                          cex.axis = 0.6,      # Reduce axis text size
-                          col.axis = "black",  # Change axis color to black
-                          col.title = "black",
-                          background.title = "white",
-                          legend = FALSE  # Remove legend
-)
+ #add a line a 0 
 
 
 fsusie_ha_plot <- OverlayTrack(trackList = list( haQTL_pos0,
@@ -393,18 +373,15 @@ pip_df= obj_plot$pip_df
 
 col_names =obj_plot$name_SNP 
 pos_SNP_HA <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
-
-
 pip_df=obj_plot$pip_df
 
 
 data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.95_min_corr==5  ),]
-tdf= plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
-tdf$z=tdf$z*0 
+tdf     = plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
+tdf$z   =tdf$z*0 
 
-
-### ici -----
-
+ 
+# subset and shfiting data so it look nice
 t_dat=obj_plot$pip_fsusie_obj
 t_dat[obj_plot$cs_fsusie_obj[[5]]]=t_dat[obj_plot$cs_fsusie_obj[[5]]]+0.05
 
@@ -418,9 +395,7 @@ t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_SN
                  cex.axis = 0.6,      # Reduce axis text size
                  col.axis = "black",  # Change axis color to black
                  col.title = "black",rotation.title = 90,cex.title = cex,
-                 background.title = "white",name="PIP \n H3K9ac") ) 
-#  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
-#data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
+                 background.title = "white",name="PIP \n H3K9ac") )  
 t_ha0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
                    data = matrix(data_ha$pip+0.05 , nrow=1), genome = "hg38", 
                    #offset for the plot to visualize
@@ -443,8 +418,7 @@ t_ha0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data
 HA_cs=data_ha
 
 tidx= which( HA_cs$pos %in%AD_cs$pos )
-
-#which( AD_cs$pos  %in% HA_cs$pos )#2 4 5
+ 
 t_ha1= ( DataTrack(range = GRanges(seqnames = chr, 
                                    ranges = IRanges(start = data_ha$pos[tidx] , end = data_ha$pos[ tidx] )),
                    data = matrix(data_ha$pip[tidx]+0.03 , nrow=1), genome = "hg38", 
@@ -465,9 +439,7 @@ t_ha1= ( DataTrack(range = GRanges(seqnames = chr,
                    background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
 
 
-
-
-#207577223 207624893 207629207
+ 
 
 
 
@@ -490,7 +462,7 @@ view_win <- c(207317782, 207895513)
 
 df =obj_plot$count_df 
 
-
+# summarize count averaging over bin size for different genotype
 bin_size=100
 # Create a bin column
 df$bin <- floor(df$obs_pos / bin_size)
@@ -525,11 +497,7 @@ binned_df$mean_func0= (binned_df$mean_func0)
 
 
 library(Gviz)
-
-# Example: assume your binned data is in `binned_df` from previous step
-# with columns: bin_start_pos, mean_func0, mean_func1, mean_func2
-
-# Create a GRanges object for each track
+ #preparing the tack
 gr_func0 <- GRanges(
   seqnames = "chr1",  # use real chromosome if you have it
   ranges = IRanges(start = binned_df$bin_start_pos,
@@ -542,8 +510,7 @@ mcols(gr_func1)$score <- binned_df$mean_func1
 
 gr_func2 <- gr_func0
 mcols(gr_func2)$score <- binned_df$mean_func2
-# Change title color to black
-
+ 
 
 
 # Create DataTracks
@@ -587,8 +554,7 @@ track2 <- DataTrack(gr_func2,
 # Plot
 ot_count =OverlayTrack(trackList =  list(  track2,track1 ),track.margin = 0.05,
                        background.title = "white")
-#plotTracks(  ot_count )  
-
+ 
 
 list_track=  list( otAD,
                    otCR1,
@@ -710,26 +676,12 @@ list_track=  list(
   
 )
 
-
-#view_win <- c(5.12e7, 5.16e7) 
+ 
 plotTracks(list_track,
            from =view_win[1],
            to=view_win[2])
 
-#plotTracks(list_track,
-#           from = min( plot_df$pos[which( 
-#             plot_df$study=="DLPFC_DeJager_eQTL")]),
-#           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
-#           frame = TRUE 
-#)
-
-#plotTracks(list_track,
-#           from =206320523 ,
-#           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
-#           frame = TRUE ,
-#           sizes = c(0.5,0.5, 0.5,0.3,  1, 0.75)
-#)
-
+ 
 
 
 
