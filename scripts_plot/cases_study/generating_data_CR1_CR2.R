@@ -1,6 +1,10 @@
 rm(list=ls())
 
 path= getwd()
+# for writing the plots
+folder_path=  paste0(getwd(),
+                     "/plot/CR1_CR2/"
+)
 data = readRDS(paste0(path , 
                       "/data/fig_4_data/Fig4_data.rds"))
 
@@ -24,16 +28,23 @@ pip_df <- data$e[[5]]
 
 cex=0.6
 
-
+obj_plot=list()
 
 chr=1
 study="AD_Bellenguez_2022"
+
+
+obj_plot$ plot_df= plot_df
+obj_plot$ view_win= view_win
+view_win= obj_plot$ view_win
+ 
 data_track = plot_df [ which(   plot_df $study == study   ),]
 #data_track = data_track[which(    data_track$pos > view_win[1] &  data_track$pos <view_win[2]& plot_df$region==gene_name  ),]
 
 data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1   ),]  #%>% filter(study == "DLPFC_DeJager_eQTL", CS1)#"maroon"
 
 
+ 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track$pos , end = data_track$pos )),
                 data = matrix(data_track$`-log10(P)` , nrow=1), genome = "hg19",
                 ylim =c( min(data_track$`-log10(P)`), max(data_track$`-log10(P)`)+0.2),
@@ -231,8 +242,11 @@ effect_s=rbind(out$effect_estimate,
                out$cred_band,
                rep(0,length(out$effect_estimate)))
 
-
-
+obj_plot$effect_s=effect_s
+obj_plot$pos_H3Kac_effect =positions
+obj_plot$peak_pos = pos
+positions=obj_plot$pos_H3Kac_effect
+pos= obj_plot$peak_pos
 chrom=1
 plot_list=list()
 df_list=list()
@@ -418,28 +432,41 @@ background.title = "white"
 )
 
 plotTracks(fsusie_ha_plot  )
- 
+
 
 
 ##### PIP plots  -----
+
+col_names <-        colnames(as.data.frame(res_ha$X_data)) 
+obj_plot$name_SNP = colnames(as.data.frame(res_ha$X_data)) 
+obj_plot$pip_fsusie_obj = fsusie_obj_ha$pip
+obj_plot$cs_fsusie_obj = fsusie_obj_ha$cs
+obj_plot$pip_df= pip_df
+
+
+
+col_names =obj_plot$name_SNP 
+pos_SNP_HA <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
+
+
+pip_df=obj_plot$pip_df
+
 
 data_ha =pip_df[which( pip_df$study =="ROSMAP_DLPFC_haQTL"&pip_df$cs_coverage_0.95_min_corr==5  ),]
 tdf= plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
 tdf$z=tdf$z*0 
 
-col_names <-        colnames(as.data.frame(res_ha$X_data)) 
 
-pos_SNP_HA <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
 ### ici -----
 
-t_dat= fsusie_obj_ha$pip
-t_dat[fsusie_obj_ha$cs[[5]]]=t_dat[fsusie_obj_ha$cs[[5]]]+0.05
+t_dat=obj_plot$pip_fsusie_obj
+t_dat[obj_plot$cs_fsusie_obj[[5]]]=t_dat[obj_plot$cs_fsusie_obj[[5]]]+0.05
 
 t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_SNP_HA  , end = pos_SNP_HA  )),
                  data = matrix(t_dat, nrow=1), genome = "hg38", 
                  ylim =c( 0, 0.5),
                  type = "p", col = "black",
-                # cex=1.5,# Use color column from df_plot
+                 # cex=1.5,# Use color column from df_plot
                  track.margin = 0.05, # Reduce margin between track and title
                  cex.title = 0.6,     # Reduce title size
                  cex.axis = 0.6,      # Reduce axis text size
@@ -449,22 +476,22 @@ t_0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_SN
 #  pip_df %>% filter(study %in% c("ROSMAP_DLPFC_haQTL"), cs_coverage_0.95_min_corr == 2)
 #data_ha= data_ha[which(data_ha$pos> view_win[1] & data_ha$pos<view_win[2]),]
 t_ha0= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_ha$pos , end = data_ha$pos )),
-                  data = matrix(data_ha$pip+0.05 , nrow=1), genome = "hg38", 
-                  #offset for the plot to visualize
-                  ylim =c( 0, 0.5),
-                  type = "p",  
-                  
-                  col = "black", cex=1.5,
-                  fill=  "royalblue",
-                  pch=c(25 ),
-                  
-                  cex=1.5,# Use color column from df_plot
-                  track.margin = 0.05, # Reduce margin between track and title
-                  cex.title = 0.6,     # Reduce title size
-                  cex.axis = 0.6,      # Reduce axis text size
-                  col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
+                   data = matrix(data_ha$pip+0.05 , nrow=1), genome = "hg38", 
+                   #offset for the plot to visualize
+                   ylim =c( 0, 0.5),
+                   type = "p",  
+                   
+                   col = "black", cex=1.5,
+                   fill=  "royalblue",
+                   pch=c(25 ),
+                   
+                   cex=1.5,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
 
 
 HA_cs=data_ha
@@ -473,35 +500,35 @@ tidx= which( HA_cs$pos %in%AD_cs$pos )
 
 #which( AD_cs$pos  %in% HA_cs$pos )#2 4 5
 t_ha1= ( DataTrack(range = GRanges(seqnames = chr, 
-                                  ranges = IRanges(start = data_ha$pos[tidx] , end = data_ha$pos[ tidx] )),
-                  data = matrix(data_ha$pip[tidx]+0.03 , nrow=1), genome = "hg38", 
-                  #offset for the plot to visualize
-                  ylim =c( 0, 0.5),
-                  type = "p",  
-                  
-                  col = "red", cex=1.5,
-                  fill=  "royalblue",
-                  pch=c(25 ),
-                  
-                  cex=1.5,# Use color column from df_plot
-                  track.margin = 0.05, # Reduce margin between track and title
-                  cex.title = 0.6,     # Reduce title size
-                  cex.axis = 0.6,      # Reduce axis text size
-                  col.axis = "black",  # Change axis color to black
-                  col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
+                                   ranges = IRanges(start = data_ha$pos[tidx] , end = data_ha$pos[ tidx] )),
+                   data = matrix(data_ha$pip[tidx]+0.03 , nrow=1), genome = "hg38", 
+                   #offset for the plot to visualize
+                   ylim =c( 0, 0.5),
+                   type = "p",  
+                   
+                   col = "red", cex=1.5,
+                   fill=  "royalblue",
+                   pch=c(25 ),
+                   
+                   cex=1.5,# Use color column from df_plot
+                   track.margin = 0.05, # Reduce margin between track and title
+                   cex.title = 0.6,     # Reduce title size
+                   cex.axis = 0.6,      # Reduce axis text size
+                   col.axis = "black",  # Change axis color to black
+                   col.title = "black",rotation.title = 90,cex.title = cex,
+                   background.title = "white",name="PIP \n H3K9ac") ) # Change title color to black
 
 
 
- 
+
 #207577223 207624893 207629207
 
 
- 
+
 t_ha=OverlayTrack(trackList=list( t_0, t_ha0, t_ha1 ),
                   background.title = "white")
 plotTracks( t_ha)
- 
+
 
 list_track=  list( otAD,
                    otCR1,
@@ -516,8 +543,14 @@ view_win <- c(207317782, 207895513)
 load(paste0(path ,"/data/fig_4_data/row_count_CR1.RData"))
 df =do.call(cbind,obs_curve )
 
+
+
+
 # Convert matrix to data frame
 df <- as.data.frame(df)
+obj_plot$count_df= df
+
+df =obj_plot$count_df 
 
 
 bin_size=100
@@ -571,7 +604,7 @@ mcols(gr_func1)$score <- binned_df$mean_func1
 
 gr_func2 <- gr_func0
 mcols(gr_func2)$score <- binned_df$mean_func2
-  # Change title color to black
+# Change title color to black
 
 
 
@@ -728,22 +761,22 @@ gtrack <- GenomeAxisTrack()
 
 list_track=  list(     
   otAD,
-                    otCR1,
-                    otCR2  ,
-                    
-                    t_ha,
-                    fsusie_ha_plot ,
+  otCR1,
+  otCR2  ,
+  
+  t_ha,
+  fsusie_ha_plot ,
   ot_count,
-                   gene_track,
+  gene_track,
   gtrack 
-                 
+  
 )
 
 
 #view_win <- c(5.12e7, 5.16e7) 
- plotTracks(list_track,
-            from =view_win[1],
-            to=view_win[2])
+plotTracks(list_track,
+           from =view_win[1],
+           to=view_win[2])
 
 #plotTracks(list_track,
 #           from = min( plot_df$pos[which( 
@@ -751,20 +784,17 @@ list_track=  list(
 #           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
 #           frame = TRUE 
 #)
- 
+
 #plotTracks(list_track,
 #           from =206320523 ,
 #           to=max( plot_df$pos[which(plot_df$study=="AD_Bellenguez_2022")]) ,
 #           frame = TRUE ,
 #           sizes = c(0.5,0.5, 0.5,0.3,  1, 0.75)
 #)
- 
 
- 
 
-folder_path=  paste0(getwd(),
-                     "/plot/CR1_CR2/"
-)
+
+
 file_path <- file.path(folder_path, "CR1_CR2.pdf")
 pdf(file_path, width = 8.27, height = 11.69)  # A4 in inches
 
@@ -803,11 +833,7 @@ dev.off()
 
 ####  global PIP plot ---- 
 
-col_names <-        colnames(as.data.frame(res_ha$X_data)) 
-
-pos_SNP_HA <-  as.numeric(gsub("chr[0-9XY]+\\.([0-9]+)\\..*", "\\1", col_names))
-
-
+ 
 
 
 plot_colors <-          c("black" , "steelblue4", 
@@ -815,7 +841,7 @@ plot_colors <-          c("black" , "steelblue4",
                           "#6A3D9A","royalblue",  
                           "darkturquoise", "green1",
                           "yellow4")
-SNP_in_cs = c(unlist( fsusie_obj_ha$cs)) 
+SNP_in_cs = c(unlist( obj_plot$cs_fsusie_obj )) 
 
 idx= which( fsusie_obj_ha$pip  >0.05  )
 fsusie_obj_ha$pip[idx[ -which(idx %in% SNP_in_cs  )] ]=0.0
@@ -858,41 +884,4 @@ P_pip_ha
 
 
 dev.off() 
-
-P_pip_ha
-
-
-
-break
-
-AD_cs
-CR1_cs
-CR2_cs
-HA_cs
-
-intersect(AD_cs$pos,
-          HA_cs$pos )
-#207577223 207624893 207629207
-#rs679515  rs10863418  rs4844610
-
-intersect(AD_cs$pos,
-          CR1_cs$pos )
-#207577223 207629207
-intersect(AD_cs$pos,
-                     CR2_cs$pos )
-#207510847 207577223
-
-
- 
-intersect(CR1_cs$pos,
-          HA_cs$pos )
-#207573951 207577223 207611623 207612944 207613197 207613483 207629207
-intersect(CR2_cs$pos,
-             HA_cs$pos )
-# 207573951 207577223 207598421 207611623 207612944 207613483 207621975 207625349 207625371 207626529
-
- 
- 
- intersect(CR2_cs$pos,
-           CR1_cs$pos)
- #207564732 207573951 207577223 207611623 207612944 207613483
+save(obj_plot, file=paste0(folder_path,"CR1_CR2_obj.RData"))

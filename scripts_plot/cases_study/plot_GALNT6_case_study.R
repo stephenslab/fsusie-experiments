@@ -683,7 +683,7 @@ background.title = "white"
 
 
 
-#### meqtl -----
+re#### meqtl -----
 
 
 
@@ -1243,6 +1243,113 @@ plotTracks(list_track,
 
 
 
+### Count ----- 
+load(paste0(path ,"/data/fig_4_data/row_count_GALNT6.RData"))
+df =do.call(cbind,obs_curve )
+
+# Convert matrix to data frame
+df <- as.data.frame(df)
+
+
+bin_size=1 
+# Create a bin column
+df$bin <- floor(df$obs_pos / bin_size)
+
+# Load dplyr and aggregate
+library(dplyr)
+
+binned_df <- df %>%
+  group_by(bin) %>%
+  summarise(
+    mean_func0 = mean(mean_func0, na.rm = TRUE),
+    mean_func1 = mean(mean_func1, na.rm = TRUE),
+    mean_func2 = mean(mean_func2, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(bin_start_pos = bin * bin_size)
+
+# View result
+head(binned_df)
+
+
+
+plot(binned_df$mean_func2, type="l")
+lines(binned_df$mean_func1, col="green")
+lines(binned_df$mean_func0, col="red")
+
+binned_df$mean_func2= (binned_df$mean_func2)
+binned_df$mean_func1= (binned_df$mean_func1)
+
+binned_df$mean_func0= (binned_df$mean_func0)
+
+
+
+library(Gviz)
+
+# Example: assume your binned data is in `binned_df` from previous step
+# with columns: bin_start_pos, mean_func0, mean_func1, mean_func2
+
+# Create a GRanges object for each track
+gr_func0 <- GRanges(
+  seqnames = "chr12",  # use real chromosome if you have it
+  ranges = IRanges(start = binned_df$bin_start_pos,
+                   width = bin_size),
+  score = binned_df$mean_func0
+)
+
+gr_func1 <- gr_func0
+mcols(gr_func1)$score <- binned_df$mean_func1
+
+gr_func2 <- gr_func0
+mcols(gr_func2)$score <- binned_df$mean_func2
+# Change title color to black
+
+
+
+# Create DataTracks
+track0 <- DataTrack(gr_func0, 
+                    type = "hist",  
+                    fill = "lightblue",
+                    col.histogram = NA, 
+                    ylim = c(0, 50),# max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+track1 <- DataTrack(gr_func1, 
+                    type = "hist",  
+                    col.histogram = NA, 
+                    fill = "turquoise",
+                    ylim = c(0, 50),# max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+track2 <- DataTrack(gr_func2, 
+                    type = "hist", 
+                    col.histogram = NA, 
+                    fill = "royalblue" ,
+                    ylim = c(0, 50),# max(c(binned_df$mean_func0, binned_df$mean_func1, binned_df$mean_func2))),
+                    cex=1.5, # Use color column from df_plot
+                    track.margin = 0.05, # Reduce margin between track and title
+                    cex.title = 0.6,     # Reduce title size
+                    cex.axis = 0.6,      # Reduce axis text size
+                    col.axis = "black",  # Change axis color to black
+                    col.title = "black",rotation.title = 90,cex.title = cex,
+                    background.title = "white",name="Observed count")
+
+# Plot
+ot_count =OverlayTrack(trackList =  list(  track2,track1 ),track.margin = 0.05,
+                       background.title = "white")
+#plotTracks(  ot_count )  
+
+
 ###Gene track  ----
 
 
@@ -1338,9 +1445,18 @@ list_track=  list( otAD,
                    
                    fsusie_me_plot ,
                    fsusie_ha_plot,
+                   ot_count,
                    gene_track,
                    gtrack
 )
+
+
+plotTracks(list_track,
+           from =view_win[1]+ 140000,
+           to=51480000,
+           frame = TRUE,
+           
+           cex.main=1.2, cex.title = 1.)
 
 #view_win <- c(5.12e7, 5.16e7) 
 
