@@ -3,6 +3,7 @@ library(data.table)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
+zoomin_region <- c(207.4,207.7)
 # Colors are from colorbrewer2.org
 cs_colors <- c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e")
 load("../outputs/CR1_CR2_obj.RData")
@@ -29,7 +30,14 @@ p <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
              shape = 1,size = 1.5) +
   geom_text_repel(color = "black",size = 2.25,min.segment.length = 0,
                   max.overlaps = Inf) +
+  geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
+                                   xmax = zoomin_region[2],
+                                   y = -0.1),
+                 mapping = aes(xmin = xmin,xmax = xmax,y = y),
+                 color = "darkgray",linewidth = 0.5,
+                 inherit.aes = FALSE) +
   scale_color_manual(values = cs_colors,na.value = "darkgray") +
+  ylim(-0.1,1) +
   guides(color = guide_legend(override.aes = list(shape = 20,size = 2))) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "PIP") +
   theme_cowplot(font_size = 10)
