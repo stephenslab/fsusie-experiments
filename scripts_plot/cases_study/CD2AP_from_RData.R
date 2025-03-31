@@ -11,26 +11,54 @@ library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(fsusieR)
 library(dplyr)
 library(data.table)
-path= getwd()
+folder_path=  paste0(getwd(),
+                     "/plot/"
+)
+load( paste0(folder_path,"CD2AP_obj.RData"))
 
-cex=1
-path= getwd()
 
-AD_GWAS <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/GWAS_sumstat.chr20_55439357_57610823.rds") 
-qTLdata= fread(paste0("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/eQTL.chr20_55439357_57610823.tsv.tsv"))
+dat=obj_plot$ dat
+pdat=obj_plot$ pdat 
 
-chr=20
-view_win=c(min(AD_GWAS$pos),max(AD_GWAS$pos))
-pdat1= AD_GWAS[[2]]
+pdat2=obj_plot$ pdat2
+
+extract_snp_position <- function(snp_string) {
+  # Split the input string by ':'
+  parts <- unlist(strsplit(snp_string, ":"))
+  
+  # Extract the position
+  position <- as.numeric(parts[2])
+  
+  return(position)
+}
+txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
+
+cex=0.6
+
+##" cas 1 ---- 
+
+ 
+view_win <- c(47.3e6, 47.75e6)  
+
+view_win=obj_plot$view_win
+
+chr =  paste("chr",6, sep = "")
+
+
+
+
+
+### AD GWAS panel -----
+
+study="AD_Bellenguez_2022"
+idx=which (pdat$study == study )
+pdat1= pdat[idx, ]
 dim(pdat1)
 #pdat1$X.log10.P. 
-
-
-
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =pdat1$pos ,
                                                                  end = pdat1$pos )),
-                data = matrix( (pdat1$`-log10(P)`) , nrow=1), genome = "hg19",
-                ylim =c( min( (pdat1$`-log10(P)`)), max( (pdat1$`-log10(P)`))+0.2),
+                data = matrix(-log10(pdat1$pvalue) , nrow=1), genome = "hg19",
+                ylim =c( min(-log10(pdat1$pvalue)), max(-log10(pdat1$pvalue))+0.2),
                 type = "p", col = "black",  # Use color column from df_plot
                 track.margin = 0.05, # Reduce margin between track and title
                 cex.title = 0.6,     # Reduce title size
@@ -42,11 +70,11 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =pdat1$po
 
 plotTracks(t1)
 
-pdat1CS = pdat1[which ( pdat1$pos ==56409008),]   
+pdat1CS = pdat1[which(pdat1$CS1),]
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat1CS$pos   , 
                                                                  end = pdat1CS$pos   )),
-                data = matrix( (pdat1CS$`-log10(P)`) , nrow=1), genome = "hg19", 
-                ylim =c( min( (pdat1$`-log10(P)`)), max( (pdat1$`-log10(P)`))+0.2),
+                data = matrix(-log10(pdat1CS$pvalue) , nrow=1), genome = "hg19", 
+                ylim =c( min(-log10(pdat1$pvalue)), max(-log10(pdat1$pvalue))+0.2),
                 type = "p", col = "black", cex=1.5,
                 fill=  "royalblue",
                 pch=c(24 ),# Use color column from df_plot
@@ -58,35 +86,23 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat1CS
                 rotation.title = 90,
                 background.title = "white",name="AD") ) # Change title color to black
 plotTracks(t2)
+
+
+
 otAD <- OverlayTrack(trackList=list(    t1,  t2  ),
                      background.title = "white")
+
+
 
 plotTracks( otAD , from= view_win[1],
             to= view_win[2])
 
+## CD2AP panel ----- 
 
 
 
 
-
-
-
-
-## CASS4 panel ----- 
-
-
-
-
-pdat2 = qTLdata
-z_to_neglog10p <- function(z) {
-  z <- abs(z)
-  log_p <- pnorm(z, lower.tail = FALSE, log.p = TRUE)  # log(1 - Φ(z))
-  log10_p <- log_p / log(10)
-  -log10(2) - log10_p  # two-sided
-} 
-pdat2$X.log10.P. <- z_to_neglog10p(pdat2$z)
-
-
+pdat2$X.log10.P. 
 t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =pdat2$pos ,
                                                                  end = pdat2$pos )),
                 data = matrix(pdat2$X.log10.P. , nrow=1), genome = "hg19",
@@ -98,12 +114,11 @@ t1= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start =pdat2$po
                 col.axis = "black",  # Change axis color to black
                 col.title = "black",cex.title = cex,
                 rotation.title = 90,
-                background.title = "white",name="CASS4") ) # Change title color to black
+                background.title = "white",name="CD2AP") ) # Change title color to black
 
-plotTracks(t1, from= view_win[1],
-           to= view_win[2])
+plotTracks(t1)
 
-pdat2CS = pdat2[which(! is.na( pdat2$cs_coverage_0.95)),]
+pdat2CS = pdat2[which(pdat2$CS1),]
 t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat2CS$pos   , 
                                                                  end = pdat2CS$pos   )),
                 data = matrix(pdat2CS$X.log10.P.  , nrow=1), genome = "hg19", 
@@ -126,15 +141,11 @@ oteqTL <- OverlayTrack(trackList=list(    t1,  t2  ),
 plotTracks( oteqTL, from= view_win[1],
             to= view_win[2])
 
-plotTracks(list(otAD, oteqTL),
-           
-           from = 56407019, to =56433488)
 
 
-#### reprendre ici  ------ 
 
-pdat1[which(pdat1$CS1),]
-pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
+
+
 
 
 # pip plot  -----
@@ -146,16 +157,15 @@ pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
 
 
 
-
-
 #### meqtl -----
+chr=6
+cex=1
+
+ 
+fsusie_obj_me= obj_plot$fsusie_obj_me
+ 
 
 
-
-res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.rds")
-fsusie_obj_me = res$`chr20:53859688-57519449`$ROSMAP_DLPFC_mQTL$fsusie_result
-rm(res) 
-res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.input_data.rds")## to work from here
 snp_names=attr( fsusie_obj_me$pip, "names")
 pos_SNP_me <- as.numeric(sub("chr[0-9XY]+:([0-9]+):.*", "\\1", snp_names))
 
@@ -173,7 +183,7 @@ t_me= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pos_S
                   cex.axis = 0.6,      # Reduce axis text size
                   col.axis = "black",  # Change axis color to black
                   col.title = "black",rotation.title = 90,cex.title = cex,
-                  background.title = "white",name="PIP \n H3k4a9ac") )
+                  background.title = "white",name="PIP \n DNAm") )
 
 
 list_cs_plot=list()
@@ -196,7 +206,7 @@ for ( l in 1 :length(fsusie_obj_me$cs)){
                                    cex.axis = 0.6,      # Reduce axis text size
                                    col.axis = "black",  # Change axis color to black
                                    col.title = "black",rotation.title = 90,cex.title = cex,
-                                   background.title = "white",name="PIP \n H3k4a9ac") )
+                                   background.title = "white",name="PIP \n DNAm") )
 }
 
 
@@ -214,54 +224,14 @@ list_track=  list( otAD,
 #plot_susiF(fsusie_obj_me)
 fsusie_obj_me$cs[[13]]
 
-56408019 -8.05 chr20_55439357_57610823 TRUE  FALSE AD_Bell… 8.42e-16        15.1
-2 chr20:56412160:G:C   20    56412160 -8.09 chr20_55439357_57610823 TRUE  FALSE AD_Bell… 6.04e-16        15.2
-3 chr20:56413016:C:T   20    56413016 -8.04 chr20_55439357_57610823 TRUE  FALSE AD_Bell… 8.90e-16        15.1
-4 chr20:56414777:T:A   20    56414777 -8.01 chr20_55439357_57610823 TRUE  FALSE AD_Bell… 1.18e-15        14.9
-5 chr20:56423488:A:G   20    56423488
-
-
 ## reprendre de la WW---- 
 plotTracks(list_track)
-Y= as.data.frame(res_me$residual_Y)
+ 
 
-
-X=as.data.frame(res_me$residual_X)
-pos = as.data.frame(res_me$Y_coordinates) #use start
-pos= pos$start-1000000#weird
-
-
-map_data <- fsusieR:::remap_data(Y=Y,
-                                 pos=pos,
-                                 
-                                 max_scale=10)
-
-outing_grid <- map_data$outing_grid
-Y_w= map_data$Y
-
-
-out= fsusieR:::univariate_smash_regression(Y_w,X= matrix(X[,12212  ], ncol=1),alpha=0.01)
-
-
-
-
-
-
-
-
-plot( out$effect_estimate)
-lines(out$cred_band[1,])                                        
-
-lines(out$cred_band[2,])       
-
-
-positions=outing_grid 
-
-effect_s=rbind(out$effect_estimate,
-               out$cred_band,
-               rep(0,length(out$effect_estimate)))
-
-
+ 
+positions=obj_plot$pos_est_effect
+pos= obj_plot$me_pos
+effect_s=obj_plot$effect_s
 
 chrom=6
 plot_list=list()
@@ -393,7 +363,7 @@ total_overlay= OverlayTrack( trackList =plot_list ,
 
 
 
-effect0=       rep(0,length(out$effect_estimate ))
+effect0=       rep(0,ncol(effect_s  ))
 group_cred= c( 0)
 group_colors <- c("black"  )
 
@@ -439,8 +409,6 @@ list_track=  list( otAD,
                    fsusie_me_plot 
 )
 plotTracks(list_track)
-
-
 
 
 

@@ -55,6 +55,7 @@ chr =  paste("chr",6, sep = "")
  
 pdat =fread(paste0(path,"/data/fig_4_data/GWAS_eQTL_sumstat.chr6_44880827_48309905.tsv"))
 
+
 dim(pdat)
 ### AD GWAS panel -----
 
@@ -96,21 +97,7 @@ t2= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = pdat1CS
 plotTracks(t2)
  
 
-t4= ( DataTrack(range = GRanges(seqnames = chr, ranges = IRanges(start = data_track_CS1$pos[tidx] ,
-                                                                 end = data_track_CS1$pos[tidx] )),
-                data = matrix(data_track_CS1$`-log10(P)`[tidx] , nrow=1), genome = "hg19", 
-                ylim =c( min(data_track$`-log10(P)`), max(data_track$`-log10(P)`)+0.2),
-                type = "p", col = "red", cex=1.5,
-                fill=  "royalblue",
-                pch=c(24),# Use color column from df_plot
-                track.margin = 0.05, # Reduce margin between track and title
-                cex.title = 0.6,     # Reduce title size
-                cex.axis = 0.6,      # Reduce axis text size
-                col.axis = "black",  # Change axis color to black
-                col.title = "black",cex.title = cex,
-                rotation.title = 90,
-                background.title = "white",name="AD") ) 
-
+ 
 otAD <- OverlayTrack(trackList=list(    t1,  t2  ),
                      background.title = "white")
 
@@ -176,14 +163,12 @@ plotTracks( oteqTL, from= view_win[1],
 
  
 
-
-
-
+ 
 
 
 #### meqtl -----
-
-
+chr=6
+cex=1
 
 res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.rds")
 
@@ -256,7 +241,7 @@ Y= as.data.frame(res_me$residual_Y)
 
 X=as.data.frame(res_me$residual_X)
 pos = as.data.frame(res_me$Y_coordinates) #use start
-pos= pos$start-1000000#weird
+pos= pos$start #weird
 
 
 map_data <- fsusieR:::remap_data(Y=Y,
@@ -464,6 +449,14 @@ plotTracks(fsusie_me_plot  )
 list_track=  list( otAD,
                    oteqTL,
                    pip_overlay ,
+                   fsusie_me_plot 
+)
+plotTracks(list_track)
+
+
+
+list_track=  list( otAD,
+                   
                    fsusie_me_plot 
 )
 plotTracks(list_track)

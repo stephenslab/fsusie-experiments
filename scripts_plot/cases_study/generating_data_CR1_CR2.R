@@ -884,4 +884,5 @@ P_pip_ha
 
 
 dev.off() 
+obj_plot$pip_fsusie_obj = fsusie_obj_ha$pip
 save(obj_plot, file=paste0(folder_path,"CR1_CR2_obj.RData"))
