@@ -1,4 +1,7 @@
 # Create a PIP "zoomout" plot for the CD2AP locus.
+#
+# NOTE: download CD2AP_obj.RData from
+# https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
 library(data.table)
 library(ggplot2)
 library(ggrepel)
