@@ -43,8 +43,8 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("black","dodgerblue")) +
-  scale_x_continuous(limits = c(pos0/1e6,pos1/1e6),
-                     breaks = seq(207,208,0.1)) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05)) +
   ylim(0,45) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "AD") + 
   theme_cowplot(font_size = 9)
@@ -81,17 +81,39 @@ p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("tomato","darkorange"),na.value = "black") +
-  scale_x_continuous(limits = c(pos0/1e6,pos1/1e6),
-                     breaks = seq(207,208,0.1)) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05)) +
   ylim(0,0.4) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "haSNP PIP") + 
   theme_cowplot(font_size = 9)
 
 # The fifth panel shows the genes.
-# TO DO.
+#
+# TO DO: Show the TSSs.
+# 
+pdat5 <- subset(genes,
+                chromosome == "chr1" &
+                end > pos0 &
+                start < pos1)
+pdat5 <- transform(pdat5,
+                   start = start/1e6,
+                   end   = end/1e6)
+n <- nrow(pdat5)
+pdat5$y <- seq(0,1,length.out = n)
+p5 <- ggplot(pdat5,aes(x = start,xend = end,y = y,yend = y,
+                       label = gene_name)) +
+  geom_segment(color = "dodgerblue",linewidth = 0.75) +
+  geom_text(color = "black",size = 2.5,fontface = "italic",
+            hjust = "right",nudge_x = -0.002) +
+  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05)) +
+  scale_y_continuous(limits = c(-0.1,1.1),breaks = NULL) +
+  labs(x = "base-pair position on chromosome 1 (Mb)",y = "") + 
+  theme_cowplot(font_size = 9)
 
 # Save the full figure to a PDF.
-print(plot_grid(p1,p4,nrow = 3,ncol = 1,align = "v"))
+print(plot_grid(p1,p4,p5,nrow = 3,ncol = 1,align = "v"))
 # TO DO.
 
 stop()
