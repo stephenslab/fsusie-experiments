@@ -16,8 +16,14 @@ path= getwd()
 cex=1
 path= getwd()
 
+obj_plot=list()
 AD_GWAS <- fread("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/CASS4/GWAS_sumstat.chr20_55439357_57610823.AD_Jansen_2021.tsv") 
+obj_plot$AD_GWAS =AD_GWAS
+AD_GWAS=obj_plot$AD_GWAS
 qTLdata= fread(paste0("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/eQTL.chr20_55439357_57610823.tsv.tsv"))
+obj_plot$qTLdata=qTLdata
+qTLdata=obj_plot$qTLdata
+
 
 chr=20
 view_win=c(min(AD_GWAS$pos),max(AD_GWAS$pos))
@@ -75,7 +81,7 @@ plotTracks( otAD , from= view_win[1],
 ## CASS4 panel ----- 
 
 
- 
+
 pdat2 =  qTLdata[which(qTLdata$study=="Mic_DeJager_eQTL"),]
 #DLPFC also is consistent
 #pdat2 = qTLdata[which(qTLdata$study=="DLPFC_DeJager_eQTL"),]
@@ -133,10 +139,6 @@ plotTracks(list(otAD, oteqTL),
            from = 56407019, to =56433488)
 
 
-#### reprendre ici  ------ 
-
-pdat1[which(pdat1$CS1),]
-pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
 
 
 # pip plot  -----
@@ -157,6 +159,7 @@ pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
 res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.rds")
 fsusie_obj_me = res$`chr20:53859688-57519449`$ROSMAP_DLPFC_mQTL$fsusie_result
 rm(res) 
+obj_plot$fsusie_obj_me = fsusie_obj_me 
 res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.input_data.rds")## to work from here
 snp_names=attr( fsusie_obj_me$pip, "names")
 pos_SNP_me <- as.numeric(sub("chr[0-9XY]+:([0-9]+):.*", "\\1", snp_names))
@@ -217,8 +220,8 @@ plotTracks(list_track ,from = 56407019, to =56433488)
 #plot_susiF(fsusie_obj_me)
 fsusie_obj_me$cs[[18]]
 
- 
-  
+
+
 Y= as.data.frame(res_me$residual_Y)
 
 
@@ -257,8 +260,13 @@ effect_s=rbind(out$effect_estimate,
                out$cred_band,
                rep(0,length(out$effect_estimate)))
 
+ 
 
-
+obj_plot$effect_s=effect_s
+obj_plot$pos_est_effect =positions
+obj_plot$me_pos = pos
+positions=obj_plot$pos_est_effect
+pos= obj_plot$me_pos
 chrom=20
 plot_list=list()
 df_list=list()
@@ -437,6 +445,9 @@ list_track=  list( otAD,
 plotTracks(list_track)
 
 
-
+folder_path=  paste0(getwd(),
+                     "/plot/"
+)
+save(obj_plot, file=paste0(folder_path,"CASS4_obj.RData"))
 
 

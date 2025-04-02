@@ -12,12 +12,14 @@ library(fsusieR)
 library(dplyr)
 library(data.table)
 path= getwd()
-
+load("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/plot/CASS4_obj.RData")
 cex=1
 path= getwd()
 
-AD_GWAS <- fread("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/CASS4/GWAS_sumstat.chr20_55439357_57610823.AD_Jansen_2021.tsv") 
-qTLdata= fread(paste0("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/eQTL.chr20_55439357_57610823.tsv.tsv"))
+  AD_GWAS=obj_plot$AD_GWAS
+ 
+qTLdata=obj_plot$qTLdata
+
 
 chr=20
 view_win=c(min(AD_GWAS$pos),max(AD_GWAS$pos))
@@ -75,7 +77,7 @@ plotTracks( otAD , from= view_win[1],
 ## CASS4 panel ----- 
 
 
- 
+
 pdat2 =  qTLdata[which(qTLdata$study=="Mic_DeJager_eQTL"),]
 #DLPFC also is consistent
 #pdat2 = qTLdata[which(qTLdata$study=="DLPFC_DeJager_eQTL"),]
@@ -133,10 +135,6 @@ plotTracks(list(otAD, oteqTL),
            from = 56407019, to =56433488)
 
 
-#### reprendre ici  ------ 
-
-pdat1[which(pdat1$CS1),]
-pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
 
 
 # pip plot  -----
@@ -154,10 +152,8 @@ pdat2[which( ( pdat2$cs_coverage_0.95==1)),]
 
 
 
-res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.rds")
-fsusie_obj_me = res$`chr20:53859688-57519449`$ROSMAP_DLPFC_mQTL$fsusie_result
-rm(res) 
-res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr20_53859688_57519449.fsusie_mixture_normal_top_pc_weights.input_data.rds")## to work from here
+fsusie_obj_me =obj_plot$fsusie_obj_me 
+
 snp_names=attr( fsusie_obj_me$pip, "names")
 pos_SNP_me <- as.numeric(sub("chr[0-9XY]+:([0-9]+):.*", "\\1", snp_names))
 
@@ -218,47 +214,10 @@ plotTracks(list_track ,from = 56407019, to =56433488)
 fsusie_obj_me$cs[[18]]
 
  
-  
-Y= as.data.frame(res_me$residual_Y)
-
-
-X=as.data.frame(res_me$residual_X)
-pos = as.data.frame(res_me$Y_coordinates) #use start
-pos= pos$start #weird
-
-
-map_data <- fsusieR:::remap_data(Y=Y,
-                                 pos=pos,
-                                 
-                                 max_scale=10)
-
-outing_grid <- map_data$outing_grid
-Y_w= map_data$Y
-
-
-out= fsusieR:::univariate_smash_regression(Y_w,X= matrix(X[,13774   ], ncol=1),alpha=0.01)
-
-
-
-
-
-
-
-
-plot( out$effect_estimate)
-lines(out$cred_band[1,])                                        
-
-lines(out$cred_band[2,])       
-
-
-positions=outing_grid 
-
-effect_s=rbind(out$effect_estimate,
-               out$cred_band,
-               rep(0,length(out$effect_estimate)))
-
-
-
+effect_s= obj_plot$effect_s 
+ 
+positions=obj_plot$pos_est_effect
+pos= obj_plot$me_pos
 chrom=20
 plot_list=list()
 df_list=list()
@@ -389,7 +348,7 @@ total_overlay= OverlayTrack( trackList =plot_list ,
 
 
 
-effect0=       rep(0,length(out$effect_estimate ))
+effect0=       rep(0,ncol( effect_s ))
 group_cred= c( 0)
 group_colors <- c("black"  )
 
@@ -436,7 +395,6 @@ list_track=  list( otAD,
 )
 plotTracks(list_track)
 
-
-
+ 
 
 
