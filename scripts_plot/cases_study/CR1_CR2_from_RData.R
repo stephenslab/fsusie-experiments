@@ -1,10 +1,16 @@
+library(data.table)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
+source("get_gene_annotations.R")
 load("../../outputs/CR1_CR2_obj.RData")
+gene_file <-
+  file.path("../../data/genome_annotations",
+    "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
+genes <- get_gene_annotations(gene_file)
 
-pos0 <- 207.15e6
-pos1 <- 207.8e6
+pos0 <- 207.45e6
+pos1 <- 207.75e6
 
 # The top panel shows the Alzheimer's Disease (AD) association
 # p-values.
@@ -16,6 +22,14 @@ pdat1 <- subset(pdat1,
 pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)")]
 pdat1 <- transform(pdat1,pos = pos/1e6)
 names(pdat1) <- c("id","pos","CS","pval")
+ids <- pdat1$id
+ids[] <- NA
+ids[pdat1$id == "chr1:207510847:T:G"] <- "rs12037841"
+ids[pdat1$id == "chr1:207577223:T:C"] <- "rs679515"
+ids[pdat1$id == "chr1:207623552:A:T"] <- "rs10863417"
+ids[pdat1$id == "chr1:207624893:C:G"] <- "rs10863418"
+ids[pdat1$id == "chr1:207629207:A:C"] <- "rs4844610"
+pdat1$id <- ids
 # > subset(pdat1,CS)
 #                 id   pos   CS  pval
 # chr1:207510847:T:G 207.5 TRUE 31.75
@@ -23,10 +37,15 @@ names(pdat1) <- c("id","pos","CS","pval")
 # chr1:207623552:A:T 207.6 TRUE 30.59
 # chr1:207624893:C:G 207.6 TRUE 30.67
 # chr1:207629207:A:C 207.6 TRUE 31.95
-p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS)) +
+p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
-  scale_color_manual(values = c("black","darkorange")) +
-  xlim(pos0/1e6,pos1/1e6) +
+  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
+  scale_color_manual(values = c("black","dodgerblue")) +
+  scale_x_continuous(limits = c(pos0/1e6,pos1/1e6),
+                     breaks = seq(207,208,0.1)) +
+  ylim(0,45) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "AD") + 
   theme_cowplot(font_size = 9)
 
@@ -52,16 +71,27 @@ pdat4 <- transform(pdat4,pos = pos/1e6)
 # chr1:207577223:T:C      <NA> 207.6 0.1375  5
 # chr1:207598421:CT:CTT   <NA> 207.6 0.3343  5
 # chr1:207619376:CAAA:CAA <NA> 207.6 0.2049  5
-p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs)) +
+pdat4[c("chr1:207577223:T:C",
+        "chr1:207598421:CT:CTT",
+        "chr1:207619376:CAAA:CAA"),"id"] <-
+  c("rs679515","rs1168807665","rs869302047")
+p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
-  scale_color_manual(values = c("magenta","darkorange"),na.value = "black") +
-  xlim(pos0/1e6,pos1/1e6) +
+  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
+  scale_color_manual(values = c("tomato","darkorange"),na.value = "black") +
+  scale_x_continuous(limits = c(pos0/1e6,pos1/1e6),
+                     breaks = seq(207,208,0.1)) +
   ylim(0,0.4) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "haSNP PIP") + 
   theme_cowplot(font_size = 9)
 
+# The fifth panel shows the genes.
+# TO DO.
+
 # Save the full figure to a PDF.
-print(plot_grid(p1,p4,nrow = 2,ncol = 1,align = "v"))
+print(plot_grid(p1,p4,nrow = 3,ncol = 1,align = "v"))
 # TO DO.
 
 stop()
