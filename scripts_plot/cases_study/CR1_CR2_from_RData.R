@@ -1,14 +1,91 @@
+library(ggplot2)
+library(ggrepel)
+library(cowplot)
+load("../../outputs/CR1_CR2_obj.RData")
+
+pos0 <- 207.15e6
+pos1 <- 207.8e6
+
+# The top panel shows the Alzheimer's Disease (AD) association
+# p-values.
+pdat1 <- as.data.frame(obj_plot$plot_df)
+pdat1 <- subset(pdat1,
+                study == "AD_Bellenguez_2022" &
+                pos >= pos0 &
+                pos <= pos1)
+pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)")]
+pdat1 <- transform(pdat1,pos = pos/1e6)
+names(pdat1) <- c("id","pos","CS","pval")
+# > subset(pdat1,CS)
+#                 id   pos   CS  pval
+# chr1:207510847:T:G 207.5 TRUE 31.75
+# chr1:207577223:T:C 207.6 TRUE 32.25
+# chr1:207623552:A:T 207.6 TRUE 30.59
+# chr1:207624893:C:G 207.6 TRUE 30.67
+# chr1:207629207:A:C 207.6 TRUE 31.95
+p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = c("black","darkorange")) +
+  xlim(pos0/1e6,pos1/1e6) +
+  labs(x = "base-pair position on chromosome 1 (Mb)",y = "AD") + 
+  theme_cowplot(font_size = 9)
+
+# The fourth panel shows the haSNP PIPs.
+ids   <- names(obj_plot$pip_fsusie_obj)
+pdat4 <- data.frame(id  = as.character(NA),
+                   pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
+                   pip = obj_plot$pip_fsusie_obj,
+                   cs  = as.character(NA),
+                   stringsAsFactors = FALSE)
+pdat4 <- transform(pdat4,pos = as.numeric(pos))
+n <- length(obj_plot$cs_fsusie_obj)
+for (i in 1:n) {
+  snps <- names(obj_plot$cs_fsusie_obj[[i]])
+  pdat4[snps,"cs"] <- i
+  # j <- snps[which.max(pdat[snps,"pip"])]
+  # pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
+}
+pdat4 <- subset(pdat4,pos >= pos0 & pos <= pos1)
+pdat4 <- transform(pdat4,pos = pos/1e6)
+# > subset(pdat4,cs == 5 & pip > 0.05)
+#                           id   pos    pip cs
+# chr1:207577223:T:C      <NA> 207.6 0.1375  5
+# chr1:207598421:CT:CTT   <NA> 207.6 0.3343  5
+# chr1:207619376:CAAA:CAA <NA> 207.6 0.2049  5
+p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = c("magenta","darkorange"),na.value = "black") +
+  xlim(pos0/1e6,pos1/1e6) +
+  ylim(0,0.4) +
+  labs(x = "base-pair position on chromosome 1 (Mb)",y = "haSNP PIP") + 
+  theme_cowplot(font_size = 9)
+
+# Save the full figure to a PDF.
+print(plot_grid(p1,p4,nrow = 2,ncol = 1,align = "v"))
+# TO DO.
+
+stop()
+
+# The second panel shows the CR1 eQTL p-values.
+pdat2 <- as.data.frame(obj_plot$plot_df)
+pdat2 <- subset(pdat2,study == "DLPFC_DeJager_eQTL" & region == "CR1")
+pdat2 <- pdat2[c("variant_alternate_id","pos","CS1","-log10(P)")]
+pdat2 <- transform(pdat1,pos = pos/1e6)
+names(pdat1) <- c("id","pos","CS","pval")
+p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS)) +
+  geom_point(size = 0.75) +
+  scale_color_manual(values = c("black","darkorange")) +
+  labs(x = "",y = "AD") + 
+  theme_cowplot(font_size = 10)
+print(p1)
+
+data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
  
-rm(list=ls())
+data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  
 
-path= getwd()
-load("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/plot/CR1_CR2/CR1_CR2_obj.RData")
-# for writing the plots
-folder_path=  paste0(getwd(),
-                     "/plot/CR1_CR2/"
-) 
+# The third panel shows the CR2 eQTL p-values.
 
-view_win <- c(207317782, 207895513)
+stop()
 
 library(ggplot2)
 library(tidyr)
@@ -19,7 +96,6 @@ library(Gviz)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 library(fsusieR)
 library(dplyr) 
- 
 
 cex=0.6
 chr=1
