@@ -25,9 +25,9 @@ n <- length(obj_plot$fsusie_obj_me$sets$cs)
 for (i in 1:n) {
   snps <- names(obj_plot$fsusie_obj_me$sets$cs[[i]])
   cs_label <- sprintf("CS %d, %d SNPs",i,length(snps))
-  pdat[snps,"cs"] <- cs_label
+  pdat[snps,"cs"] <- i # cs_label
   j <- snps[which.max(pdat[snps,"pip"])]
-  pdat[j,"id"] <- sprintf("%s (CS %d)",j,i)
+  pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
 }
 pdat <- transform(pdat,cs = factor(cs))
 i <- which(pdat$pip >= 0.01)
@@ -50,7 +50,8 @@ p <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   scale_x_continuous(breaks = seq(44,49,0.5)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray") +
   ylim(-0.2,1.4) +
-  guides(color = guide_legend(override.aes = list(shape = 20,size = 2))) +
+  # guides(color = guide_legend(override.aes = list(shape = 20,size = 2))) +
+  guides(color = "none") +
   labs(x = "base-pair position on chromosome 6 (Mb)",y = "PIP",
        title = "CD2AP") +
   theme_cowplot(font_size = 8)
