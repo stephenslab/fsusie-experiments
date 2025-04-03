@@ -1,4 +1,6 @@
 library(data.table)
+library(dplyr)
+library(magrittr)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
@@ -88,10 +90,28 @@ p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   theme_cowplot(font_size = 9)
 
 # The fifth panel shows the raw data.
-#
-# TO DO.
-#
-
+pdat5 <- obj_plot$count_df
+names(pdat5) <- c("AA","AG","GG","pos")
+pdat5 <- subset(pdat5,pos >= pos0 & pos <= pos1)
+rows1 <- with(pdat5,which(pmax(AA,AG,GG) >= 5))
+rows2 <- with(pdat5,which(pmax(AA,AG,GG) < 5))
+rows2 <- sample(rows2,5000)
+rows  <- c(rows1,rows2)
+pdat5 <- pdat5[rows,]
+pdat5 <- transform(pdat5,pos = pos/1e6)
+pdat5 <- melt(pdat5,id.vars = "pos",variable.name = "genotype",
+              value.name = "count")
+pdat5 <- transform(pdat5,genotype = factor(genotype))
+rows  <- order(pdat5$genotype,decreasing = TRUE)
+pdat5 <- pdat5[rows,]
+p5 <- ggplot(pdat5,aes(x = pos,y = count,color = genotype)) +
+  geom_point(size = 0.35) +
+  scale_color_manual(values = c("darkblue","darkviolet","darkorange")) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05)) +
+  ylim(2,24) +
+  theme_cowplot(font_size = 9)
+             
 # The sixth panel shows the genes.
 pdat6 <- subset(genes,
                 chromosome == "chr1" &
@@ -119,7 +139,7 @@ p6 <- ggplot(pdat6,aes(x = start,xend = end,y = y,yend = y,
   theme_cowplot(font_size = 9)
 
 # Save the full figure to a PDF.
-print(plot_grid(p1,p4,p6,nrow = 3,ncol = 1,align = "v"))
+print(plot_grid(p1,p4,p5,p6,nrow = 4,ncol = 1,align = "v"))
 # TO DO.
 
 stop()
@@ -597,7 +617,7 @@ view_win <- c(207317782, 207895513)
 df =obj_plot$count_df 
 
 # summarize count averaging over bin size for different genotype
-bin_size=100
+bin_size=2000
 # Create a bin column
 df$bin <- floor(df$obs_pos / bin_size)
 
@@ -607,9 +627,9 @@ library(dplyr)
 binned_df <- df %>%
   group_by(bin) %>%
   summarise(
-    mean_func0 = mean(mean_func0, na.rm = TRUE),
-    mean_func1 = mean(mean_func1, na.rm = TRUE),
-    mean_func2 = mean(mean_func2, na.rm = TRUE),
+    mean_func0 = sum(mean_func0, na.rm = TRUE),
+    mean_func1 = sum(mean_func1, na.rm = TRUE),
+    mean_func2 = sum(mean_func2, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   mutate(bin_start_pos = bin * bin_size)
