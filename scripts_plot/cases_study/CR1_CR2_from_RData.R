@@ -5,6 +5,7 @@ library(ggplot2)
 library(ggrepel)
 library(cowplot)
 source("get_gene_annotations.R")
+source("interpolate_effect_estimates.R")
 load("../../outputs/CR1_CR2_obj.RData")
 gene_file <-
   file.path("../../data/genome_annotations",
@@ -13,6 +14,7 @@ genes <- get_gene_annotations(gene_file)
 
 pos0 <- 207.45e6
 pos1 <- 207.75e6
+key_marker <- 207.577223
 
 # The top panel shows the Alzheimer's Disease (AD) association
 # p-values.
@@ -41,7 +43,7 @@ pdat1$id <- ids
 # chr1:207629207:A:C 207.6 TRUE 31.95
 p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
-  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("black","dodgerblue")) +
@@ -80,7 +82,7 @@ pdat4[c("chr1:207577223:T:C",
   c("rs679515","rs1168807665","rs869302047")
 p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
-  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("tomato","darkorange"),na.value = "black") +
@@ -92,14 +94,21 @@ p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   theme_cowplot(font_size = 9)
 
 # The fifth panel shows the estimated effects on the H3K27ac levels.
-pdat5 <- data.frame(up  = obj_plot$effect_s[2,],
-                    low = obj_plot$effect_s[3,],
-                    pos = obj_plot$pos_H3Kac_effect,
-                    y   = 0)
+pdat5 <- data.frame(effect = obj_plot$effect_s[1,],
+                    up     = obj_plot$effect_s[2,],
+                    low    = obj_plot$effect_s[3,],
+                    pos    = obj_plot$pos_H3Kac_effect)
+n     <- length(obj_plot$peak_pos)
+pdat5 <- interpolate_effect_estimates(pdat5,obj_plot$peak_pos[seq(2,n-1)])
 pdat5 <- subset(pdat5,
                 pos >= pos0 &
                 pos <= pos1)
-pdat5 <- transform(pdat5,pos = pos/1e6)
+pdat5 <- transform(pdat5,
+                   pos    = pos/1e6,
+                   effect = -effect,
+                   low    = -up,
+                   up     = -low,
+                   y      = 0)
 pdat5 <- list(zero_effects = subset(pdat5,low <= 0 & up >= 0),
               nonzero_effects = subset(pdat5,!(low <= 0 & up >= 0)))
 p5 <- ggplot() +
@@ -107,8 +116,13 @@ p5 <- ggplot() +
   geom_linerange(data = pdat5$nonzero_effects,
                  mapping = aes(x = pos,ymin = low,ymax = up),
                  color = "dodgerblue") +
+  geom_point(data = pdat5$nonzero_effects,
+             mapping = aes(x = pos,y = effect),,
+             color = "dodgerblue",size = 0.75) +
   geom_point(data = pdat5$zero_effects,
-             mapping = aes(x = pos,y = y)) +
+             mapping = aes(x = pos,y = y),
+             color = "dodgerblue",size = 0.75) +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
                      labels = NULL) +
@@ -132,7 +146,7 @@ rows  <- order(pdat6$genotype,decreasing = TRUE)
 pdat6 <- pdat6[rows,]
 p6 <- ggplot(pdat6,aes(x = pos,y = count,color = genotype)) +
   geom_point(size = 0.35) +
-  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_color_manual(values = c("darkblue","darkviolet","darkorange")) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
@@ -160,7 +174,7 @@ p7 <- ggplot(pdat7,aes(x = start,xend = end,y = y,yend = y,
              shape = 18) +
   geom_text(color = "black",size = 2.25,fontface = "italic",
             hjust = "right",nudge_x = -0.003) +
-  geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05)) +
   scale_y_continuous(limits = c(-0.1,1.1),breaks = NULL) +
@@ -410,8 +424,6 @@ for ( i in 2:(length(pos)-1))
                                ci_lower=ci_lower,
                                ci_upper=ci_upper,
                                pos=pos[i])
-    
-    
     
     # DataTrack for effect size points (blue dots)
     dTrack_points <- DataTrack(start = pos[i ], end = pos[i ], genome = "hg38", chromosome = chrom,
