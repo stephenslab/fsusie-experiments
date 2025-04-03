@@ -100,6 +100,47 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   labs(x = "",y = "CR1 eQTL") + 
   theme_cowplot(font_size = 9)
 
+# The third panel shows the CR2 eQTL p-values.
+pdat3 <- as.data.frame(obj_plot$plot_df)
+pdat3 <- subset(pdat3,
+                study == "DLPFC_DeJager_eQTL" &
+                region == "CR2" &
+                pos >= pos0 &
+                pos <= pos1)
+pdat3 <- pdat3[c("variant_alternate_id","pos","CS1","-log10(P)")]
+names(pdat3) <- c("id","pos","CS","pval")
+pdat3 <- transform(pdat3,pos = pos/1e6)
+#
+# > subset(pdat2,CS == 1)
+#                 id   pos   CS  pval
+# chr1:207564732:T:C 207.6 TRUE 64.56
+# chr1:207573951:A:G 207.6 TRUE 63.47
+# chr1:207577223:T:C 207.6 TRUE 64.89
+# chr1:207611623:A:G 207.6 TRUE 64.47
+# chr1:207612944:A:G 207.6 TRUE 64.47
+# chr1:207613197:A:G 207.6 TRUE 64.51
+# chr1:207613483:A:G 207.6 TRUE 64.47
+# chr1:207629207:A:C 207.6 TRUE 62.42
+#
+# > nrow(subset(pdat3,CS == 3))
+# 12
+#
+ids <- pdat3$id
+ids[] <- NA
+# ids[pdat3$id == "chr1:207577223:T:C"] <- "rs679515"
+pdat3$id <- ids
+p3 <- ggplot(pdat3,aes(x = pos,y = pval,color = CS,label = id)) +
+  geom_point(size = 0.75) +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  scale_color_manual(values = c("black","darkorchid"),na.value = "black") +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05),
+                     labels = NULL) +
+  labs(x = "",y = "CR2 eQTL") + 
+  theme_cowplot(font_size = 9)
+
 # The fourth panel shows the haSNP PIPs.
 ids   <- names(obj_plot$pip_fsusie_obj)
 pdat4 <- data.frame(id  = as.character(NA),
@@ -226,8 +267,10 @@ p7 <- ggplot(pdat7,aes(x = start,xend = end,y = y,yend = y,
   theme_cowplot(font_size = 9)
 
 # Save the full figure to a PDF.
-print(plot_grid(p1,p2,p4,p5,p6,p7,nrow = 6,ncol = 1,align = "v"))
-# TO DO.
+print(plot_grid(p1,p2,p3,p4,p5,p6,p7,nrow = 7,ncol = 1,align = "v"))
+ggsave("CR1CR2_zoomin_plot.pdf",
+       plot_grid(p1,p2,p3,p4,p5,p6,p7,nrow = 7,ncol = 1,align = "v"),
+       height = 5.75,width = 4.5)
 
 stop()
 
