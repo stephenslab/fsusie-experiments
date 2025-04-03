@@ -80,7 +80,8 @@ pdat2 <- transform(pdat2,
 # chr1:207613197:A:G 207.6 TRUE 64.51
 # chr1:207613483:A:G 207.6 TRUE 64.47
 # chr1:207629207:A:C 207.6 TRUE 62.42
-#
+# > nrow(subset(pdat2,CS == 1))
+# 8
 # > nrow(subset(pdat2,CS == 3))
 # 12
 #
@@ -110,24 +111,11 @@ pdat3 <- subset(pdat3,
 pdat3 <- pdat3[c("variant_alternate_id","pos","CS1","-log10(P)")]
 names(pdat3) <- c("id","pos","CS","pval")
 pdat3 <- transform(pdat3,pos = pos/1e6)
-#
-# > subset(pdat2,CS == 1)
-#                 id   pos   CS  pval
-# chr1:207564732:T:C 207.6 TRUE 64.56
-# chr1:207573951:A:G 207.6 TRUE 63.47
-# chr1:207577223:T:C 207.6 TRUE 64.89
-# chr1:207611623:A:G 207.6 TRUE 64.47
-# chr1:207612944:A:G 207.6 TRUE 64.47
-# chr1:207613197:A:G 207.6 TRUE 64.51
-# chr1:207613483:A:G 207.6 TRUE 64.47
-# chr1:207629207:A:C 207.6 TRUE 62.42
-#
-# > nrow(subset(pdat3,CS == 3))
-# 12
-#
+# > nrow(subset(pdat3,CS))
+# 20
 ids <- pdat3$id
 ids[] <- NA
-# ids[pdat3$id == "chr1:207577223:T:C"] <- "rs679515"
+ids[pdat3$id == "chr1:207577223:T:C"] <- "rs679515"
 pdat3$id <- ids
 p3 <- ggplot(pdat3,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
