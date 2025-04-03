@@ -54,6 +54,43 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   labs(x = "",y = "AD") + 
   theme_cowplot(font_size = 9)
 
+# The second panel shows the CR1 eQTL p-values.
+pdat2 <- as.data.frame(obj_plot$plot_df)
+pdat2 <- subset(pdat2,
+                study == "DLPFC_DeJager_eQTL" &
+                region == "CR1" &
+                pos >= pos0 &
+                pos <= pos1)
+pdat2 <- pdat2[c("variant_alternate_id","pos","CS1","-log10(P)")]
+pdat2 <- transform(pdat2,pos = pos/1e6)
+
+names(pdat2) <- c("id","pos","CS","pval")
+# > subset(pdat2,CS)
+#                 id   pos   CS  pval
+# chr1:207564732:T:C 207.6 TRUE 64.56
+# chr1:207573951:A:G 207.6 TRUE 63.47
+# chr1:207577223:T:C 207.6 TRUE 64.89
+# chr1:207611623:A:G 207.6 TRUE 64.47
+# chr1:207612944:A:G 207.6 TRUE 64.47
+# chr1:207613197:A:G 207.6 TRUE 64.51
+# chr1:207613483:A:G 207.6 TRUE 64.47
+# chr1:207629207:A:C 207.6 TRUE 62.42
+ids <- pdat2$id
+ids[] <- NA
+ids[pdat2$id == "chr1:207577223:T:C"] <- "rs679515"
+pdat2$id <- ids
+p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
+  geom_point(size = 0.75) +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  scale_color_manual(values = c("black","forestgreen")) +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(207,208,0.05),
+                     labels = NULL) +
+  labs(x = "",y = "CR1 eQTL") + 
+  theme_cowplot(font_size = 9)
+
 # The fourth panel shows the haSNP PIPs.
 ids   <- names(obj_plot$pip_fsusie_obj)
 pdat4 <- data.frame(id  = as.character(NA),
@@ -66,8 +103,6 @@ n <- length(obj_plot$cs_fsusie_obj)
 for (i in 1:n) {
   snps <- names(obj_plot$cs_fsusie_obj[[i]])
   pdat4[snps,"cs"] <- i
-  # j <- snps[which.max(pdat[snps,"pip"])]
-  # pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
 }
 pdat4 <- subset(pdat4,pos >= pos0 & pos <= pos1)
 pdat4 <- transform(pdat4,pos = pos/1e6)
@@ -182,31 +217,16 @@ p7 <- ggplot(pdat7,aes(x = start,xend = end,y = y,yend = y,
   theme_cowplot(font_size = 9)
 
 # Save the full figure to a PDF.
-print(plot_grid(p1,p4,p5,p6,p7,nrow = 5,ncol = 1,align = "v"))
+print(plot_grid(p1,p2,p4,p5,p6,p7,nrow = 6,ncol = 1,align = "v"))
 # TO DO.
 
 stop()
-
-# The second panel shows the CR1 eQTL p-values.
-pdat2 <- as.data.frame(obj_plot$plot_df)
-pdat2 <- subset(pdat2,study == "DLPFC_DeJager_eQTL" & region == "CR1")
-pdat2 <- pdat2[c("variant_alternate_id","pos","CS1","-log10(P)")]
-pdat2 <- transform(pdat1,pos = pos/1e6)
-names(pdat1) <- c("id","pos","CS","pval")
-p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS)) +
-  geom_point(size = 0.75) +
-  scale_color_manual(values = c("black","darkorange")) +
-  labs(x = "",y = "AD") + 
-  theme_cowplot(font_size = 10)
-print(p1)
 
 data_track =plot_df[ which(  plot_df$study ==study & plot_df$region==gene_name ),]
  
 data_track_CS1 =plot_df [ which(  plot_df$study == study & plot_df$CS1& plot_df$region==gene_name  ),]  
 
 # The third panel shows the CR2 eQTL p-values.
-
-stop()
 
 library(ggplot2)
 library(tidyr)
