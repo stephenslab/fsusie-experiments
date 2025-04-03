@@ -87,24 +87,30 @@ p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "haSNP PIP") + 
   theme_cowplot(font_size = 9)
 
-# The fifth panel shows the genes.
+# The fifth panel shows the raw data.
 #
-# TO DO: Show the TSSs.
-# 
-pdat5 <- subset(genes,
+# TO DO.
+#
+
+# The sixth panel shows the genes.
+pdat6 <- subset(genes,
                 chromosome == "chr1" &
                 end > pos0 &
                 start < pos1)
-pdat5 <- transform(pdat5,
+pdat6 <- transform(pdat6,tss = ifelse(strand == "+",start,end))
+pdat6 <- transform(pdat6,
                    start = start/1e6,
-                   end   = end/1e6)
-n <- nrow(pdat5)
-pdat5$y <- seq(0,1,length.out = n)
-p5 <- ggplot(pdat5,aes(x = start,xend = end,y = y,yend = y,
+                   end   = end/1e6,
+                   tss   = tss/1e6)
+n <- nrow(pdat6)
+pdat6$y <- seq(0,1,length.out = n)
+p6 <- ggplot(pdat6,aes(x = start,xend = end,y = y,yend = y,
                        label = gene_name)) +
-  geom_segment(color = "dodgerblue",linewidth = 0.75) +
-  geom_text(color = "black",size = 2.5,fontface = "italic",
-            hjust = "right",nudge_x = -0.002) +
+  geom_segment(color = "dodgerblue",linewidth = 0.5) +
+  geom_point(mapping = aes(x = tss),color = "dodgerblue",size = 1.5,
+             shape = 18) +
+  geom_text(color = "black",size = 2.25,fontface = "italic",
+            hjust = "right",nudge_x = -0.003) +
   geom_vline(xintercept = 207.577223,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05)) +
@@ -113,7 +119,7 @@ p5 <- ggplot(pdat5,aes(x = start,xend = end,y = y,yend = y,
   theme_cowplot(font_size = 9)
 
 # Save the full figure to a PDF.
-print(plot_grid(p1,p4,p5,nrow = 3,ncol = 1,align = "v"))
+print(plot_grid(p1,p4,p6,nrow = 3,ncol = 1,align = "v"))
 # TO DO.
 
 stop()
