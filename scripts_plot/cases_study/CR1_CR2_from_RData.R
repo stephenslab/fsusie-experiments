@@ -61,11 +61,16 @@ pdat2 <- subset(pdat2,
                 region == "CR1" &
                 pos >= pos0 &
                 pos <= pos1)
-pdat2 <- pdat2[c("variant_alternate_id","pos","CS1","-log10(P)")]
-pdat2 <- transform(pdat2,pos = pos/1e6)
-
+pdat2$CS <- as.numeric(NA)
+pdat2[which(pdat2$CS1),"CS"] <- 1
+pdat2[which(pdat2$CS3),"CS"] <- 3
+pdat2 <- pdat2[c("variant_alternate_id","pos","CS","-log10(P)")]
 names(pdat2) <- c("id","pos","CS","pval")
-# > subset(pdat2,CS)
+pdat2 <- transform(pdat2,
+                   pos = pos/1e6,
+                   CS  = factor(CS))
+#
+# > subset(pdat2,CS == 1)
 #                 id   pos   CS  pval
 # chr1:207564732:T:C 207.6 TRUE 64.56
 # chr1:207573951:A:G 207.6 TRUE 63.47
@@ -75,6 +80,10 @@ names(pdat2) <- c("id","pos","CS","pval")
 # chr1:207613197:A:G 207.6 TRUE 64.51
 # chr1:207613483:A:G 207.6 TRUE 64.47
 # chr1:207629207:A:C 207.6 TRUE 62.42
+#
+# > nrow(subset(pdat2,CS == 3))
+# 12
+#
 ids <- pdat2$id
 ids[] <- NA
 ids[pdat2$id == "chr1:207577223:T:C"] <- "rs679515"
@@ -82,7 +91,7 @@ pdat2$id <- ids
 p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
-  scale_color_manual(values = c("black","forestgreen")) +
+  scale_color_manual(values = c("limegreen","gold"),na.value = "black") +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,

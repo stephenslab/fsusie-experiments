@@ -232,12 +232,42 @@ print(p)
 ggsave("cs_per_tad_scatterplot_methyl.pdf",p,height = 3,width = 4)
 ```
 
+For plots counting CSs across the genome, we need to tackle the issue
+that the same CSs are sometimes discovered in overlapping TADs. To
+this end, this function removes CSs so that no two CSs share the same
+SNP:
+
+```{r remove-cs-duplicates}
+remove_cs_duplicates <- function (dat) {
+  cs_labels <- levels(dat$cs)
+  n   <- nlevels(dat$cs)
+  dat <- transform(dat,cs = as.integer(cs))
+  x   <- factor(dat$variant_id)
+  res <- tapply(dat$cs,x,function (x) length(unique(x)))
+  ids <- names(res)[which(res > 1)]
+  dat$flag <- 0
+  for (id in ids) {
+    rows <- which(dat$variant_id == id)
+    i    <- which.min(dat[rows,"cs"])
+    rows <- rows[-i]
+    dat[rows,"flag"] <- 1
+  }
+  dat <- subset(dat,flag == 0)
+  dat$flag <- NULL
+  dat <- transform(dat,cs = factor(cs,1:n))
+  levels(dat$cs) <- cs_labels
+  return(dat)
+}
+```
+
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
 
 ```{r cs-sizes-methyl, fig.height=2, fig.width=4, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-cs_size_susie  <- as.numeric(table(methyl_snps_susie$cs))
-cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie$cs))
+methyl_snps_susie_nodup  <- remove_cs_duplicates(methyl_snps_susie)
+methyl_snps_fsusie_nodup <- remove_cs_duplicates(methyl_snps_fsusie)
+cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
+cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)
 cs_size_fsusie <- cut(cs_size_fsusie,bins)
 levels(cs_size_susie) <- bins[-1]
@@ -494,13 +524,16 @@ x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
+nodup_cs <- names(which(table(methyl_snps_fsusie_nodup$cs) > 0))
+methyl_cpg_fsusie_nodup <- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
+methyl_cpg_fsusie_nodup <- transform(methyl_cpg_fsusie_nodup,cs = factor(cs))
 cpgs_per_snp_fsusie <-
-  with(methyl_cpg_fsusie,
+  with(methyl_cpg_fsusie_nodup,
        tapply(ID,cs,function (x) length(unique(x))))
 pdat1 <- data.frame(x = cpgs_per_snp_assoc)
 pdat2 <- data.frame(x = cpgs_per_snp_fsusie)
 pdat1 <- subset(pdat1,x <= 25)
-pdat2 <- subset(pdat2,x <= 250)
+pdat2 <- subset(pdat2,x <= 150)
 p1 <- ggplot(pdat1,aes(x = x)) +
   geom_histogram(color = "white",fill = "darkblue",bins = 25) +
   labs(x = "number of CpGs",y = "number of SNPs",
@@ -525,8 +558,8 @@ A small proportion of the SNPs and CSs are not plotted because they
 have an unusually large number of CpGs:
 
 ```{r count-cpgs-per-snp-more}
-mean(cpgs_per_snp_assoc > 25)
-mean(cpgs_per_snp_fsusie > 250)
+mean(cpgs_per_snp_assoc > 20)
+mean(cpgs_per_snp_fsusie > 150)
 ```
 
 ## H3K27ac SNPs
@@ -635,7 +668,6 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 
 We expect that the vast majority of the causal SNPs will be very close
 to the TSS. Let's verify this empirically.
-
 
 ```{r cs-sizes-h3k27ac, echo=FALSE, warning=FALSE}
 ggsave("cs_sizes_h3k27ac.pdf",
@@ -757,8 +789,8 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 A very small number of TADs have more than 200 affected peaks:
 
 ```{r ha-peaks-per-tad-more}
-sum(ha_peaks_per_tad_assoc > 200,na.rm = TRUE)
-sum(ha_peaks_per_tad_fsusie > 200,na.rm = TRUE)
+mean(ha_peaks_per_tad_assoc > 200,na.rm = TRUE)
+mean(ha_peaks_per_tad_fsusie > 200,na.rm = TRUE)
 ```
 
 This plot compares the number of affected H3K27ac peaks identified by
@@ -774,6 +806,7 @@ p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   xlim(0,200) + 
   ylim(0,200) + 
   theme_cowplot(font_size = 10)
+print(p)
 ```
 
 ```{r compare-ha-peaks-per-tad-ggsave, echo=FALSE, warning=FALSE}

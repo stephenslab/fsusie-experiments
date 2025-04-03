@@ -1,23 +1,25 @@
-methyl_snps_susie_nodup  <- remove_cs_duplicates(methyl_snps_susie)
-methyl_snps_fsusie_nodup <- remove_cs_duplicates(methyl_snps_fsusie)
-
-bins <- c(0,1,2,5,10,20,Inf)
-cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
-cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
-cs_size_susie  <- cut(cs_size_susie,bins)
-cs_size_fsusie <- cut(cs_size_fsusie,bins)
-levels(cs_size_susie) <- bins[-1]
-levels(cs_size_fsusie) <- bins[-1]
-p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
-  geom_histogram(stat = "count",color = "white",fill = "darkblue",
-                 width = 0.65) +
-  labs(x = "CS size",y = "number of CSs",title = "SuSiE-topPC") +
+# x <- factor(methyl_cpg_assoc$variant_id)
+# cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
+#                              function (x) length(unique(x)))
+# rm(x)
+nodup_cs <- names(which(table(methyl_snps_fsusie_nodup$cs) > 0))
+methyl_cpg_fsusie_nodup <- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
+cpgs_per_snp_fsusie <-
+  with(methyl_cpg_fsusie_nodup,
+       tapply(ID,cs,function (x) length(unique(x))))
+pdat1 <- data.frame(x = cpgs_per_snp_assoc)
+pdat2 <- data.frame(x = cpgs_per_snp_fsusie)
+pdat1 <- subset(pdat1,x <= 25)
+pdat2 <- subset(pdat2,x <= 250)
+p1 <- ggplot(pdat1,aes(x = x)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 25) +
+  labs(x = "number of CpGs",y = "number of SNPs",
+       title = "SNP-CpG association tests") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
-p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
-  geom_histogram(stat = "count",color = "white",fill = "darkblue",
-                 width = 0.65) +
-  labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
+p2 <- ggplot(pdat2,aes(x = x)) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 25) +
+  labs(x = "number of CpGs",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 print(plot_grid(p1,p2,nrow = 1,ncol = 2))
