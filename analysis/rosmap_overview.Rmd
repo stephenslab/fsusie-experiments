@@ -256,16 +256,21 @@ create_cs_maps <- function (info_df) {
 }
 ```
 
-Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
+Now let's use this function to flag and remove the "duplicate" CSs.
 
-```{r cs-sizes-methyl, fig.height=2, fig.width=4, message=FALSE, warning=FALSE}
-bins <- c(0,1,2,5,10,20,Inf)
+```{r remove-duplicated-cs-methyl, message=FALSE}
 root_cs_susie  <- create_cs_maps(methyl_snps_susie)$root
 root_cs_fsusie <- create_cs_maps(methyl_snps_fsusie)$root
 methyl_snps_susie_nodup  <- subset(methyl_snps_susie,
                                    is.element(cs,root_cs_susie))
 methyl_snps_fsusie_nodup <- subset(methyl_snps_fsusie,
                                    is.element(cs,root_cs_fsusie))
+```
+
+Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
+
+```{r cs-sizes-methyl, fig.height=2, fig.width=4, warning=FALSE}
+bins <- c(0,1,2,5,10,20,Inf)
 cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
 cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)
