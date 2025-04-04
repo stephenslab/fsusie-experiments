@@ -1,6 +1,52 @@
-rm(list=ls(
-  
-))
+library(data.table)
+library(dplyr)
+library(magrittr)
+library(ggplot2)
+library(ggrepel)
+library(cowplot)
+source("get_gene_annotations.R")
+source("interpolate_effect_estimates.R")
+load("../../outputs/CD2AP_obj.RData")
+gene_file <-
+  file.path("../../data/genome_annotations",
+    "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
+genes <- get_gene_annotations(gene_file)
+
+pos0 <- 47.00e6
+pos1 <- 47.75e6
+# key_marker <- 207.577223
+
+# The top panel shows the Alzheimer's Disease (AD) association
+# p-values.
+pdat1 <- as.data.frame(obj_plot$pdat)
+pdat1 <- subset(pdat1,
+                study == "AD_Bellenguez_2022" &
+                pos >= pos0 &
+                pos <= pos1)
+pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)")]
+pdat1 <- transform(pdat1,pos = pos/1e6)
+# > nrow(subset(pdat1,CS))
+# 34
+names(pdat1) <- c("id","pos","CS","pval")
+ids <- pdat1$id
+ids[] <- NA
+# ids[pdat1$id == "chr1:207510847:T:G"] <- "rs12037841"
+# pdat1$id <- ids
+p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
+  geom_point(size = 0.75) +
+  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  # geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+  #                 min.segment.length = 0,max.overlaps = Inf) +
+  scale_color_manual(values = c("black","dodgerblue")) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(45,48,0.1),
+                     labels = NULL) +
+  # ylim(0,45) +
+  labs(x = "",y = "AD") + 
+  theme_cowplot(font_size = 9)
+
+stop()
+
 library(ggplot2)
 library(tidyr)
 library(AnnotationHub)
