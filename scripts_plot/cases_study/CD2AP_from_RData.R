@@ -1,6 +1,7 @@
 # Create a "zoom-in" plot for the CD2AP locus.
 #
-# NOTE: download CD2AP_obj.RData from
+# NOTE: download CD2AP_obj.RData and ROSMAP_mQTL.chr6_44880827_48309905.
+# fsusie_mixture_normal_top_pc_weights.input_data_1.rds from
 # https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
 library(data.table)
 library(dplyr)
@@ -10,15 +11,16 @@ library(ggrepel)
 library(cowplot)
 source("get_gene_annotations.R")
 source("interpolate_effect_estimates.R")
-load("../../outputs/CD2AP_obj.RData")
 gene_file <-
   file.path("../../data/genome_annotations",
     "Homo_sapiens.GRCh38.103.chr.reformatted.collapse_only.gene.gtf.gz")
 genes <- get_gene_annotations(gene_file)
+raw_dat <- readRDS("../../outputs/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.input_data_1.rds")
+load("../../outputs/CD2AP_obj.RData")
 
-pos0 <- 47.30e6
-pos1 <- 47.75e6
-# key_marker <- 207.577223
+pos0 <- 47.375e6
+pos1 <- 47.725e6
+key_marker <- 47472829/1e6
 
 # The top panel shows the Alzheimer's Disease (AD) association
 # p-values.
@@ -34,17 +36,19 @@ pdat1 <- transform(pdat1,pos = pos/1e6)
 names(pdat1) <- c("id","pos","CS","pval")
 ids <- pdat1$id
 ids[] <- NA
-# ids[pdat1$id == "chr1:207510847:T:G"] <- "rs12037841"
-# pdat1$id <- ids
+ids[pdat1$id == "chr6:47472829:C:A"] <- "rs9369695"
+ids[pdat1$id == "chr6:47615928:C:T"] <- "rs12195738"
+pdat1$id <- ids
 p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
-  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
-  # geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
-  #                 min.segment.length = 0,max.overlaps = Inf) +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("black","dodgerblue")) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1)) +
-  # ylim(0,45) +
+                     breaks = seq(45,48,0.05),
+                     labels = NULL) +
+  ylim(0,15) +
   labs(x = "",y = "AD") + 
   theme_cowplot(font_size = 9)
 
@@ -62,18 +66,22 @@ names(pdat2) <- c("id","pos","CS","pval")
 pdat2 <- transform(pdat2,
                    pos = pos/1e6,
                    CS  = factor(CS))
-# ids <- pdat2$id
-# ids[] <- NA
-# ids[pdat2$id == "chr1:207577223:T:C"] <- "rs679515"
-# pdat2$id <- ids
+# > nrow(subset(pdat2,CS == 1))
+# 80
+ids <- pdat2$id
+ids[] <- NA
+ids[pdat2$id == "chr6:47472829:C:A"] <- "rs9369695"
+pdat2$id <- ids
 p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   geom_point(size = 0.75) +
-  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_color_manual(values = c("limegreen","gold"),na.value = "black") +
-  # geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
-  #                 min.segment.length = 0,max.overlaps = Inf) +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1)) +
+                     breaks = seq(45,48,0.05),
+                     labels = NULL) +
+  ylim(0,25) +
   labs(x = "",y = "CD2AP eQTL") + 
   theme_cowplot(font_size = 9)
 
@@ -92,19 +100,28 @@ for (i in 1:n) {
 }
 pdat3 <- subset(pdat3,pos >= pos0 & pos <= pos1)
 pdat3 <- transform(pdat3,pos = pos/1e6)
-# pdat3[c("chr1:207577223:T:C",
-#         "chr1:207598421:CT:CTT",
-#         "chr1:207619376:CAAA:CAA"),"id"] <-
-#   c("rs679515","rs1168807665","rs869302047")
+# > subset(pdat3,!is.na(cs))
+#                     id   pos    pip cs
+# chr6:47405566:G:A <NA> 47.41 0.5000 16
+# chr6:47405711:A:G <NA> 47.41 0.5000 16
+# chr6:47472829:C:A <NA> 47.47 0.9645 13
+# chr6:47664375:T:C <NA> 47.66 0.3333  8
+# chr6:47664664:A:T <NA> 47.66 0.3333  8
+# chr6:47665074:C:T <NA> 47.67 0.3333  8
+pdat3[c("chr6:47405566:G:A",
+        "chr6:47472829:C:A",
+        "chr6:47664375:T:C"),"id"] <-
+    c("rs4715009","rs9369695","rs5013495")
 p3 <- ggplot(pdat3,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
-  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
-  # geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
-  #                 min.segment.length = 0,max.overlaps = Inf) +
-  # scale_color_manual(values = c("tomato","darkorange"),na.value = "black") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+                  min.segment.length = 0,max.overlaps = Inf) +
+  scale_color_manual(values = c("magenta","darkorange","darkviolet"),
+                     na.value = "black") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1)) +
-  # ylim(0,0.4) +
+                     breaks = seq(45,48,0.05),
+                     labels = NULL) +
   labs(x = "",y = "mSNP PIP") + 
   theme_cowplot(font_size = 9)
 
@@ -137,37 +154,38 @@ p4 <- ggplot() +
   geom_point(data = pdat4$zero_effects,
              mapping = aes(x = pos,y = y),
              color = "dodgerblue",size = 0.75) +
-  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1)) +
-  labs(x = "",y = "effect") +
+                     breaks = seq(45,48,0.05),
+                     labels = NULL) +
+  labs(x = "",y = "effect of A allele") +
   theme_cowplot(font_size = 9)
 
 # The fifth panel shows the raw data.
-pdat5 <- obj_plot$count_df
-names(pdat5) <- c("AA","AG","GG","pos")
-pdat5 <- subset(pdat6,pos >= pos0 & pos <= pos1)
-rows1 <- with(pdat6,which(pmax(AA,AG,GG) >= 5))
-rows2 <- with(pdat6,which(pmax(AA,AG,GG) < 5))
-rows2 <- sample(rows2,5000)
-rows  <- c(rows1,rows2)
-pdat5 <- pdat6[rows,]
-pdat5 <- transform(pdat6,pos = pos/1e6)
-pdat5 <- melt(pdat6,id.vars = "pos",variable.name = "genotype",
-              value.name = "count")
-pdat5 <- transform(pdat6,genotype = factor(genotype))
-rows  <- order(pdat6$genotype,decreasing = TRUE)
-pdat5 <- pdat6[rows,]
-p6 <- ggplot(pdat6,aes(x = pos,y = count,color = genotype)) +
-  geom_point(size = 0.35) +
-  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
-  scale_color_manual(values = c("darkblue","darkviolet","darkorange")) +
-  scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(207,208,0.05),
-                     labels = NULL) +
-  ylim(2,24) +
-  labs(x = "") + 
-  theme_cowplot(font_size = 9)
+## pdat5 <- obj_plot$count_df
+## names(pdat5) <- c("AA","AG","GG","pos")
+## pdat5 <- subset(pdat6,pos >= pos0 & pos <= pos1)
+## rows1 <- with(pdat6,which(pmax(AA,AG,GG) >= 5))
+## rows2 <- with(pdat6,which(pmax(AA,AG,GG) < 5))
+## rows2 <- sample(rows2,5000)
+## rows  <- c(rows1,rows2)
+## pdat5 <- pdat6[rows,]
+## pdat5 <- transform(pdat6,pos = pos/1e6)
+## pdat5 <- melt(pdat6,id.vars = "pos",variable.name = "genotype",
+##               value.name = "count")
+## pdat5 <- transform(pdat6,genotype = factor(genotype))
+## rows  <- order(pdat6$genotype,decreasing = TRUE)
+## pdat5 <- pdat6[rows,]
+## p6 <- ggplot(pdat6,aes(x = pos,y = count,color = genotype)) +
+##   geom_point(size = 0.35) +
+##   # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+##   scale_color_manual(values = c("darkblue","darkviolet","darkorange")) +
+##   scale_x_continuous(limits = c(pos0,pos1)/1e6,
+##                      breaks = seq(207,208,0.05),
+##                      labels = NULL) +
+##   ylim(2,24) +
+##   labs(x = "") + 
+##   theme_cowplot(font_size = 9)
 
 # The sixth panel shows the genes.
 pdat6 <- subset(genes,
@@ -188,9 +206,9 @@ p6 <- ggplot(pdat6,aes(x = start,xend = end,y = y,yend = y,
              shape = 18) +
   geom_text(color = "black",size = 2.25,fontface = "italic",
             hjust = "right",nudge_x = -0.003) +
-  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1)) +
+                     breaks = seq(45,48,0.05)) +
   scale_y_continuous(limits = c(-0.1,1.1),breaks = NULL) +
   labs(x = "base-pair position on chromosome 6 (Mb)",y = "") + 
   theme_cowplot(font_size = 9)

@@ -258,7 +258,7 @@ create_cs_maps <- function (info_df) {
 
 Now let's use this function to flag and remove the "duplicate" CSs.
 
-```{r remove-duplicated-cs-methyl, message=FALSE}
+```{r remove-duplicated-cs-methyl, message=FALSE, cache=TRUE}
 root_cs_susie  <- create_cs_maps(methyl_snps_susie)$root
 root_cs_fsusie <- create_cs_maps(methyl_snps_fsusie)$root
 methyl_snps_susie_nodup  <- subset(methyl_snps_susie,
