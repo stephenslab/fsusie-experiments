@@ -162,7 +162,7 @@ p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
-  scale_color_manual(values = c("tomato","darkorange"),na.value = "black") +
+  scale_color_manual(values = c("tomato","cyan"),na.value = "black") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
                      labels = NULL) +
@@ -203,7 +203,7 @@ p5 <- ggplot() +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
                      labels = NULL) +
-  labs(x = "",y = "effect") +
+  labs(x = "",y = "effect of C allele") +
   theme_cowplot(font_size = 9)
 
 # The sixth panel shows the raw data.
