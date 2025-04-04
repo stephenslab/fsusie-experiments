@@ -2,6 +2,10 @@
 #
 # NOTE: download CD2AP_obj.RData from
 # https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
+#
+# SEE ALSO:
+# scripts_plot/cases_study/CD2AP_from_RData.R
+#
 library(data.table)
 library(ggplot2)
 library(ggrepel)

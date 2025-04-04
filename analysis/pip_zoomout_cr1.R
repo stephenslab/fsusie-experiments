@@ -2,12 +2,17 @@
 #
 # NOTE: download CR1_CR2_obj.RData from
 # https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
+#
+# SEE ALSO:
+# scripts_plot/cases_study/CR1_CR2_from_RData.R
+#
 library(data.table)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
 set.seed(1)
-zoomin_region <- c(207.4,207.7)
+zoomin_region <- c(207.45,207.75)
+
 # Colors are from colorbrewer2.org
 cs_colors <- c("dodgerblue","darkorange","magenta","limegreen","gold")
 load("../outputs/CR1_CR2_obj.RData")
