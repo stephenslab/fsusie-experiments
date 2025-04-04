@@ -14,12 +14,14 @@ will first need to download the fine-mapping outputs. They can be
 downloaded from [here][box-download-link]. Once you have downloaded
 the files, copy them to the "outputs" subdirectory.
 
-Load some packges used in the code below:
+Load some packges and custom functions used in the code below:
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
+library(dplyr)
 library(ggplot2)
 library(cowplot)
+source("../code/merge_cs_sets.R")
 ```
 
 This is a function I use to Extract the gene annotations from the GTF
@@ -232,40 +234,38 @@ print(p)
 ggsave("cs_per_tad_scatterplot_methyl.pdf",p,height = 3,width = 4)
 ```
 
-For plots counting CSs across the genome, we need to tackle the issue
+For plots counting CSs across the genome, I need to address the issue
 that the same CSs are sometimes discovered in overlapping TADs. To
 this end, this function removes CSs so that no two CSs share the same
 SNP:
 
-```{r remove-cs-duplicates}
-remove_cs_duplicates <- function (dat) {
-  cs_labels <- levels(dat$cs)
-  n   <- nlevels(dat$cs)
-  dat <- transform(dat,cs = as.integer(cs))
-  x   <- factor(dat$variant_id)
-  res <- tapply(dat$cs,x,function (x) length(unique(x)))
-  ids <- names(res)[which(res > 1)]
-  dat$flag <- 0
-  for (id in ids) {
-    rows <- which(dat$variant_id == id)
-    i    <- which.min(dat[rows,"cs"])
-    rows <- rows[-i]
-    dat[rows,"flag"] <- 1
-  }
-  dat <- subset(dat,flag == 0)
-  dat$flag <- NULL
-  dat <- transform(dat,cs = factor(cs,1:n))
-  levels(dat$cs) <- cs_labels
-  return(dat)
+```{r create-cs-maps}
+create_cs_maps <- function (info_df) {
+  info_df %>% 
+    arrange(cs) %>%
+    group_by(variant_id) %>%
+    mutate(cs_set = list(sort(unique(cs))),
+           cs_set = sapply(cs_set,paste,collapse = ",")) %>%
+    ungroup %>%
+    count(cs,cs_set) %>%
+    group_by(cs) %>%
+    summarize(
+	  cs_set = paste(sort(unique(unlist(strsplit(cs_set,",")))),
+	                 collapse = ","),.groups = "drop") %>%
+    merge_cs_sets
 }
 ```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
 
-```{r cs-sizes-methyl, fig.height=2, fig.width=4, warning=FALSE}
+```{r cs-sizes-methyl, fig.height=2, fig.width=4, message=FALSE, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-methyl_snps_susie_nodup  <- remove_cs_duplicates(methyl_snps_susie)
-methyl_snps_fsusie_nodup <- remove_cs_duplicates(methyl_snps_fsusie)
+root_cs_susie  <- create_cs_maps(methyl_snps_susie)$root
+root_cs_fsusie <- create_cs_maps(methyl_snps_fsusie)$root
+methyl_snps_susie_nodup  <- subset(methyl_snps_susie,
+                                   is.element(cs,root_cs_susie))
+methyl_snps_fsusie_nodup <- subset(methyl_snps_fsusie,
+                                   is.element(cs,root_cs_fsusie))
 cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
 cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)

@@ -186,7 +186,7 @@ pdat5 <- transform(pdat5,
                    low    = -up,
                    up     = -low,
                    y      = 0)
-pdat5 <- list(zero_effects = subset(pdat5,low <= 0 & up >= 0),
+pdat5 <- list(zero_effects    = subset(pdat5,low <= 0 & up >= 0),
               nonzero_effects = subset(pdat5,!(low <= 0 & up >= 0)))
 p5 <- ggplot() +
   geom_hline(yintercept = 0,linetype = "dotted") +
