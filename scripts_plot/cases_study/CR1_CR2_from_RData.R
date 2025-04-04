@@ -1,3 +1,7 @@
+# Create a "zoom-in" plot for the CR1/CR2 locus.
+#
+# NOTE: download CR1_CR2_obj.RData from
+# https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
 library(data.table)
 library(dplyr)
 library(magrittr)

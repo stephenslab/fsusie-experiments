@@ -1,3 +1,7 @@
+# Create a "zoom-in" plot for the CD2AP locus.
+#
+# NOTE: download CD2AP_obj.RData from
+# https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
 library(data.table)
 library(dplyr)
 library(magrittr)
@@ -39,11 +43,43 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   #                 min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("black","dodgerblue")) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(45,48,0.1),
-                     labels = NULL) +
+                     breaks = seq(45,48,0.1)) +
   # ylim(0,45) +
   labs(x = "",y = "AD") + 
   theme_cowplot(font_size = 9)
+
+# The second panel shows the CD2Ap eQTL p-values.
+pdat2 <- as.data.frame(obj_plot$pdat)
+pdat2 <- subset(pdat2,
+                region == "CD2AP" &
+                study == "Exc_DeJager_eQTL" &
+                pos >= pos0 &
+                pos <= pos1)
+pdat2$CS <- as.numeric(NA)
+pdat2[which(pdat2$CS1),"CS"] <- 1
+pdat2 <- pdat2[c("variant_alternate_id","pos","CS","-log10(P)")]
+names(pdat2) <- c("id","pos","CS","pval")
+pdat2 <- transform(pdat2,
+                   pos = pos/1e6,
+                   CS  = factor(CS))
+# ids <- pdat2$id
+# ids[] <- NA
+# ids[pdat2$id == "chr1:207577223:T:C"] <- "rs679515"
+# pdat2$id <- ids
+p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
+  geom_point(size = 0.75) +
+  # geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
+  scale_color_manual(values = c("limegreen","gold"),na.value = "black") +
+  # geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
+  #                 min.segment.length = 0,max.overlaps = Inf) +
+  scale_x_continuous(limits = c(pos0,pos1)/1e6,
+                     breaks = seq(45,48,0.1)) +
+  labs(x = "",y = "CD2AP eQTL") + 
+  theme_cowplot(font_size = 9)
+
+# Save the full figure to a PDF.
+print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
+# TO DO.
 
 stop()
 
