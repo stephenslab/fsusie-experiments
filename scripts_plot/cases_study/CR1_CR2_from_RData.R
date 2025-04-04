@@ -208,10 +208,10 @@ p5 <- ggplot() +
 
 # The sixth panel shows the raw data.
 pdat6 <- obj_plot$count_df
-names(pdat6) <- c("AA","AG","GG","pos")
+names(pdat6) <- c("TT","CT","CC","pos")
 pdat6 <- subset(pdat6,pos >= pos0 & pos <= pos1)
-rows1 <- with(pdat6,which(pmax(AA,AG,GG) >= 5))
-rows2 <- with(pdat6,which(pmax(AA,AG,GG) < 5))
+rows1 <- with(pdat6,which(pmax(TT,CT,CC) >= 5))
+rows2 <- with(pdat6,which(pmax(TT,CT,CC) < 5))
 rows2 <- sample(rows2,5000)
 rows  <- c(rows1,rows2)
 pdat6 <- pdat6[rows,]
