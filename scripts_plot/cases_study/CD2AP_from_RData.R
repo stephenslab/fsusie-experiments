@@ -50,7 +50,7 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
   labs(x = "",y = "AD") + 
   theme_cowplot(font_size = 9)
 
-# The second panel shows the CD2Ap eQTL p-values.
+# The second panel shows the CD2AP eQTL p-values.
 pdat2 <- as.data.frame(obj_plot$pdat)
 pdat2 <- subset(pdat2,
                 region == "CD2AP" &
@@ -144,7 +144,7 @@ p4 <- ggplot() +
                  mapping = aes(x = pos,ymin = low,ymax = up),
                  color = "dodgerblue") +
   geom_point(data = pdat4$nonzero_effects,
-             mapping = aes(x = pos,y = effect),,
+             mapping = aes(x = pos,y = effect),
              color = "dodgerblue",size = 0.75) +
   geom_point(data = pdat4$zero_effects,
              mapping = aes(x = pos,y = y),

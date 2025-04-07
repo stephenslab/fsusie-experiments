@@ -194,7 +194,7 @@ p5 <- ggplot() +
                  mapping = aes(x = pos,ymin = low,ymax = up),
                  color = "dodgerblue") +
   geom_point(data = pdat5$nonzero_effects,
-             mapping = aes(x = pos,y = effect),,
+             mapping = aes(x = pos,y = effect),
              color = "dodgerblue",size = 0.75) +
   geom_point(data = pdat5$zero_effects,
              mapping = aes(x = pos,y = y),
