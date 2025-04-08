@@ -136,10 +136,10 @@ p3 <- ggplot(pdat3,aes(x = pos,y = pval,color = CS,label = id)) +
 # The fourth panel shows the haSNP PIPs.
 ids   <- names(obj_plot$pip_fsusie_obj)
 pdat4 <- data.frame(id  = as.character(NA),
-                   pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
-                   pip = obj_plot$pip_fsusie_obj,
-                   cs  = as.character(NA),
-                   stringsAsFactors = FALSE)
+                    pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
+                    pip = obj_plot$pip_fsusie_obj,
+                    cs  = as.character(NA),
+                    stringsAsFactors = FALSE)
 pdat4 <- transform(pdat4,pos = as.numeric(pos))
 n <- length(obj_plot$cs_fsusie_obj)
 for (i in 1:n) {

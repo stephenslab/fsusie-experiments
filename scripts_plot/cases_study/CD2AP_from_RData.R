@@ -86,10 +86,10 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
 # The third panel shows the mSNP PIPs.
 ids   <- names(obj_plot$fsusie_obj_me$pip)
 pdat3 <- data.frame(id  = as.character(NA),
-                   pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
-                   pip = obj_plot$fsusie_obj_me$pip,
-                   cs  = as.character(NA),
-                   stringsAsFactors = FALSE)
+                    pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
+                    pip = obj_plot$fsusie_obj_me$pip,
+                    cs  = as.character(NA),
+                    stringsAsFactors = FALSE)
 pdat3 <- transform(pdat3,pos = as.numeric(pos))
 n <- length(obj_plot$fsusie_obj_me$sets$cs)
 for (i in 1:n) {
