@@ -16,7 +16,7 @@ gene_file <-
 genes <- get_gene_annotations(gene_file)
 load("../../outputs/CASS4_obj.RData")
 
-pos0 <- 56.35e6
+pos0 <- 56.34e6
 pos1 <- 56.55e6
 key_marker <- 56409008/1e6
 
@@ -47,7 +47,8 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
                   min.segment.length = 0,max.overlaps = Inf) +
   scale_color_manual(values = c("black","dodgerblue")) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
-                     breaks = seq(56,57,0.05)) +
+                     breaks = seq(56,57,0.05),
+                     labels = NULL) +
   ylim(0,12) +
   labs(x = "",y = "AD") + 
   theme_cowplot(font_size = 9)
@@ -102,6 +103,11 @@ pdat3 <- subset(pdat3,pos >= pos0 & pos <= pos1)
 pdat3 <- transform(pdat3,
                    pos = pos/1e6,
                    cs = factor(cs))
+# > subset(pdat3,cs == 4)
+#                      id   pos    pip cs
+# chr20:56348142:G:A <NA> 56.35 0.3318  4
+# chr20:56348706:T:C <NA> 56.35 0.3318  4
+# chr20:56348928:C:T <NA> 56.35 0.3318  4
 # > subset(pdat3,cs == 15)
 #                        id   pos    pip cs
 # chr20:56393188:G:GTA <NA> 56.39 0.8602 15
@@ -112,16 +118,18 @@ pdat3 <- transform(pdat3,
 # > subset(pdat3,cs == 18)
 #                      id   pos    pip cs
 # chr20:56409008:G:C <NA> 56.41 0.9999 18
-pdat3[c("chr20:56393188:G:GTA",
+pdat3[c("chr20:56348142:G:A",
+        "chr20:56393188:G:GTA",
         "chr20:56379506:T:C",
         "chr20:56409008:G:C"),"id"] <-
-    c("rs76759019","rs112535545","rs1884913")
+    c("rs8118732","rs76759019","rs112535545","rs1884913")
 p3 <- ggplot(pdat3,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   geom_text_repel(size = 2.25,color = "dimgray",segment.color = "dimgray",
                   min.segment.length = 0,max.overlaps = Inf) +
-  scale_color_manual(values = c("magenta","darkorange","darkviolet"),
+  scale_color_manual(values = c("magenta","darkorange","forestgreen",
+                                "darkviolet"),
                      na.value = "black") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(56,57,0.05),
