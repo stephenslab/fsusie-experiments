@@ -30,6 +30,7 @@ pdat1 <- subset(pdat1,
 pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)","z")]
 pdat1 <- transform(pdat1,pos = pos/1e6)
 names(pdat1) <- c("id","pos","CS","pval","z")
+AD_snps <- subset(pdat1,CS)$id
 # > subset(pdat1,id == "chr6:47472829:C:A")
 #                id   pos   CS  pval     z
 # chr6:47472829:C:A 47.47 TRUE 11.22 6.879
@@ -69,8 +70,11 @@ names(pdat2) <- c("id","pos","CS","pval")
 pdat2 <- transform(pdat2,
                    pos = pos/1e6,
                    CS  = factor(CS))
+CD2AP_snps <- subset(pdat2,!is.na(CS))$id
 # > nrow(subset(pdat2,CS == 1))
 # 80
+# > length(intersect(AD_snps,CD2AP_snps))
+# 32
 ids <- pdat2$id
 ids[] <- NA
 ids[pdat2$id == "chr6:47472829:C:A"] <- "rs9369695"

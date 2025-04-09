@@ -74,10 +74,8 @@ pdat2 <- transform(pdat2,
 CASS4_snps <- subset(pdat2,!is.na(CS))$id
 # > nrow(subset(pdat2,CS == 0))
 # 11
-# 
 # > length(intersect(AD_snps,CASS4_snps))
 # 0
-stop()
 ids <- pdat2$id
 ids[] <- NA
 ids[pdat2$id == "chr20:56438160:A:G"] <- "rs6014730"
