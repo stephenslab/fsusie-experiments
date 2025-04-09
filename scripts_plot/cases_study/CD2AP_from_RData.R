@@ -89,7 +89,7 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
                      breaks = seq(45,48,0.05),
                      labels = NULL) +
   ylim(0,15) +
-  labs(x = "",y = "CD2AP eQTL in mic") + 
+  labs(x = "",y = "CD2AP eQTL in microglia") + 
   theme_cowplot(font_size = 9)
 
 # The third panel shows the mSNP PIPs.
