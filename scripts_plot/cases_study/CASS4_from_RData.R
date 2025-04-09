@@ -30,9 +30,13 @@ pdat1 <- transform(pdat1,
 pdat1 <- subset(pdat1,
                 pos >= pos0 &
                 pos <= pos1)
-pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","pval")]
+pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","pval","z")]
 pdat1 <- transform(pdat1,pos = pos/1e6)
-names(pdat1) <- c("id","pos","CS","pval")
+names(pdat1) <- c("id","pos","CS","pval","z")
+AD_snps <- subset(pdat1,CS)$id
+# > subset(pdat1,id == "chr20:56409008:G:C")
+#                 id   pos   CS  pval
+# chr20:56409008:G:C 56.41 TRUE 8.053
 # > nrow(subset(pdat1,CS))
 # 13
 ids <- pdat1$id
@@ -67,8 +71,13 @@ names(pdat2) <- c("id","pos","CS","pval")
 pdat2 <- transform(pdat2,
                    pos = pos/1e6,
                    CS  = factor(CS))
+CASS4_snps <- subset(pdat2,!is.na(CS))$id
 # > nrow(subset(pdat2,CS == 0))
 # 11
+# 
+# > length(intersect(AD_snps,CASS4_snps))
+# 0
+stop()
 ids <- pdat2$id
 ids[] <- NA
 ids[pdat2$id == "chr20:56438160:A:G"] <- "rs6014730"
@@ -83,7 +92,7 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(56,57,0.05),
                      labels = NULL) +
-  labs(x = "",y = "CASS4 eQTL") + 
+  labs(x = "",y = "CASS4 eQTL in DLPFC") + 
   theme_cowplot(font_size = 9)
 
 # The third panel shows the mSNP PIPs.
