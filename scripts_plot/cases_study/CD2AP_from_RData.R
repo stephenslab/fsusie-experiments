@@ -27,11 +27,14 @@ pdat1 <- subset(pdat1,
                 study == "AD_Bellenguez_2022" &
                 pos >= pos0 &
                 pos <= pos1)
-pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)")]
+pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)","z")]
 pdat1 <- transform(pdat1,pos = pos/1e6)
+names(pdat1) <- c("id","pos","CS","pval","z")
+# > subset(pdat1,id == "chr6:47472829:C:A")
+#                id   pos   CS  pval     z
+# chr6:47472829:C:A 47.47 TRUE 11.22 6.879
 # > nrow(subset(pdat1,CS))
 # 34
-names(pdat1) <- c("id","pos","CS","pval")
 ids <- pdat1$id
 ids[] <- NA
 ids[pdat1$id == "chr6:47472829:C:A"] <- "rs9369695"
@@ -54,9 +57,11 @@ p1 <- ggplot(pdat1,aes(x = pos,y = pval,color = CS,label = id)) +
 pdat2 <- as.data.frame(obj_plot$pdat)
 pdat2 <- subset(pdat2,
                 region == "CD2AP" &
-                study == "Exc_DeJager_eQTL" &
+                study == "Mic_DeJager_eQTL" &
                 pos >= pos0 &
                 pos <= pos1)
+# > subset(pdat2,variant_alternate_id == "chr6:47472829:C:A")$z
+# [1] 6.497
 pdat2$CS <- as.numeric(NA)
 pdat2[which(pdat2$CS1),"CS"] <- 1
 pdat2 <- pdat2[c("variant_alternate_id","pos","CS","-log10(P)")]
@@ -79,8 +84,8 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(45,48,0.05),
                      labels = NULL) +
-  ylim(0,25) +
-  labs(x = "",y = "CD2AP eQTL") + 
+  ylim(0,15) +
+  labs(x = "",y = "CD2AP eQTL in mic") + 
   theme_cowplot(font_size = 9)
 
 # The third panel shows the mSNP PIPs.
