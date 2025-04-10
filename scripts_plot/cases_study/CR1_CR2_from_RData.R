@@ -30,6 +30,9 @@ pdat1 <- subset(pdat1,
 pdat1 <- pdat1[c("variant_alternate_id","pos","CS1","-log10(P)")]
 pdat1 <- transform(pdat1,pos = pos/1e6)
 names(pdat1) <- c("id","pos","CS","pval")
+# subset(pdat1,id == "chr1:207577223:T:C")
+#                 id   pos   CS  pval
+# chr1:207577223:T:C 207.6 TRUE 32.25
 ids <- pdat1$id
 ids[] <- NA
 ids[pdat1$id == "chr1:207510847:T:G"] <- "rs12037841"
@@ -68,11 +71,14 @@ pdat2 <- subset(pdat2,
 pdat2$CS <- as.numeric(NA)
 pdat2[which(pdat2$CS1),"CS"] <- 1
 pdat2[which(pdat2$CS3),"CS"] <- 3
-pdat2 <- pdat2[c("variant_alternate_id","pos","CS","-log10(P)")]
-names(pdat2) <- c("id","pos","CS","pval")
+pdat2 <- pdat2[c("variant_alternate_id","pos","CS","-log10(P)","z")]
+names(pdat2) <- c("id","pos","CS","pval","z")
 pdat2 <- transform(pdat2,
                    pos = pos/1e6,
                    CS  = factor(CS))
+# > subset(pdat2,id == "chr1:207577223:T:C")
+#                 id   pos CS  pval      z
+# chr1:207577223:T:C 207.6  1 64.89 -17.11
 #
 # > subset(pdat2,CS == 1)
 #                 id   pos   CS  pval
@@ -102,7 +108,7 @@ p2 <- ggplot(pdat2,aes(x = pos,y = pval,color = CS,label = id)) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
                      labels = NULL) +
-  labs(x = "",y = "CR1 eQTL") + 
+  labs(x = "",y = "CR1 eQTL in DLPFC") + 
   theme_cowplot(font_size = 9)
 
 # The third panel shows the CR2 eQTL p-values.
@@ -112,9 +118,12 @@ pdat3 <- subset(pdat3,
                 region == "CR2" &
                 pos >= pos0 &
                 pos <= pos1)
-pdat3 <- pdat3[c("variant_alternate_id","pos","CS1","-log10(P)")]
-names(pdat3) <- c("id","pos","CS","pval")
+pdat3 <- pdat3[c("variant_alternate_id","pos","CS1","-log10(P)","z")]
+names(pdat3) <- c("id","pos","CS","pval","z")
 pdat3 <- transform(pdat3,pos = pos/1e6)
+# > subset(pdat3,id == "chr1:207577223:T:C")
+#                 id   pos   CS  pval      z
+# chr1:207577223:T:C 207.6 TRUE 9.661 -6.348
 # > nrow(subset(pdat3,CS))
 # 20
 ids <- pdat3$id
@@ -130,7 +139,7 @@ p3 <- ggplot(pdat3,aes(x = pos,y = pval,color = CS,label = id)) +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
                      labels = NULL) +
-  labs(x = "",y = "CR2 eQTL") + 
+  labs(x = "",y = "CR2 eQTL in DLPFC") + 
   theme_cowplot(font_size = 9)
 
 # The fourth panel shows the haSNP PIPs.
@@ -181,11 +190,8 @@ pdat5 <- subset(pdat5,
                 pos >= pos0 &
                 pos <= pos1)
 pdat5 <- transform(pdat5,
-                   pos    = pos/1e6,
-                   effect = -effect,
-                   low    = -up,
-                   up     = -low,
-                   y      = 0)
+                   pos = pos/1e6,
+                   y   = 0)
 pdat5 <- list(zero_effects    = subset(pdat5,low <= 0 & up >= 0),
               nonzero_effects = subset(pdat5,!(low <= 0 & up >= 0)))
 p5 <- ggplot() +
@@ -195,10 +201,10 @@ p5 <- ggplot() +
                  color = "dodgerblue") +
   geom_point(data = pdat5$nonzero_effects,
              mapping = aes(x = pos,y = effect),
-             color = "dodgerblue",size = 0.75) +
+             shape = 21,color = "white",fill = "dodgerblue",size = 1.1) +
   geom_point(data = pdat5$zero_effects,
              mapping = aes(x = pos,y = y),
-             color = "dodgerblue",size = 0.75) +
+             shape = 21,color = "white",fill = "dodgerblue",size = 1.1) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
   scale_x_continuous(limits = c(pos0,pos1)/1e6,
                      breaks = seq(207,208,0.05),
@@ -208,7 +214,7 @@ p5 <- ggplot() +
 
 # The sixth panel shows the raw data.
 pdat6 <- obj_plot$count_df
-names(pdat6) <- c("TT","CT","CC","pos")
+names(pdat6) <- c("CC","CT","TT","pos")
 pdat6 <- subset(pdat6,pos >= pos0 & pos <= pos1)
 rows1 <- with(pdat6,which(pmax(TT,CT,CC) >= 5))
 rows2 <- with(pdat6,which(pmax(TT,CT,CC) < 5))
