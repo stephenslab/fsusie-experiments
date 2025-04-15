@@ -157,6 +157,8 @@ for (i in 1:n) {
 }
 pdat4 <- subset(pdat4,pos >= pos0 & pos <= pos1)
 pdat4 <- transform(pdat4,pos = pos/1e6)
+# > nrow(subset(pdat4,cs == 5))
+# 15
 # > subset(pdat4,cs == 5 & pip > 0.05)
 #                           id   pos    pip cs
 # chr1:207577223:T:C      <NA> 207.6 0.1375  5
