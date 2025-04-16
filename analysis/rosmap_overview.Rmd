@@ -271,6 +271,8 @@ Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
 
 ```{r cs-sizes-methyl, fig.height=2, fig.width=4, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
+methyl_snps_susie_nodup <- transform(methyl_snps_susie_nodup,cs = factor(cs))
+methyl_snps_fsusie_nodup <- transform(methyl_snps_fsusie_nodup,cs = factor(cs))
 cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
 cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)
@@ -286,6 +288,7 @@ p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
 p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
   geom_histogram(stat = "count",color = "white",fill = "darkblue",
                  width = 0.65) +
+  scale_y_continuous(breaks = seq(0,1e4,2000)) +			 
   labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
