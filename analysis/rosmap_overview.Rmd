@@ -649,20 +649,20 @@ ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
 Flag and remove the "duplicate" CSs.
 
 ```{r remove-duplicated-cs-ha, message=FALSE, cache=TRUE}
-root_cs_susie  <- create_cs_maps(methyl_snps_susie)$root
-root_cs_fsusie <- create_cs_maps(methyl_snps_fsusie)$root
-methyl_snps_susie_nodup  <- subset(methyl_snps_susie,
-                                   is.element(cs,root_cs_susie))
-methyl_snps_fsusie_nodup <- subset(methyl_snps_fsusie,
-                                   is.element(cs,root_cs_fsusie))
+root_cs_susie        <- create_cs_maps(ha_snps_susie)$root
+root_cs_fsusie       <- create_cs_maps(ha_snps_fsusie)$root
+ha_snps_susie_nodup  <- subset(ha_snps_susie,is.element(cs,root_cs_susie))
+ha_snps_fsusie_nodup <- subset(ha_snps_fsusie,is.element(cs,root_cs_fsusie))
 ```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
 
 ```{r cs-sizes-ha, fig.height=2, fig.width=4, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-cs_size_susie  <- as.numeric(table(ha_snps_susie$cs))
-cs_size_fsusie <- as.numeric(table(ha_snps_fsusie$cs))
+ha_snps_susie_nodup <- transform(ha_snps_susie_nodup,cs = factor(cs))
+ha_snps_fsusie_nodup <- transform(ha_snps_fsusie_nodup,cs = factor(cs))
+cs_size_susie  <- as.numeric(table(ha_snps_susie_nodup$cs))
+cs_size_fsusie <- as.numeric(table(ha_snps_fsusie_nodup$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)
 cs_size_fsusie <- cut(cs_size_fsusie,bins)
 levels(cs_size_susie) <- bins[-1]
