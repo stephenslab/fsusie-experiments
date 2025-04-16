@@ -532,9 +532,6 @@ x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
-nodup_cs <- names(which(table(methyl_snps_fsusie_nodup$cs) > 0))
-methyl_cpg_fsusie_nodup <- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
-methyl_cpg_fsusie_nodup <- transform(methyl_cpg_fsusie_nodup,cs = factor(cs))
 cpgs_per_snp_fsusie <-
   with(methyl_cpg_fsusie_nodup,
        tapply(ID,cs,function (x) length(unique(x))))
@@ -647,6 +644,17 @@ p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
 
 ```{r compare-num-cs-per-tad-ha-ggsave, echo=FALSE, warning=FALSE}
 ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
+```
+
+Flag and remove the "duplicate" CSs.
+
+```{r remove-duplicated-cs-ha, message=FALSE, cache=TRUE}
+root_cs_susie  <- create_cs_maps(methyl_snps_susie)$root
+root_cs_fsusie <- create_cs_maps(methyl_snps_fsusie)$root
+methyl_snps_susie_nodup  <- subset(methyl_snps_susie,
+                                   is.element(cs,root_cs_susie))
+methyl_snps_fsusie_nodup <- subset(methyl_snps_fsusie,
+                                   is.element(cs,root_cs_fsusie))
 ```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
