@@ -302,13 +302,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-01
+<strong>Last updated:</strong> 2025-04-16
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 4
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 3
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -332,164 +332,35 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>Environment:</strong> objects present
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongobjectspresent"
-class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>
-The global environment had objects present when the code in the R
-Markdown file was run. These objects can affect the analysis in your R
-Markdown file in unknown ways. For reproduciblity it’s best to always
-run the code in an empty environment. Use <code>wflow_publish</code> or
-<code>wflow_build</code> to ensure that the code is always run in an
-empty environment.
-</p>
-<p>
-The following objects were defined in the global environment when these
-results were created:
-</p>
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th style="text-align:left;">
-Name
-</th>
-<th style="text-align:left;">
-Class
-</th>
-<th style="text-align:left;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-gene_file
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-232 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-genes
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-2.9 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-get_gene_annotations
-</td>
-<td style="text-align:left;">
-function
-</td>
-<td style="text-align:left;">
-216.3 Kb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-methyl_cpg_assoc_file
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-152 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-methyl_snps_fsusie
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-43.7 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-methyl_snps_fsusie_file
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-152 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-methyl_snps_susie
-</td>
-<td style="text-align:left;">
-data.frame
-</td>
-<td style="text-align:left;">
-51.2 Mb
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-methyl_snps_susie_file
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-168 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-read_enrichment_results
-</td>
-<td style="text-align:left;">
-function
-</td>
-<td style="text-align:left;">
-64.4 Kb
-</td>
-</tr>
-</tbody>
-</table>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
@@ -544,6 +415,9 @@ The following chunks had caches available:
 <li>
 get-cpgs-per-tad-assoc
 </li>
+<li>
+remove-duplicated-cs-methyl
+</li>
 </ul>
 <p>To ensure reproducibility of the results, delete the cache directory
 <code>rosmap_overview_cache</code> and re-run the analysis. To have
@@ -571,15 +445,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree96a5a4030d6c9f5049a952cd4538738a97ef7ffatargetblank96a5a40a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree14e44873b58948fbaf51301dc25b5edaee71cc2dtargetblank14e4487a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/96a5a4030d6c9f5049a952cd4538738a97ef7ffa" target="_blank">96a5a40</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/14e44873b58948fbaf51301dc25b5edaee71cc2d" target="_blank">14e4487</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree96a5a4030d6c9f5049a952cd4538738a97ef7ffatargetblank96a5a40a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree14e44873b58948fbaf51301dc25b5edaee71cc2dtargetblank14e4487a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -589,7 +463,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/96a5a4030d6c9f5049a952cd4538738a97ef7ffa" target="_blank">96a5a40</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/14e44873b58948fbaf51301dc25b5edaee71cc2d" target="_blank">14e4487</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -604,10 +478,12 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
+    Untracked:  .DS_Store
     Untracked:  analysis/rosmap_overview_cache/
     Untracked:  data/analysis_result/Fungen_xQTL.ENSG00000163808.cis_results_db.export.rds
     Untracked:  data/analysis_result/ROSMAP_haQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
     Untracked:  data/analysis_result/ROSMAP_mQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
+    Untracked:  outputs/CASS4_obj.RData
     Untracked:  outputs/CD2AP_obj.RData
     Untracked:  outputs/CR1_CR2_obj.RData
     Untracked:  outputs/ROSMAP_haQTL_cs_effect_ha_peak_annotation.tsv.gz
@@ -620,15 +496,6 @@ Untracked files:
     Untracked:  outputs/ROSMAP_mQTL_cs_snp_toppc1_annotation.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_qtl_snp_qval0.05.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_qtl_snp_qval0.05_annotation.tsv.gz
-
-Unstaged changes:
-    Modified:   analysis/rosmap_overview.Rmd
-    Modified:   analysis/temp.R
-    Modified:   analysis/temp2.R
-
-Staged changes:
-    New:        analysis/temp.R
-    New:        analysis/temp2.R
 
 </code></pre>
 <p>
@@ -674,6 +541,164 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/14e44873b58948fbaf51301dc25b5edaee71cc2d/analysis/rosmap_overview.Rmd" target="_blank">14e4487</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+<td>
+Updated the plot in rosmap_overview.Rmd showing num. peaks vs. num. CSs
+for fSusiE H3K27ac results.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/1fd676e4f2f1cf362aaad605b20ee56f1865b6d6/analysis/rosmap_overview.Rmd" target="_blank">1fd676e</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+<td>
+Added step to rosmap_overview analysis to remove duplicate CSs for
+H3K27ac.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/cdc55a21371d4e9349f9092a7d433f0b5642f20d/analysis/rosmap_overview.Rmd" target="_blank">cdc55a2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+<td>
+Fixed histogram showing no. cpgs vs. no. CSs in rosmap_overview.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/2c0d57446fe7bcb5a9e69d56498b5b509f173b51/analysis/rosmap_overview.Rmd" target="_blank">2c0d574</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+<td>
+Small fix to the CS size histograms for the methylation results in
+rosmap_overview.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/e1fe364dc6626e234e44231c8ec657e5e34b7cac/analysis/rosmap_overview.Rmd" target="_blank">e1fe364</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-04
+</td>
+<td>
+I have the CD2AP zoom-in plot mostly done except for the panel showing
+the raw data (beta values).
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/46d0b351bb74d6e04428c15090865c1e6003a996/analysis/rosmap_overview.Rmd" target="_blank">46d0b35</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-04
+</td>
+<td>
+Removed some code in the rosmap_overview.Rmd analysis into a separate
+code chunk.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/9416011b5977235a8c3c1f0e23bec16807f29e13/analysis/rosmap_overview.Rmd" target="_blank">9416011</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-04
+</td>
+<td>
+Added function create_cs_maps() to help remove ‘duplicated’ CSs.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/618cae4fa9aadcbe31f55487e1b478d485770fba/analysis/rosmap_overview.Rmd" target="_blank">618cae4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-03
+</td>
+<td>
+A few fixes to the CR1 eQTL panel.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/618cae4fa9aadcbe31f55487e1b478d485770fba/docs/rosmap_overview.html" target="_blank">618cae4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-03
+</td>
+<td>
+A few fixes to the CR1 eQTL panel.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1290,10 +1315,12 @@ can be downloaded from <a
 href="https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo">here</a>.
 Once you have downloaded the files, copy them to the “outputs”
 subdirectory.</p>
-<p>Load some packges used in the code below:</p>
+<p>Load some packges and custom functions used in the code below:</p>
 <pre class="r"><code>library(data.table)
+library(dplyr)
 library(ggplot2)
-library(cowplot)</code></pre>
+library(cowplot)
+source(&quot;../code/merge_cs_sets.R&quot;)</code></pre>
 <p>This is a function I use to Extract the gene annotations from the GTF
 (“gene transfer format”) file. Here we keep only the annotated gene
 transcripts for protein-coding genes as defined in the Ensembl/Havana
@@ -1459,9 +1486,9 @@ mean(tad_size)
 median(tad_size)
 sum(tad_size &gt; 9)
 # [1] 1327
-# [1]  2.321 34.727
-# [1] 4.545
-# [1] 4.154
+# [1]  2.320952 34.727189
+# [1] 4.54465
+# [1] 4.154266
 # [1] 19</code></pre>
 <p>These histograms summarize the number of CSs per TAD:</p>
 <pre class="r"><code>get_cs_vs_tad_size &lt;- function (dat) {
@@ -1600,35 +1627,51 @@ Peter Carbonetto
 </table>
 </div>
 </div>
-<p>For plots counting CSs across the genome, we need to tackle the issue
+<p>For plots counting CSs across the genome, I need to address the issue
 that the same CSs are sometimes discovered in overlapping TADs. To this
 end, this function removes CSs so that no two CSs share the same
 SNP:</p>
-<pre class="r"><code>remove_cs_duplicates &lt;- function (dat) {
-  cs_labels &lt;- levels(dat$cs)
-  n   &lt;- nlevels(dat$cs)
-  dat &lt;- transform(dat,cs = as.integer(cs))
-  x   &lt;- factor(dat$variant_id)
-  res &lt;- tapply(dat$cs,x,function (x) length(unique(x)))
-  ids &lt;- names(res)[which(res &gt; 1)]
-  dat$flag &lt;- 0
-  for (id in ids) {
-    rows &lt;- which(dat$variant_id == id)
-    i    &lt;- which.min(dat[rows,&quot;cs&quot;])
-    rows &lt;- rows[-i]
-    dat[rows,&quot;flag&quot;] &lt;- 1
-  }
-  dat &lt;- subset(dat,flag == 0)
-  dat$flag &lt;- NULL
-  dat &lt;- transform(dat,cs = factor(cs,1:n))
-  levels(dat$cs) &lt;- cs_labels
-  return(dat)
+<pre class="r"><code>create_cs_maps &lt;- function (info_df) {
+  info_df %&gt;% 
+    arrange(cs) %&gt;%
+    group_by(variant_id) %&gt;%
+    mutate(cs_set = list(sort(unique(cs))),
+           cs_set = sapply(cs_set,paste,collapse = &quot;,&quot;)) %&gt;%
+    ungroup %&gt;%
+    count(cs,cs_set) %&gt;%
+    group_by(cs) %&gt;%
+    summarize(
+      cs_set = paste(sort(unique(unlist(strsplit(cs_set,&quot;,&quot;)))),
+                     collapse = &quot;,&quot;),.groups = &quot;drop&quot;) %&gt;%
+    merge_cs_sets
 }</code></pre>
+<p>Now let’s use this function to flag and remove the “duplicate”
+CSs.</p>
+<pre class="r"><code>root_cs_susie  &lt;- create_cs_maps(methyl_snps_susie)$root
+root_cs_fsusie &lt;- create_cs_maps(methyl_snps_fsusie)$root
+methyl_snps_susie_nodup  &lt;- subset(methyl_snps_susie,
+                                   is.element(cs,root_cs_susie))
+methyl_snps_fsusie_nodup &lt;- subset(methyl_snps_fsusie,
+                                   is.element(cs,root_cs_fsusie))</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
 <p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
 analyses:</p>
 <pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
-methyl_snps_susie_nodup  &lt;- remove_cs_duplicates(methyl_snps_susie)
-methyl_snps_fsusie_nodup &lt;- remove_cs_duplicates(methyl_snps_fsusie)
+methyl_snps_susie_nodup &lt;- transform(methyl_snps_susie_nodup,cs = factor(cs))
+methyl_snps_fsusie_nodup &lt;- transform(methyl_snps_fsusie_nodup,cs = factor(cs))
 cs_size_susie  &lt;- as.numeric(table(methyl_snps_susie_nodup$cs))
 cs_size_fsusie &lt;- as.numeric(table(methyl_snps_fsusie_nodup$cs))
 cs_size_susie  &lt;- cut(cs_size_susie,bins)
@@ -1644,6 +1687,7 @@ p1 &lt;- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
 p2 &lt;- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
   geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkblue&quot;,
                  width = 0.65) +
+  scale_y_continuous(breaks = seq(0,1e4,2000)) +             
   labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;,title = &quot;fSuSiE&quot;) +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = &quot;plain&quot;))
@@ -1671,6 +1715,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/618cae4fa9aadcbe31f55487e1b478d485770fba/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">618cae4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-03
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/c84e5c046a56501c872e946ab6839eac67d0a41a/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">c84e5c0</a>
@@ -1994,7 +2049,7 @@ CpGs per CS:</p>
 cpgs_per_snp_assoc &lt;- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
-nodup_cs &lt;- names(which(table(methyl_snps_fsusie_nodup$cs) &gt; 0))
+nodup_cs &lt;- levels(methyl_snps_fsusie_nodup$cs)
 methyl_cpg_fsusie_nodup &lt;- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
 methyl_cpg_fsusie_nodup &lt;- transform(methyl_cpg_fsusie_nodup,cs = factor(cs))
 cpgs_per_snp_fsusie &lt;-
@@ -2041,6 +2096,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/618cae4fa9aadcbe31f55487e1b478d485770fba/docs/figure/rosmap_overview.Rmd/count-cpgs-per-snp-1.png" target="_blank">618cae4</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-03
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/aece910973f3984cf07ffbe6089a898f58910c41/docs/figure/rosmap_overview.Rmd/count-cpgs-per-snp-1.png" target="_blank">aece910</a>
 </td>
 <td>
@@ -2058,8 +2124,8 @@ Peter Carbonetto
 have an unusually large number of CpGs:</p>
 <pre class="r"><code>mean(cpgs_per_snp_assoc &gt; 20)
 mean(cpgs_per_snp_fsusie &gt; 150)
-# [1] 0.02155
-# [1] 0.01705</code></pre>
+# [1] 0.0215499
+# [1] 0.01744186</code></pre>
 </div>
 <div id="h3k27ac-snps" class="section level2">
 <h2>H3K27ac SNPs</h2>
@@ -2161,11 +2227,32 @@ p &lt;- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   scale_size(breaks = c(1,10,100)) +
   labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
   theme_cowplot(font_size = 10)</code></pre>
+<p>Flag and remove the “duplicate” CSs.</p>
+<pre class="r"><code>root_cs_susie        &lt;- create_cs_maps(ha_snps_susie)$root
+root_cs_fsusie       &lt;- create_cs_maps(ha_snps_fsusie)$root
+ha_snps_susie_nodup  &lt;- subset(ha_snps_susie,is.element(cs,root_cs_susie))
+ha_snps_fsusie_nodup &lt;- subset(ha_snps_fsusie,is.element(cs,root_cs_fsusie))</code></pre>
+<div class="alert alert-warning">
+<p>
+<strong>Warning:</strong> The above code chunk cached its results, but
+it won’t be re-run if previous chunks it depends on are updated. If you
+need to use caching, it is highly recommended to also set
+<code>knitr::opts_chunk$set(autodep = TRUE)</code> at the top of the
+file (in a chunk that is not cached). Alternatively, you can customize
+the option <code>dependson</code> for each individual chunk that is
+cached. Using either <code>autodep</code> or <code>dependson</code> will
+remove this warning. See the
+<a href="https://yihui.name/knitr/options/#cache"
+>knitr cache options</a> for more details.
+</p>
+</div>
 <p>Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE
 analyses:</p>
 <pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
-cs_size_susie  &lt;- as.numeric(table(ha_snps_susie$cs))
-cs_size_fsusie &lt;- as.numeric(table(ha_snps_fsusie$cs))
+ha_snps_susie_nodup &lt;- transform(ha_snps_susie_nodup,cs = factor(cs))
+ha_snps_fsusie_nodup &lt;- transform(ha_snps_fsusie_nodup,cs = factor(cs))
+cs_size_susie  &lt;- as.numeric(table(ha_snps_susie_nodup$cs))
+cs_size_fsusie &lt;- as.numeric(table(ha_snps_fsusie_nodup$cs))
 cs_size_susie  &lt;- cut(cs_size_susie,bins)
 cs_size_fsusie &lt;- cut(cs_size_fsusie,bins)
 levels(cs_size_susie) &lt;- bins[-1]
@@ -2394,8 +2481,8 @@ Peter Carbonetto
 <p>A very small number of TADs have more than 200 affected peaks:</p>
 <pre class="r"><code>mean(ha_peaks_per_tad_assoc &gt; 200,na.rm = TRUE)
 mean(ha_peaks_per_tad_fsusie &gt; 200,na.rm = TRUE)
-# [1] 0.002463
-# [1] 0.004926</code></pre>
+# [1] 0.002463054
+# [1] 0.004926108</code></pre>
 <p>This plot compares the number of affected H3K27ac peaks identified by
 fSuSiE and the SNP-peak association tests:</p>
 <pre class="r"><code>pdat &lt;- data.frame(assoc  = ha_peaks_per_tad_assoc,
@@ -2464,9 +2551,11 @@ tests:</p>
 ha_peaks_per_snp_assoc &lt;- tapply(ha_peak_assoc$molecular_trait_id,x,
                                  function (x) length(unique(x)))
 rm(x)
+nodup_cs &lt;- levels(ha_snps_fsusie_nodup$cs)
+ha_peak_fsusie_nodup &lt;- subset(ha_peak_fsusie,is.element(cs,nodup_cs))
+ha_peak_fsusie_nodup &lt;- transform(ha_peak_fsusie_nodup,cs = factor(cs))
 ha_peaks_per_snp_fsusie &lt;-
-  with(ha_peak_fsusie,
-       tapply(ID,cs,function (x) length(unique(x))))
+  with(ha_peak_fsusie_nodup,tapply(ID,cs,function (x) length(unique(x))))
 pdat1 &lt;- data.frame(x = ha_peaks_per_snp_assoc)
 pdat2 &lt;- data.frame(x = ha_peaks_per_snp_fsusie)
 pdat1 &lt;- subset(pdat1,x &lt;= 10)
@@ -2526,8 +2615,8 @@ Peter Carbonetto
 had an unusually large number of affected peaks:</p>
 <pre class="r"><code>mean(ha_peaks_per_snp_assoc &gt; 10)
 mean(ha_peaks_per_snp_fsusie &gt; 40)
-# [1] 0.009821
-# [1] 0.007894</code></pre>
+# [1] 0.009820976
+# [1] 0.007172354</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2555,7 +2644,8 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3     ggplot2_3.5.0     data.table_1.15.2 workflowr_1.7.1  
+# [1] workflowr_1.7.1   cowplot_1.1.3     ggplot2_3.5.0     dplyr_1.1.4      
+# [5] data.table_1.15.2
 # 
 # loaded via a namespace (and not attached):
 #  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.3    
@@ -2563,15 +2653,15 @@ Session information
 #  [9] fastmap_1.1.1     plyr_1.8.9        R.oo_1.26.0       rprojroot_2.0.4  
 # [13] jsonlite_1.8.8    processx_3.8.3    R.utils_2.12.3    whisker_0.4.1    
 # [17] ps_1.7.6          promises_1.2.1    httr_1.4.7        fansi_1.0.6      
-# [21] scales_1.3.0      textshaping_0.3.7 jquerylib_0.1.4   cli_3.6.4        
-# [25] rlang_1.1.5       R.methodsS3_1.8.2 munsell_0.5.0     withr_3.0.0      
-# [29] cachem_1.0.8      yaml_2.3.8        tools_4.3.3       reshape2_1.4.4   
-# [33] dplyr_1.1.4       colorspace_2.1-0  httpuv_1.6.14     vctrs_0.6.5      
+# [21] scales_1.3.0      codetools_0.2-19  textshaping_0.3.7 jquerylib_0.1.4  
+# [25] cli_3.6.4         rlang_1.1.5       R.methodsS3_1.8.2 munsell_0.5.0    
+# [29] withr_3.0.0       cachem_1.0.8      yaml_2.3.8        tools_4.3.3      
+# [33] reshape2_1.4.4    colorspace_2.1-0  httpuv_1.6.14     vctrs_0.6.5      
 # [37] R6_2.5.1          lifecycle_1.0.4   git2r_0.33.0      stringr_1.5.1    
-# [41] fs_1.6.5          ragg_1.2.7        pkgconfig_2.0.3   callr_3.7.5      
+# [41] fs_1.6.5          ragg_1.2.7        callr_3.7.5       pkgconfig_2.0.3  
 # [45] pillar_1.9.0      bslib_0.6.1       later_1.3.2       gtable_0.3.4     
-# [49] glue_1.8.0        Rcpp_1.0.12       systemfonts_1.0.6 highr_0.10       
-# [53] xfun_0.42         tibble_3.2.1      tidyselect_1.2.1  rstudioapi_0.15.0
+# [49] glue_1.8.0        Rcpp_1.0.12       systemfonts_1.0.6 xfun_0.42        
+# [53] tibble_3.2.1      tidyselect_1.2.1  highr_0.10        rstudioapi_0.15.0
 # [57] knitr_1.45        farver_2.1.1      htmltools_0.5.8.1 labeling_0.4.3   
 # [61] rmarkdown_2.26    compiler_4.3.3    getPass_0.2-4</code></pre>
 </div>
