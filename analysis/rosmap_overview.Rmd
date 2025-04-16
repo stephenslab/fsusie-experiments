@@ -532,6 +532,9 @@ x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
+nodup_cs <- levels(methyl_snps_fsusie_nodup$cs)
+methyl_cpg_fsusie_nodup <- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
+methyl_cpg_fsusie_nodup <- transform(methyl_cpg_fsusie_nodup,cs = factor(cs))
 cpgs_per_snp_fsusie <-
   with(methyl_cpg_fsusie_nodup,
        tapply(ID,cs,function (x) length(unique(x))))
@@ -838,9 +841,11 @@ x <- factor(ha_peak_assoc$variant_id)
 ha_peaks_per_snp_assoc <- tapply(ha_peak_assoc$molecular_trait_id,x,
                                  function (x) length(unique(x)))
 rm(x)
+nodup_cs <- levels(ha_snps_fsusie_nodup$cs)
+ha_peak_fsusie_nodup <- subset(ha_peak_fsusie,is.element(cs,nodup_cs))
+ha_peak_fsusie_nodup <- transform(ha_peak_fsusie_nodup,cs = factor(cs))
 ha_peaks_per_snp_fsusie <-
-  with(ha_peak_fsusie,
-       tapply(ID,cs,function (x) length(unique(x))))
+  with(ha_peak_fsusie_nodup,tapply(ID,cs,function (x) length(unique(x))))
 pdat1 <- data.frame(x = ha_peaks_per_snp_assoc)
 pdat2 <- data.frame(x = ha_peaks_per_snp_fsusie)
 pdat1 <- subset(pdat1,x <= 10)
