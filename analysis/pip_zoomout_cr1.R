@@ -31,8 +31,8 @@ for (i in 1:n) {
   # cs_label <- sprintf("CS %d, %d SNPs",i,length(snps))
   pdat[snps,"cs"] <- i # cs_label
   j <- snps[which.max(pdat[snps,"pip"])]
-  # pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
-  pdat[j,"id"] <- paste("CS",i)
+  pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
+  # pdat[j,"id"] <- paste("CS",i)
 }
 pdat <- transform(pdat,cs = factor(cs))
 i <- which(pdat$pip >= 0.01)
@@ -43,9 +43,8 @@ pdat <- pdat[i,]
 p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   geom_point(color = "black",size = 0.65) +
   geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs)) +
-  geom_text_repel(color = "black",size = 2.25,min.segment.length = 0,
-                  max.overlaps = Inf,segment.color = "dimgray") +
-                  # color = "dimgray"
+  geom_text_repel(color = "midnightblue",size = 2.25,min.segment.length = 0,
+                  max.overlaps = Inf,segment.color = "midnightblue") +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
                                    xmax = zoomin_region[2],
                                    y = -0.1),
@@ -104,6 +103,9 @@ p2 <- ggplot() +
   guides(color = "none",shape = "none") +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "effect") +
   theme_cowplot(font_size = 8)
+#
+# TO DO: Add CS labels.
+#
 
 print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
 # ggsave("zoomout_cr1.pdf",p,height = 1.75,width = 8)
