@@ -31,7 +31,7 @@ for (i in 1:n) {
   # cs_label <- sprintf("CS %d, %d SNPs",i,length(snps))
   pdat[snps,"cs"] <- i # cs_label
   j <- snps[which.max(pdat[snps,"pip"])]
-  pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
+  pdat[j,"id"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
   # pdat[j,"id"] <- paste("CS",i)
 }
 pdat <- transform(pdat,cs = factor(cs))
@@ -69,17 +69,21 @@ for (i in 1:n) {
   dat <- data.frame(effect = dat$effect_s$effect_estimate,
                     up     = dat$effect_s$cred_band["up",],
                     low    = dat$effect_s$cred_band["low",],
-                    pos    = dat$pos_H3Kac_effect)
+                    pos    = dat$pos_H3Kac_effect,
+                    label  = "",
+                    stringsAsFactors = FALSE)
   m   <- length(peak_pos)
   dat <- interpolate_effect_estimates(dat,peak_pos[seq(2,m-1)])
   dat <- transform(dat,
                    pos     = pos/1e6,
                    cs      = i,
                    nonzero = !(low <= 0 & up >= 0))
+  j <- which.max(abs(dat$effect))
+  dat[j,"label"] <- paste("CS",i)
   effects <- rbind(effects,dat)
 }
-rows    <- sample(nrow(effects))
-effects <- effects[rows,]
+# rows    <- sample(nrow(effects))
+# effects <- effects[rows,]
 effects <- transform(effects,cs = factor(cs,1:n))
 p2 <- ggplot() +
   geom_hline(yintercept = 0,linetype = "dotted") +
@@ -94,8 +98,12 @@ p2 <- ggplot() +
                  mapping = aes(xmin = xmin,xmax = xmax,y = y),
                  color = "darkgray",linewidth = 0.5,height = 0.03,
                  inherit.aes = FALSE) +
+  geom_text_repel(data = effects,
+                  mapping = aes(x = pos,y = effect,label = label),
+                  color = "midnightblue",size = 2.25,min.segment.length = 0,
+                  max.overlaps = Inf,segment.color = "midnightblue") +
   scale_x_continuous(limits = zoomout_region,
-                     breaks = seq(44,49,0.5)) +
+                     breaks = seq(200,210,0.5)) +
   scale_y_continuous(breaks = seq(-1,1,0.1)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray",
                      drop = FALSE) +
@@ -103,9 +111,8 @@ p2 <- ggplot() +
   guides(color = "none",shape = "none") +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "effect") +
   theme_cowplot(font_size = 8)
-#
-# TO DO: Add CS labels.
-#
 
 print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
-# ggsave("zoomout_cr1.pdf",p,height = 1.75,width = 8)
+ggsave("zoomout_cr1.pdf",
+       plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
+       height = 3,width = 8)
