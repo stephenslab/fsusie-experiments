@@ -1,6 +1,6 @@
 # Create a PIP "zoomout" plot for the CR1/CR2 locus.
 #
-# NOTE: download CR1_CR2_obj.RData from
+# NOTE: download CR1_CR2_obj.RData and CR1_CR2_all_effects.RData from
 # https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
 #
 # SEE ALSO:
@@ -28,11 +28,9 @@ zoomout_region <- range(pdat$pos)
 n <- length(obj_plot$cs_fsusie_obj)
 for (i in 1:n) {
   snps <- names(obj_plot$cs_fsusie_obj[[i]])
-  # cs_label <- sprintf("CS %d, %d SNPs",i,length(snps))
   pdat[snps,"cs"] <- i # cs_label
   j <- snps[which.max(pdat[snps,"pip"])]
   pdat[j,"id"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
-  # pdat[j,"id"] <- paste("CS",i)
 }
 pdat <- transform(pdat,cs = factor(cs))
 i <- which(pdat$pip >= 0.01)
@@ -82,8 +80,6 @@ for (i in 1:n) {
   dat[j,"label"] <- paste("CS",i)
   effects <- rbind(effects,dat)
 }
-# rows    <- sample(nrow(effects))
-# effects <- effects[rows,]
 effects <- transform(effects,cs = factor(cs,1:n))
 p2 <- ggplot() +
   geom_hline(yintercept = 0,linetype = "dotted") +
@@ -112,6 +108,7 @@ p2 <- ggplot() +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "effect") +
   theme_cowplot(font_size = 8)
 
+# Create the final combined plot.
 print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
 ggsave("zoomout_cr1.pdf",
        plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
