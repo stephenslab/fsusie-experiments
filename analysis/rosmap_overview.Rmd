@@ -118,6 +118,39 @@ methyl_snps_fsusie <- transform(methyl_snps_fsusie,
 								study  = factor(study))
 ```
 
+Also, I load the allele frequencies computed by PLINK:
+
+```{r read-allele-freqs}
+afreq_file <- "../data/ROSMAP_NIA_WGS.leftnorm.bcftools_qc.plink_qc.afreq.gz"
+system(paste("gzcat",afreq_file,"| cut -f 1,6 > temp1.txt"))
+system(paste("gzcat",afreq_file,"| cut -f 2 | cut -d ':' -f 2 |",
+             "cut -d '_' -f 1 > temp2.txt"))
+system(paste("paste temp1.txt temp2.txt > rosmap.afreq"))			 
+afreq <- fread("rosmap.afreq",sep = "\t",stringsAsFactors = FALSE,
+               header = TRUE,nrows = Inf)
+class(afreq) <- "data.frame"
+names(afreq) <- c("chr","maf","pos")
+afreq <- transform(afreq,
+                   chr = factor(chr),
+				   maf = pmin(maf,1 - maf))
+afreq <- subset(afreq,maf > 0.001)
+levels(afreq$chr) <- paste0("chr",1:22)
+afreq$id <- sprintf("%s_%d",as.character(afreq$chr),afreq$pos)
+```
+
+Add the allele frequencies to the methylation fine-mapping results:
+
+```{r add-allele-freqs-methyl}
+ids  <- with(methyl_snps_susie,paste(chr,pos,sep = "_"))
+rows <- match(ids,afreq$id)
+methyl_snps_susie$maf <- afreq[rows,"maf"]
+ids  <- with(methyl_snps_fsusie,paste(chr,pos,sep = "_"))
+rows <- match(ids,afreq$id)
+methyl_snps_fsusie$maf <- afreq[rows,"maf"]
+```
+
+### TAD statistics
+
 This is the number of fine-mapping regions (TADs) that contained at
 least one CS in each of the analyses:
 
@@ -171,6 +204,92 @@ mean(tad_size)
 median(tad_size)
 sum(tad_size > 9)
 ```
+
+### Identify and remove "blacklisted" SNPs
+
+There are some technical concerns about fine-mapping SNPs that are
+also CpGs, so these SNPs (and the CSs that include these SNPs)
+should be removed from the results.
+
+For the SNP-CpG association tests, finding the "blacklisted" is b
+quite straightforward because it is just the SNPs that have the
+same positions as the CpGs:
+
+```{r blacklist-assoc}
+rows <- which(with(methyl_cpg_assoc,pos == molecular_trait_id_pos))
+length(rows)
+ids  <- with(methyl_cpg_assoc[rows,],paste(chr,pos,sep = "_"))
+i <- match(ids,afreq$id)
+table(cut(afreq[i,"maf"],c(0,0.01,0.1,1)))
+rows <- which(with(methyl_cpg_assoc,pos != molecular_trait_id_pos))
+methyl_cpg_assoc <- methyl_cpg_assoc[rows,]
+```
+
+For fSuSiE, it is a bit more complicated because we need to first load the
+CpG results:
+
+```{r read-methyl-cpg-results}
+methyl_cpg_fsusie_file <-
+  "../outputs/ROSMAP_mQTL_cs_effect_cpg_annotation.tsv.gz"
+methyl_cpg_fsusie <- read_enrichment_results(methyl_cpg_fsusie_file,n = 9)
+methyl_cpg_fsusie$region <-
+  sapply(strsplit(methyl_cpg_fsusie$cs,":",fixed = TRUE),"[[",2)
+methyl_cpg_fsusie <- transform(methyl_cpg_fsusie,
+                               cs      = factor(cs), 
+ 						       region  = factor(region),
+						       context = factor(context))
+```
+
+Now identify the blacklisted SNPs as the SNPs that have the same
+position as a CpG (either "peak start" or "peak end"):
+
+```{r get-blacklisted-snps}
+ids_snp <- c(with(methyl_snps_susie,paste(chr,pos,sep = "_")),
+             with(methyl_snps_fsusie,paste(chr,pos,sep = "_")))
+ids_cpg <- with(methyl_cpg_fsusie,
+                c(paste(chr,peak_start,sep = "_"),
+				  paste(chr,peak_end,sep = "_")))
+blacklisted_ids <- intersect(ids_snp,ids_cpg)
+length(blacklisted_ids)
+```
+
+Before removing the blacklisted SNPs from the results, let's
+take a quick look at them:
+
+```{r examine-blacklisted-snps}
+ids <- with(methyl_snps_fsusie,paste(chr,pos,sep = "_"))
+rows <- which(is.element(ids,blacklisted_ids))
+methyl_snps_fsusie_blacklisted <- methyl_snps_fsusie[rows,]
+nrow(methyl_snps_fsusie_blacklisted)
+sum(methyl_snps_fsusie_blacklisted$pip > 0.5)
+```
+
+ADD TEXT HERE.
+
+```{r blacklisted-snps-maf-hist, fig.height=3, fig.width=3}
+pdat <- subset(methyl_snps_fsusie_blacklisted,pip > 0.5)
+ggplot(pdat,aes(x = log10(maf))) +
+  geom_histogram(fill = "darkblue",color = "white",bins = 32) +
+  theme_cowplot(font_size = 10)
+```
+
+Before moving forward with the analysis, remove all SuSiE and
+fSuSiE CSs containing the blacklisted SNPs:
+
+```{r remove-blacklisted-cs}
+ids                <- with(methyl_snps_susie,paste(chr,pos,sep = "_"))
+rows               <- which(is.element(ids,blacklisted_ids))
+blacklisted_cs     <- unique(methyl_snps_susie[rows,]$cs)
+methyl_snps_susie  <- subset(methyl_snps_susie,!is.element(cs,blacklisted_cs))
+ids                <- with(methyl_snps_fsusie,paste(chr,pos,sep = "_"))
+rows               <- which(is.element(ids,blacklisted_ids))
+blacklisted_cs     <- unique(methyl_snps_fsusie[rows,]$cs)
+methyl_snps_fsusie <- subset(methyl_snps_fsusie,!is.element(cs,blacklisted_cs))
+methyl_snps_susie  <- transform(methyl_snps_susie,cs = factor(cs))
+methyl_snps_fsusie <- transform(methyl_snps_fsusie,cs = factor(cs))
+```
+
+### Compare SuSiE-topPC and fSuSiE methylation CSs
 
 These histograms summarize the number of CSs per TAD:
 
@@ -295,6 +414,15 @@ p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
+Here are the exact numbers:
+
+```{r cs-sizes-table-methyl}
+table(cs_size_susie)
+table(cs_size_fsusie)
+```
+
+### Distance-to-TSS plot
+
 We expect that most of the causal SNPs to be very close to the nearest
 TSS. Let's check this. This will involve a couple of intermediate
 calculations.
@@ -407,23 +535,9 @@ print(p)
 ggsave("dist_to_tss_methyl.pdf",p,height = 2.5,width = 3.5)
 ```
 
-## Affected CpGs
+### Affected CpGs
 
-Now let's turn to the recovery of affected CpGs. Load the results
-generated by fSuSiE (the SNP-CpG association testing results were
-imported previously):
-
-```{r read-methyl-cpg-results}
-methyl_cpg_fsusie_file <-
-  "../outputs/ROSMAP_mQTL_cs_effect_cpg_annotation.tsv.gz"
-methyl_cpg_fsusie <- read_enrichment_results(methyl_cpg_fsusie_file,n = 9)
-methyl_cpg_fsusie$region <-
-  sapply(strsplit(methyl_cpg_fsusie$cs,":",fixed = TRUE),"[[",2)
-methyl_cpg_fsusie <- transform(methyl_cpg_fsusie,
-                               cs      = factor(cs), 
- 						       region  = factor(region),
-						       context = factor(context))
-```
+Now let's turn to the recovery of affected CpGs.
 
 Counting the number of CpGs per TAD is quite simple from the way the
 fSuSiE results were compiled. It involves counting the number of unique
@@ -569,6 +683,41 @@ have an unusually large number of CpGs:
 mean(cpgs_per_snp_assoc > 20)
 mean(cpgs_per_snp_fsusie > 150)
 ```
+
+### Properties of mSNPs in 1-SNP CSs
+
+Now let's look closely at the 1-SNP CSs:
+
+```{r get-1-snp-cs}
+methyl_cs1snp_susie  <- table(methyl_snps_susie_nodup$cs)
+methyl_cs1snp_susie  <- names(methyl_cs1snp_susie)[methyl_cs1snp_susie == 1]
+methyl_cs1snp_susie  <- subset(methyl_snps_susie,
+                               is.element(cs,methyl_cs1snp_susie))
+methyl_cs1snp_fsusie <- table(methyl_snps_fsusie_nodup$cs)
+methyl_cs1snp_fsusie <- names(methyl_cs1snp_fsusie)[methyl_cs1snp_fsusie == 1]
+methyl_cs1snp_fsusie <- subset(methyl_snps_fsusie,
+                              is.element(cs,methyl_cs1snp_fsusie))
+```
+
+ADD TEXT HERE.
+
+```{r one-snp-cs-mafs, fig.height=3, fig.width=6}
+p1 <- ggplot(methyl_cs1snp_susie,aes(x = log10(maf))) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
+  labs(x = "log10(MAF)",y = "number of mSNPs",title = "SuSiE-topPC") +
+  theme_cowplot(font_size = 10)
+p2 <- ggplot(methyl_cs1snp_fsusie,aes(x = log10(maf))) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
+  labs(x = "log10(MAF)",y = "number of mSNPs",title = "fSuSiE") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+TO DO: Plot distance to affected CpGs for 1-SNP CSs (fSuSiE only).
+
+TO DO: Plot distribution of number of affected CpGs for 1-SNP CSs
+(fSuSiE only).
+
 
 ## H3K27ac SNPs
 
