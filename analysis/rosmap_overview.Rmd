@@ -21,6 +21,7 @@ library(data.table)
 library(dplyr)
 library(ggplot2)
 library(cowplot)
+library(hexbin)
 source("../code/merge_cs_sets.R")
 ```
 
@@ -205,14 +206,14 @@ median(tad_size)
 sum(tad_size > 9)
 ```
 
-### Identify and remove "blacklisted" SNPs
+### Identify and remove "blacklisted" mSNPs
 
-There are some technical concerns about fine-mapping SNPs that are
+There are some technical concerns about fine-mapping mSNPs that are
 also CpGs, so these SNPs (and the CSs that include these SNPs)
 should be removed from the results.
 
-For the SNP-CpG association tests, finding the "blacklisted" is b
-quite straightforward because it is just the SNPs that have the
+For the SNP-CpG association tests, finding the "blacklisted" is 
+quite straightforward because they are just the mSNPs that have the
 same positions as the CpGs:
 
 ```{r blacklist-assoc}
@@ -225,8 +226,8 @@ rows <- which(with(methyl_cpg_assoc,pos != molecular_trait_id_pos))
 methyl_cpg_assoc <- methyl_cpg_assoc[rows,]
 ```
 
-For fSuSiE, it is a bit more complicated because we need to first load the
-CpG results:
+For fSuSiE, it is a bit more complicated because we need to first load
+the CpG results:
 
 ```{r read-methyl-cpg-results}
 methyl_cpg_fsusie_file <-
@@ -240,15 +241,15 @@ methyl_cpg_fsusie <- transform(methyl_cpg_fsusie,
 						       context = factor(context))
 ```
 
-Now identify the blacklisted SNPs as the SNPs that have the same
-position as a CpG (either "peak start" or "peak end"):
+Now identify the blacklisted mSNPs as the mSNPs that have the same
+position as a CpG (I will  use both "peak start" and "peak end"):
 
 ```{r get-blacklisted-snps}
 ids_snp <- c(with(methyl_snps_susie,paste(chr,pos,sep = "_")),
              with(methyl_snps_fsusie,paste(chr,pos,sep = "_")))
 ids_cpg <- with(methyl_cpg_fsusie,
-                c(paste(chr,peak_start,sep = "_"),
-				  paste(chr,peak_end,sep = "_")))
+                c(paste(chr,peak_start-20,sep = "_"),
+				  paste(chr,peak_end+20,sep = "_")))
 blacklisted_ids <- intersect(ids_snp,ids_cpg)
 length(blacklisted_ids)
 ```
@@ -264,12 +265,13 @@ nrow(methyl_snps_fsusie_blacklisted)
 sum(methyl_snps_fsusie_blacklisted$pip > 0.5)
 ```
 
-ADD TEXT HERE.
+It is interesting that a large fraction of the blacklisted SNPs have a
+high PIPs. Let's also look at the MAFs of these "blacklisted" SNPs:
 
-```{r blacklisted-snps-maf-hist, fig.height=3, fig.width=3}
-pdat <- subset(methyl_snps_fsusie_blacklisted,pip > 0.5)
-ggplot(pdat,aes(x = log10(maf))) +
+```{r blacklisted-snps-maf-hist, fig.height=2.75, fig.width=2.75}
+ggplot(methyl_snps_fsusie_blacklisted,aes(x = log10(maf))) +
   geom_histogram(fill = "darkblue",color = "white",bins = 32) +
+  labs(x = "log10(MAF)",y = "number of SNPs") +
   theme_cowplot(font_size = 10)
 ```
 
@@ -343,7 +345,7 @@ p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   geom_abline(intercept = 0,slope = 1,color = "black",linetype = "dotted") +
   scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
   scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
-  scale_size(breaks = c(1,10,100)) +
+  scale_size(breaks = c(1,5,10,50,100)) +
   labs(x = "SuSiE-topPC",y = "fSuSiE",size = "number of TADs") +
   theme_cowplot(font_size = 10)
 print(p)
@@ -481,10 +483,10 @@ get_top_snp_per_location <- function (dat) {
 With these functions, we can compile the data needed for this plot.
 
 ```{r add-min-dist-to-tss-methyl}
-methyl_snps_assoc  <- get_top_snp_per_location(methyl_cpg_assoc)
-methyl_snps_assoc  <- add_min_dist_to_tss(methyl_snps_assoc,genes)
-methyl_snps_susie  <- add_min_dist_to_tss(methyl_snps_susie,genes)
-methyl_snps_fsusie <- add_min_dist_to_tss(methyl_snps_fsusie,genes)
+methyl_snps_assoc        <- get_top_snp_per_location(methyl_cpg_assoc)
+methyl_snps_assoc        <- add_min_dist_to_tss(methyl_snps_assoc,genes)
+methyl_snps_susie_nodup  <- add_min_dist_to_tss(methyl_snps_susie_nodup,genes)
+methyl_snps_fsusie_nodup <- add_min_dist_to_tss(methyl_snps_fsusie_nodup,genes)
 ```
 
 For SuSiE-topPC and fSuSiE, we calculate "weighted" counts of SNPs,
@@ -495,8 +497,8 @@ bin_size <- 10000
 bins <- c(-Inf,seq(-2e5,2e5,bin_size),Inf)
 bins <- bins + bin_size/2
 counts_assoc <- as.numeric(table(cut(methyl_snps_assoc$min_dist_to_tss,bins)))
-counts_susie <- tapply(methyl_snps_susie$pip,
-                       cut(methyl_snps_susie$min_dist_to_tss,bins),
+counts_susie <- tapply(methyl_snps_susie_nodup$pip,
+                       cut(methyl_snps_susie_nodup$min_dist_to_tss,bins),
 					   function (x) sum(x,na.rm = TRUE))
 counts_fsusie <- tapply(methyl_snps_fsusie$pip,
                         cut(methyl_snps_fsusie$min_dist_to_tss,bins),
@@ -686,7 +688,7 @@ mean(cpgs_per_snp_fsusie > 150)
 
 ### Properties of mSNPs in 1-SNP CSs
 
-Now let's look closely at the 1-SNP CSs:
+Now let's look closely at the 1-SNP CSs for methylation.
 
 ```{r get-1-snp-cs}
 methyl_cs1snp_susie  <- table(methyl_snps_susie_nodup$cs)
@@ -699,25 +701,61 @@ methyl_cs1snp_fsusie <- subset(methyl_snps_fsusie,
                               is.element(cs,methyl_cs1snp_fsusie))
 ```
 
-ADD TEXT HERE.
+Compare the MAFs of the 1-SNP CSs to the MAFs across SNPs in CSs:
 
-```{r one-snp-cs-mafs, fig.height=3, fig.width=6}
+```{r one-snp-cs-mafs, fig.height=5, fig.width=5}
 p1 <- ggplot(methyl_cs1snp_susie,aes(x = log10(maf))) +
   geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of mSNPs",title = "SuSiE-topPC") +
+  labs(x = "log10(MAF)",y = "number of SNPs",
+       title = "SuSiE-topPC, 1-SNP CSs") +
   theme_cowplot(font_size = 10)
 p2 <- ggplot(methyl_cs1snp_fsusie,aes(x = log10(maf))) +
   geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of mSNPs",title = "fSuSiE") +
+  labs(x = "log10(MAF)",y = "number of SNPs",
+       title = "fSuSiE, 1-SNP CSs") +
   theme_cowplot(font_size = 10)
-plot_grid(p1,p2,nrow = 1,ncol = 2)
+p3 <- ggplot(methyl_snps_susie_nodup,aes(x = log10(maf))) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
+  labs(x = "log10(MAF)",y = "number of SNPs",
+       title = "SuSiE-topPC, all CSs") +
+  theme_cowplot(font_size = 10)
+p4 <- ggplot(methyl_snps_fsusie_nodup,aes(x = log10(maf))) +
+  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
+  labs(x = "log10(MAF)",y = "number of SNPs",
+       title = "fSuSiE, all CSs") +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 ```
 
-TO DO: Plot distance to affected CpGs for 1-SNP CSs (fSuSiE only).
+What is most striking is the excess of rarer SNPs in the 1-SNP CSs,
+particularly in the 1-SNP CSs identified by SuSiE-topPC.
 
-TO DO: Plot distribution of number of affected CpGs for 1-SNP CSs
-(fSuSiE only).
+ADD TEXT HERE.
 
+```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5}
+methyl_cpg_fsusie_cs1snp <- subset(methyl_cpg_fsusie,
+                                   is.element(cs,methyl_cs1snp_fsusie$cs))
+rows <- match(methyl_cpg_fsusie_cs1snp$cs,methyl_cs1snp_fsusie$cs)
+methyl_cpg_fsusie_cs1snp$variant_pos <- methyl_cs1snp_fsusie[rows,"pos"]
+methyl_cpg_fsusie_cs1snp <- transform(methyl_cpg_fsusie_cs1snp,
+                                      cs = factor(cs),
+                                      dist = peak_start - variant_pos)
+pdat <- tapply(methyl_cpg_fsusie_cs1snp$dist,methyl_cpg_fsusie_cs1snp$cs,
+               function (x) {
+			     i <- which.min(abs(x))
+				 return(x[i])
+    		   })
+pdat <- data.frame(dist = pdat)
+pdat <- transform(pdat,
+  dist = cut(dist,c(-Inf,-1e6,-1e5,-1e4,-1e3,-100,
+                    100,1e3,1e4,1e5,1e6,+Inf)))
+p <- ggplot(pdat,aes(x = dist)) +
+  geom_bar(color = "white",fill = "darkblue",bins = 64,width = 0.5) +
+  labs(x = "CpG - mSNP distance (Kb)", y = "number of mSNPs") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
+print(p)
+```
 
 ## H3K27ac SNPs
 
@@ -743,8 +781,8 @@ ha_snps_fsusie <- transform(ha_snps_fsusie,
 						    study  = factor(study))
 ```
 
-There is no need to look at the TAD sizes because the same TADs were analyzed
-for both molecular traits, methylation and H3K27ac.
+There is no need to look at the TAD sizes because the same TADs were
+analyzed for both molecular traits, methylation and H3K27ac.
 
 These histograms summarize the number of CSs per TAD:
 
