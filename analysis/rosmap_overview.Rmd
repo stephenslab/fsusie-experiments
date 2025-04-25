@@ -730,9 +730,10 @@ plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 What is most striking is the excess of rarer SNPs in the 1-SNP CSs,
 particularly in the 1-SNP CSs identified by SuSiE-topPC.
 
-ADD TEXT HERE.
+Finally, this plot shows the distribution of the distances between the
+mSNP and the nearest CpG affected by that SNP:
 
-```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5}
+```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE}
 methyl_cpg_fsusie_cs1snp <- subset(methyl_cpg_fsusie,
                                    is.element(cs,methyl_cs1snp_fsusie$cs))
 rows <- match(methyl_cpg_fsusie_cs1snp$cs,methyl_cs1snp_fsusie$cs)
@@ -751,11 +752,16 @@ pdat <- transform(pdat,
                     100,1e3,1e4,1e5,1e6,+Inf)))
 p <- ggplot(pdat,aes(x = dist)) +
   geom_bar(color = "white",fill = "darkblue",bins = 64,width = 0.5) +
-  labs(x = "CpG - mSNP distance (Kb)", y = "number of mSNPs") +
+  labs(x = "CpG - mSNP distance (base-pairs)",
+       y = "number of mSNPs") +
   theme_cowplot(font_size = 10) +
   theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
 print(p)
 ```
+
+As we can see, the nearest affected CpG is very likely to be nearby,
+although there are some putative long-range effects (which may or
+may not be real).
 
 ## H3K27ac SNPs
 
