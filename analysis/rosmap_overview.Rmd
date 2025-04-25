@@ -248,8 +248,8 @@ position as a CpG (I will  use both "peak start" and "peak end"):
 ids_snp <- c(with(methyl_snps_susie,paste(chr,pos,sep = "_")),
              with(methyl_snps_fsusie,paste(chr,pos,sep = "_")))
 ids_cpg <- with(methyl_cpg_fsusie,
-                c(paste(chr,peak_start-20,sep = "_"),
-				  paste(chr,peak_end+20,sep = "_")))
+                c(paste(chr,peak_start,sep = "_"),
+				  paste(chr,peak_end,sep = "_")))
 blacklisted_ids <- intersect(ids_snp,ids_cpg)
 length(blacklisted_ids)
 ```
@@ -268,7 +268,7 @@ sum(methyl_snps_fsusie_blacklisted$pip > 0.5)
 It is interesting that a large fraction of the blacklisted SNPs have a
 high PIPs. Let's also look at the MAFs of these "blacklisted" SNPs:
 
-```{r blacklisted-snps-maf-hist, fig.height=2.75, fig.width=2.75}
+```{r blacklisted-snps-maf-hist, fig.height=2.5, fig.width=2.5}
 ggplot(methyl_snps_fsusie_blacklisted,aes(x = log10(maf))) +
   geom_histogram(fill = "darkblue",color = "white",bins = 32) +
   labs(x = "log10(MAF)",y = "number of SNPs") +
@@ -500,8 +500,8 @@ counts_assoc <- as.numeric(table(cut(methyl_snps_assoc$min_dist_to_tss,bins)))
 counts_susie <- tapply(methyl_snps_susie_nodup$pip,
                        cut(methyl_snps_susie_nodup$min_dist_to_tss,bins),
 					   function (x) sum(x,na.rm = TRUE))
-counts_fsusie <- tapply(methyl_snps_fsusie$pip,
-                        cut(methyl_snps_fsusie$min_dist_to_tss,bins),
+counts_fsusie <- tapply(methyl_snps_fsusie_nodup$pip,
+                        cut(methyl_snps_fsusie_nodup$min_dist_to_tss,bins),
 						function (x) sum(x,na.rm = TRUE))
 ```
 
