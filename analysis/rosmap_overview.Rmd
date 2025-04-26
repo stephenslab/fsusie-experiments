@@ -730,6 +730,8 @@ plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
 What is most striking is the excess of rarer SNPs in the 1-SNP CSs,
 particularly in the 1-SNP CSs identified by SuSiE-topPC.
 
+TO DO: Add plots showing distribution of PIPs for SNPs in 1-SNP CSs.
+
 Finally, this plot shows the distribution of the distances between the
 mSNP and the nearest CpG affected by that SNP:
 
