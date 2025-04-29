@@ -302,13 +302,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-16
+<strong>Last updated:</strong> 2025-04-25
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -332,18 +332,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -416,6 +419,9 @@ The following chunks had caches available:
 get-cpgs-per-tad-assoc
 </li>
 <li>
+remove-duplicated-cs-ha
+</li>
+<li>
 remove-duplicated-cs-methyl
 </li>
 </ul>
@@ -445,15 +451,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree14e44873b58948fbaf51301dc25b5edaee71cc2dtargetblank14e4487a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree748b8b0f5ebcc202993cc01ec6bb9ae3b468c122targetblank748b8b0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/14e44873b58948fbaf51301dc25b5edaee71cc2d" target="_blank">14e4487</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/748b8b0f5ebcc202993cc01ec6bb9ae3b468c122" target="_blank">748b8b0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree14e44873b58948fbaf51301dc25b5edaee71cc2dtargetblank14e4487a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree748b8b0f5ebcc202993cc01ec6bb9ae3b468c122targetblank748b8b0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -463,7 +469,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/14e44873b58948fbaf51301dc25b5edaee71cc2d" target="_blank">14e4487</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/748b8b0f5ebcc202993cc01ec6bb9ae3b468c122" target="_blank">748b8b0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -478,13 +484,29 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  .DS_Store
+    Untracked:  analysis/affected_cpgs_per_snp.pdf
+    Untracked:  analysis/affected_cpgs_per_tad.pdf
+    Untracked:  analysis/affected_peaks_per_snp.pdf
+    Untracked:  analysis/affected_peaks_per_tad.pdf
+    Untracked:  analysis/cs_per_tad_scatterplot_h3k27ac.pdf
+    Untracked:  analysis/cs_per_tad_scatterplot_methyl.pdf
+    Untracked:  analysis/cs_sizes_h3k27ac.pdf
+    Untracked:  analysis/cs_sizes_methyl.pdf
+    Untracked:  analysis/dist_to_tss_h3k27ac.pdf
+    Untracked:  analysis/dist_to_tss_methyl.pdf
+    Untracked:  analysis/rosmap.afreq
     Untracked:  analysis/rosmap_overview_cache/
+    Untracked:  analysis/tad_sizes_histogram.pdf
+    Untracked:  analysis/temp1.txt
+    Untracked:  analysis/temp2.txt
+    Untracked:  data/ROSMAP_NIA_WGS.leftnorm.bcftools_qc.plink_qc.afreq.gz
     Untracked:  data/analysis_result/Fungen_xQTL.ENSG00000163808.cis_results_db.export.rds
     Untracked:  data/analysis_result/ROSMAP_haQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
     Untracked:  data/analysis_result/ROSMAP_mQTL.chr3_43915257_48413435.fsusie_mixture_normal_top_pc_weights.rds
     Untracked:  outputs/CASS4_obj.RData
+    Untracked:  outputs/CD2AP_all_effects.RData
     Untracked:  outputs/CD2AP_obj.RData
+    Untracked:  outputs/CR1_CR2_all_effects.RData
     Untracked:  outputs/CR1_CR2_obj.RData
     Untracked:  outputs/ROSMAP_haQTL_cs_effect_ha_peak_annotation.tsv.gz
     Untracked:  outputs/ROSMAP_haQTL_cs_snp_annotation.tsv.gz
@@ -496,6 +518,9 @@ Untracked files:
     Untracked:  outputs/ROSMAP_mQTL_cs_snp_toppc1_annotation.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_qtl_snp_qval0.05.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_qtl_snp_qval0.05_annotation.tsv.gz
+
+Unstaged changes:
+    Modified:   analysis/rosmap_overview.Rmd
 
 </code></pre>
 <p>
@@ -541,6 +566,58 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/748b8b0f5ebcc202993cc01ec6bb9ae3b468c122/analysis/rosmap_overview.Rmd" target="_blank">748b8b0</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-25
+</td>
+<td>
+Added more detailed analysis of the 1-SNP CSs for methylation in
+rosmap_overview.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/9dad9a938e354a4dfa012bc086d22e5ba8e77fe8/analysis/rosmap_overview.Rmd" target="_blank">9dad9a9</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-24
+</td>
+<td>
+Working on additional steps to identify and remove blacklisted mSNPs.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/rosmap_overview.html" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+<td>
+Ran workflowr::wflow_publish("rosmap_overview.Rmd").
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1320,6 +1397,7 @@ subdirectory.</p>
 library(dplyr)
 library(ggplot2)
 library(cowplot)
+library(hexbin)
 source(&quot;../code/merge_cs_sets.R&quot;)</code></pre>
 <p>This is a function I use to Extract the gene annotations from the GTF
 (“gene transfer format”) file. Here we keep only the annotated gene
@@ -1400,6 +1478,32 @@ methyl_snps_fsusie &lt;- transform(methyl_snps_fsusie,
                                 cs     = factor(cs),
                                 region = factor(region),
                                 study  = factor(study))</code></pre>
+<p>Also, I load the allele frequencies computed by PLINK:</p>
+<pre class="r"><code>afreq_file &lt;- &quot;../data/ROSMAP_NIA_WGS.leftnorm.bcftools_qc.plink_qc.afreq.gz&quot;
+system(paste(&quot;gzcat&quot;,afreq_file,&quot;| cut -f 1,6 &gt; temp1.txt&quot;))
+system(paste(&quot;gzcat&quot;,afreq_file,&quot;| cut -f 2 | cut -d &#39;:&#39; -f 2 |&quot;,
+             &quot;cut -d &#39;_&#39; -f 1 &gt; temp2.txt&quot;))
+system(paste(&quot;paste temp1.txt temp2.txt &gt; rosmap.afreq&quot;))            
+afreq &lt;- fread(&quot;rosmap.afreq&quot;,sep = &quot;\t&quot;,stringsAsFactors = FALSE,
+               header = TRUE,nrows = Inf)
+class(afreq) &lt;- &quot;data.frame&quot;
+names(afreq) &lt;- c(&quot;chr&quot;,&quot;maf&quot;,&quot;pos&quot;)
+afreq &lt;- transform(afreq,
+                   chr = factor(chr),
+                   maf = pmin(maf,1 - maf))
+afreq &lt;- subset(afreq,maf &gt; 0.001)
+levels(afreq$chr) &lt;- paste0(&quot;chr&quot;,1:22)
+afreq$id &lt;- sprintf(&quot;%s_%d&quot;,as.character(afreq$chr),afreq$pos)</code></pre>
+<p>Add the allele frequencies to the methylation fine-mapping
+results:</p>
+<pre class="r"><code>ids  &lt;- with(methyl_snps_susie,paste(chr,pos,sep = &quot;_&quot;))
+rows &lt;- match(ids,afreq$id)
+methyl_snps_susie$maf &lt;- afreq[rows,&quot;maf&quot;]
+ids  &lt;- with(methyl_snps_fsusie,paste(chr,pos,sep = &quot;_&quot;))
+rows &lt;- match(ids,afreq$id)
+methyl_snps_fsusie$maf &lt;- afreq[rows,&quot;maf&quot;]</code></pre>
+<div id="tad-statistics" class="section level3">
+<h3>TAD statistics</h3>
 <p>This is the number of fine-mapping regions (TADs) that contained at
 least one CS in each of the analyses:</p>
 <pre class="r"><code>nlevels(methyl_snps_susie$region)
@@ -1486,10 +1590,84 @@ mean(tad_size)
 median(tad_size)
 sum(tad_size &gt; 9)
 # [1] 1327
-# [1]  2.320952 34.727189
-# [1] 4.54465
-# [1] 4.154266
+# [1]  2.321 34.727
+# [1] 4.545
+# [1] 4.154
 # [1] 19</code></pre>
+</div>
+<div id="identify-and-remove-blacklisted-msnps" class="section level3">
+<h3>Identify and remove “blacklisted” mSNPs</h3>
+<p>There are some technical concerns about fine-mapping mSNPs that are
+also CpGs, so these SNPs (and the CSs that include these SNPs) should be
+removed from the results.</p>
+<p>For the SNP-CpG association tests, finding the “blacklisted” is quite
+straightforward because they are just the mSNPs that have the same
+positions as the CpGs:</p>
+<pre class="r"><code>rows &lt;- which(with(methyl_cpg_assoc,pos == molecular_trait_id_pos))
+length(rows)
+ids  &lt;- with(methyl_cpg_assoc[rows,],paste(chr,pos,sep = &quot;_&quot;))
+i &lt;- match(ids,afreq$id)
+table(cut(afreq[i,&quot;maf&quot;],c(0,0.01,0.1,1)))
+rows &lt;- which(with(methyl_cpg_assoc,pos != molecular_trait_id_pos))
+methyl_cpg_assoc &lt;- methyl_cpg_assoc[rows,]
+# [1] 35
+# 
+#   (0,0.01] (0.01,0.1]    (0.1,1] 
+#         27          8          0</code></pre>
+<p>For fSuSiE, it is a bit more complicated because we need to first
+load the CpG results:</p>
+<pre class="r"><code>methyl_cpg_fsusie_file &lt;-
+  &quot;../outputs/ROSMAP_mQTL_cs_effect_cpg_annotation.tsv.gz&quot;
+methyl_cpg_fsusie &lt;- read_enrichment_results(methyl_cpg_fsusie_file,n = 9)
+methyl_cpg_fsusie$region &lt;-
+  sapply(strsplit(methyl_cpg_fsusie$cs,&quot;:&quot;,fixed = TRUE),&quot;[[&quot;,2)
+methyl_cpg_fsusie &lt;- transform(methyl_cpg_fsusie,
+                               cs      = factor(cs), 
+                               region  = factor(region),
+                               context = factor(context))</code></pre>
+<p>Now identify the blacklisted mSNPs as the mSNPs that have the same
+position as a CpG (I will use both “peak start” and “peak end”):</p>
+<pre class="r"><code>ids_snp &lt;- c(with(methyl_snps_susie,paste(chr,pos,sep = &quot;_&quot;)),
+             with(methyl_snps_fsusie,paste(chr,pos,sep = &quot;_&quot;)))
+ids_cpg &lt;- with(methyl_cpg_fsusie,
+                c(paste(chr,peak_start,sep = &quot;_&quot;),
+                  paste(chr,peak_end,sep = &quot;_&quot;)))
+blacklisted_ids &lt;- intersect(ids_snp,ids_cpg)
+length(blacklisted_ids)
+# [1] 926</code></pre>
+<p>Before removing the blacklisted SNPs from the results, let’s take a
+quick look at them:</p>
+<pre class="r"><code>ids &lt;- with(methyl_snps_fsusie,paste(chr,pos,sep = &quot;_&quot;))
+rows &lt;- which(is.element(ids,blacklisted_ids))
+methyl_snps_fsusie_blacklisted &lt;- methyl_snps_fsusie[rows,]
+nrow(methyl_snps_fsusie_blacklisted)
+sum(methyl_snps_fsusie_blacklisted$pip &gt; 0.5)
+# [1] 1769
+# [1] 1263</code></pre>
+<p>It is interesting that a large fraction of the blacklisted SNPs have
+a high PIPs. Let’s also look at the MAFs of these “blacklisted”
+SNPs:</p>
+<pre class="r"><code>ggplot(methyl_snps_fsusie_blacklisted,aes(x = log10(maf))) +
+  geom_histogram(fill = &quot;darkblue&quot;,color = &quot;white&quot;,bins = 32) +
+  labs(x = &quot;log10(MAF)&quot;,y = &quot;number of SNPs&quot;) +
+  theme_cowplot(font_size = 10)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/blacklisted-snps-maf-hist-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>Before moving forward with the analysis, remove all SuSiE and fSuSiE
+CSs containing the blacklisted SNPs:</p>
+<pre class="r"><code>ids                &lt;- with(methyl_snps_susie,paste(chr,pos,sep = &quot;_&quot;))
+rows               &lt;- which(is.element(ids,blacklisted_ids))
+blacklisted_cs     &lt;- unique(methyl_snps_susie[rows,]$cs)
+methyl_snps_susie  &lt;- subset(methyl_snps_susie,!is.element(cs,blacklisted_cs))
+ids                &lt;- with(methyl_snps_fsusie,paste(chr,pos,sep = &quot;_&quot;))
+rows               &lt;- which(is.element(ids,blacklisted_ids))
+blacklisted_cs     &lt;- unique(methyl_snps_fsusie[rows,]$cs)
+methyl_snps_fsusie &lt;- subset(methyl_snps_fsusie,!is.element(cs,blacklisted_cs))
+methyl_snps_susie  &lt;- transform(methyl_snps_susie,cs = factor(cs))
+methyl_snps_fsusie &lt;- transform(methyl_snps_fsusie,cs = factor(cs))</code></pre>
+</div>
+<div id="compare-susie-toppc-and-fsusie-methylation-css"
+class="section level3">
+<h3>Compare SuSiE-topPC and fSuSiE methylation CSs</h3>
 <p>These histograms summarize the number of CSs per TAD:</p>
 <pre class="r"><code>get_cs_vs_tad_size &lt;- function (dat) {
   tads &lt;- levels(dat$region)
@@ -1585,7 +1763,7 @@ p &lt;- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
   geom_abline(intercept = 0,slope = 1,color = &quot;black&quot;,linetype = &quot;dotted&quot;) +
   scale_x_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
   scale_y_continuous(breaks = seq(0,20,2),limits = c(0,20)) +
-  scale_size(breaks = c(1,10,100)) +
+  scale_size(breaks = c(1,5,10,50,100)) +
   labs(x = &quot;SuSiE-topPC&quot;,y = &quot;fSuSiE&quot;,size = &quot;number of TADs&quot;) +
   theme_cowplot(font_size = 10)
 print(p)</code></pre>
@@ -1717,6 +1895,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/618cae4fa9aadcbe31f55487e1b478d485770fba/docs/figure/rosmap_overview.Rmd/cs-sizes-methyl-1.png" target="_blank">618cae4</a>
 </td>
 <td>
@@ -1741,6 +1930,18 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Here are the exact numbers:</p>
+<pre class="r"><code>table(cs_size_susie)
+table(cs_size_fsusie)
+# cs_size_susie
+#   1   2   5  10  20 Inf 
+# 589 250 431 366 389 762 
+# cs_size_fsusie
+#    1    2    5   10   20  Inf 
+# 8719 2074 1922  887  502  335</code></pre>
+</div>
+<div id="distance-to-tss-plot" class="section level3">
+<h3>Distance-to-TSS plot</h3>
 <p>We expect that most of the causal SNPs to be very close to the
 nearest TSS. Let’s check this. This will involve a couple of
 intermediate calculations.</p>
@@ -1783,21 +1984,21 @@ from the association tests.</p>
 }</code></pre>
 <p>With these functions, we can compile the data needed for this
 plot.</p>
-<pre class="r"><code>methyl_snps_assoc  &lt;- get_top_snp_per_location(methyl_cpg_assoc)
-methyl_snps_assoc  &lt;- add_min_dist_to_tss(methyl_snps_assoc,genes)
-methyl_snps_susie  &lt;- add_min_dist_to_tss(methyl_snps_susie,genes)
-methyl_snps_fsusie &lt;- add_min_dist_to_tss(methyl_snps_fsusie,genes)</code></pre>
+<pre class="r"><code>methyl_snps_assoc        &lt;- get_top_snp_per_location(methyl_cpg_assoc)
+methyl_snps_assoc        &lt;- add_min_dist_to_tss(methyl_snps_assoc,genes)
+methyl_snps_susie_nodup  &lt;- add_min_dist_to_tss(methyl_snps_susie_nodup,genes)
+methyl_snps_fsusie_nodup &lt;- add_min_dist_to_tss(methyl_snps_fsusie_nodup,genes)</code></pre>
 <p>For SuSiE-topPC and fSuSiE, we calculate “weighted” counts of SNPs,
 in which the weights are given by the PIPs.</p>
 <pre class="r"><code>bin_size &lt;- 10000
 bins &lt;- c(-Inf,seq(-2e5,2e5,bin_size),Inf)
 bins &lt;- bins + bin_size/2
 counts_assoc &lt;- as.numeric(table(cut(methyl_snps_assoc$min_dist_to_tss,bins)))
-counts_susie &lt;- tapply(methyl_snps_susie$pip,
-                       cut(methyl_snps_susie$min_dist_to_tss,bins),
+counts_susie &lt;- tapply(methyl_snps_susie_nodup$pip,
+                       cut(methyl_snps_susie_nodup$min_dist_to_tss,bins),
                        function (x) sum(x,na.rm = TRUE))
-counts_fsusie &lt;- tapply(methyl_snps_fsusie$pip,
-                        cut(methyl_snps_fsusie$min_dist_to_tss,bins),
+counts_fsusie &lt;- tapply(methyl_snps_fsusie_nodup$pip,
+                        cut(methyl_snps_fsusie_nodup$min_dist_to_tss,bins),
                         function (x) sum(x,na.rm = TRUE))</code></pre>
 <p>Now we can plot the result:</p>
 <pre class="r"><code>n &lt;- length(bins)
@@ -1862,20 +2063,9 @@ Peter Carbonetto
 </div>
 </div>
 </div>
-<div id="affected-cpgs" class="section level2">
-<h2>Affected CpGs</h2>
-<p>Now let’s turn to the recovery of affected CpGs. Load the results
-generated by fSuSiE (the SNP-CpG association testing results were
-imported previously):</p>
-<pre class="r"><code>methyl_cpg_fsusie_file &lt;-
-  &quot;../outputs/ROSMAP_mQTL_cs_effect_cpg_annotation.tsv.gz&quot;
-methyl_cpg_fsusie &lt;- read_enrichment_results(methyl_cpg_fsusie_file,n = 9)
-methyl_cpg_fsusie$region &lt;-
-  sapply(strsplit(methyl_cpg_fsusie$cs,&quot;:&quot;,fixed = TRUE),&quot;[[&quot;,2)
-methyl_cpg_fsusie &lt;- transform(methyl_cpg_fsusie,
-                               cs      = factor(cs), 
-                               region  = factor(region),
-                               context = factor(context))</code></pre>
+<div id="affected-cpgs" class="section level3">
+<h3>Affected CpGs</h3>
+<p>Now let’s turn to the recovery of affected CpGs.</p>
 <p>Counting the number of CpGs per TAD is quite simple from the way the
 fSuSiE results were compiled. It involves counting the number of unique
 CpGs in each TAD:</p>
@@ -2096,6 +2286,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/figure/rosmap_overview.Rmd/count-cpgs-per-snp-1.png" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/618cae4fa9aadcbe31f55487e1b478d485770fba/docs/figure/rosmap_overview.Rmd/count-cpgs-per-snp-1.png" target="_blank">618cae4</a>
 </td>
 <td>
@@ -2124,8 +2325,72 @@ Peter Carbonetto
 have an unusually large number of CpGs:</p>
 <pre class="r"><code>mean(cpgs_per_snp_assoc &gt; 20)
 mean(cpgs_per_snp_fsusie &gt; 150)
-# [1] 0.0215499
-# [1] 0.01744186</code></pre>
+# [1] 0.02155
+# [1] 0.01679</code></pre>
+</div>
+<div id="properties-of-msnps-in-1-snp-css" class="section level3">
+<h3>Properties of mSNPs in 1-SNP CSs</h3>
+<p>Now let’s look closely at the 1-SNP CSs for methylation.</p>
+<pre class="r"><code>methyl_cs1snp_susie  &lt;- table(methyl_snps_susie_nodup$cs)
+methyl_cs1snp_susie  &lt;- names(methyl_cs1snp_susie)[methyl_cs1snp_susie == 1]
+methyl_cs1snp_susie  &lt;- subset(methyl_snps_susie,
+                               is.element(cs,methyl_cs1snp_susie))
+methyl_cs1snp_fsusie &lt;- table(methyl_snps_fsusie_nodup$cs)
+methyl_cs1snp_fsusie &lt;- names(methyl_cs1snp_fsusie)[methyl_cs1snp_fsusie == 1]
+methyl_cs1snp_fsusie &lt;- subset(methyl_snps_fsusie,
+                              is.element(cs,methyl_cs1snp_fsusie))</code></pre>
+<p>Compare the MAFs of the 1-SNP CSs to the MAFs across SNPs in CSs:</p>
+<pre class="r"><code>p1 &lt;- ggplot(methyl_cs1snp_susie,aes(x = log10(maf))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 36) +
+  labs(x = &quot;log10(MAF)&quot;,y = &quot;number of SNPs&quot;,
+       title = &quot;SuSiE-topPC, 1-SNP CSs&quot;) +
+  theme_cowplot(font_size = 10)
+p2 &lt;- ggplot(methyl_cs1snp_fsusie,aes(x = log10(maf))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 36) +
+  labs(x = &quot;log10(MAF)&quot;,y = &quot;number of SNPs&quot;,
+       title = &quot;fSuSiE, 1-SNP CSs&quot;) +
+  theme_cowplot(font_size = 10)
+p3 &lt;- ggplot(methyl_snps_susie_nodup,aes(x = log10(maf))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 36) +
+  labs(x = &quot;log10(MAF)&quot;,y = &quot;number of SNPs&quot;,
+       title = &quot;SuSiE-topPC, all CSs&quot;) +
+  theme_cowplot(font_size = 10)
+p4 &lt;- ggplot(methyl_snps_fsusie_nodup,aes(x = log10(maf))) +
+  geom_histogram(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 36) +
+  labs(x = &quot;log10(MAF)&quot;,y = &quot;number of SNPs&quot;,
+       title = &quot;fSuSiE, all CSs&quot;) +
+  theme_cowplot(font_size = 10)
+plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/one-snp-cs-mafs-1.png" width="600" style="display: block; margin: auto;" /></p>
+<p>What is most striking is the excess of rarer SNPs in the 1-SNP CSs,
+particularly in the 1-SNP CSs identified by SuSiE-topPC.</p>
+<p>ADD TEXT HERE.</p>
+<pre class="r"><code>methyl_cpg_fsusie_cs1snp &lt;- subset(methyl_cpg_fsusie,
+                                   is.element(cs,methyl_cs1snp_fsusie$cs))
+rows &lt;- match(methyl_cpg_fsusie_cs1snp$cs,methyl_cs1snp_fsusie$cs)
+methyl_cpg_fsusie_cs1snp$variant_pos &lt;- methyl_cs1snp_fsusie[rows,&quot;pos&quot;]
+methyl_cpg_fsusie_cs1snp &lt;- transform(methyl_cpg_fsusie_cs1snp,
+                                      cs = factor(cs),
+                                      dist = peak_start - variant_pos)
+pdat &lt;- tapply(methyl_cpg_fsusie_cs1snp$dist,methyl_cpg_fsusie_cs1snp$cs,
+               function (x) {
+                 i &lt;- which.min(abs(x))
+                 return(x[i])
+               })
+pdat &lt;- data.frame(dist = pdat)
+pdat &lt;- transform(pdat,
+  dist = cut(dist,c(-Inf,-1e6,-1e5,-1e4,-1e3,-100,
+                    100,1e3,1e4,1e5,1e6,+Inf)))
+p &lt;- ggplot(pdat,aes(x = dist)) +
+  geom_bar(color = &quot;white&quot;,fill = &quot;darkblue&quot;,bins = 64,width = 0.5) +
+  labs(x = &quot;CpG - mSNP distance (Kb)&quot;, y = &quot;number of mSNPs&quot;) +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
+# Warning in geom_bar(color = &quot;white&quot;, fill = &quot;darkblue&quot;, bins = 64, width =
+# 0.5): Ignoring unknown parameters: `bins`
+print(p)</code></pre>
+<p><img src="figure/rosmap_overview.Rmd/dist-msnp-cpg-cs1snp-1.png" width="300" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="h3k27ac-snps" class="section level2">
 <h2>H3K27ac SNPs</h2>
@@ -2293,6 +2558,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/figure/rosmap_overview.Rmd/cs-sizes-ha-1.png" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/71954f15429162c72e3c8013edbb72accecc71a9/docs/figure/rosmap_overview.Rmd/cs-sizes-ha-1.png" target="_blank">71954f1</a>
@@ -2481,8 +2757,8 @@ Peter Carbonetto
 <p>A very small number of TADs have more than 200 affected peaks:</p>
 <pre class="r"><code>mean(ha_peaks_per_tad_assoc &gt; 200,na.rm = TRUE)
 mean(ha_peaks_per_tad_fsusie &gt; 200,na.rm = TRUE)
-# [1] 0.002463054
-# [1] 0.004926108</code></pre>
+# [1] 0.002463
+# [1] 0.004926</code></pre>
 <p>This plot compares the number of affected H3K27ac peaks identified by
 fSuSiE and the SNP-peak association tests:</p>
 <pre class="r"><code>pdat &lt;- data.frame(assoc  = ha_peaks_per_tad_assoc,
@@ -2518,6 +2794,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/figure/rosmap_overview.Rmd/compare-ha-peaks-per-tad-1.png" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/3bb4ba0dd104f7fc4d5447b6c8548273d2e777cd/docs/figure/rosmap_overview.Rmd/compare-ha-peaks-per-tad-1.png" target="_blank">3bb4ba0</a>
@@ -2598,6 +2885,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/dade7d2d7b0b7b39aa36a06a689b4ea4b96a98bf/docs/figure/rosmap_overview.Rmd/count-ha-peaks-per-snp-1.png" target="_blank">dade7d2</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/aece910973f3984cf07ffbe6089a898f58910c41/docs/figure/rosmap_overview.Rmd/count-ha-peaks-per-snp-1.png" target="_blank">aece910</a>
 </td>
 <td>
@@ -2615,8 +2913,8 @@ Peter Carbonetto
 had an unusually large number of affected peaks:</p>
 <pre class="r"><code>mean(ha_peaks_per_snp_assoc &gt; 10)
 mean(ha_peaks_per_snp_fsusie &gt; 40)
-# [1] 0.009820976
-# [1] 0.007172354</code></pre>
+# [1] 0.009821
+# [1] 0.007172</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2644,24 +2942,24 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] workflowr_1.7.1   cowplot_1.1.3     ggplot2_3.5.0     dplyr_1.1.4      
-# [5] data.table_1.15.2
+# [1] hexbin_1.28.5     cowplot_1.1.3     ggplot2_3.5.0     dplyr_1.1.4      
+# [5] data.table_1.15.2 workflowr_1.7.1  
 # 
 # loaded via a namespace (and not attached):
-#  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.3    
-#  [5] digest_0.6.34     magrittr_2.0.3    evaluate_0.23     grid_4.3.3       
-#  [9] fastmap_1.1.1     plyr_1.8.9        R.oo_1.26.0       rprojroot_2.0.4  
-# [13] jsonlite_1.8.8    processx_3.8.3    R.utils_2.12.3    whisker_0.4.1    
-# [17] ps_1.7.6          promises_1.2.1    httr_1.4.7        fansi_1.0.6      
-# [21] scales_1.3.0      codetools_0.2-19  textshaping_0.3.7 jquerylib_0.1.4  
+#  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    lattice_0.22-5   
+#  [5] stringi_1.8.3     digest_0.6.34     magrittr_2.0.3    evaluate_1.0.3   
+#  [9] grid_4.3.3        fastmap_1.1.1     plyr_1.8.9        R.oo_1.26.0      
+# [13] rprojroot_2.0.4   jsonlite_1.8.8    R.utils_2.12.3    processx_3.8.3   
+# [17] whisker_0.4.1     ps_1.7.6          promises_1.2.1    httr_1.4.7       
+# [21] fansi_1.0.6       scales_1.3.0      textshaping_0.3.7 jquerylib_0.1.4  
 # [25] cli_3.6.4         rlang_1.1.5       R.methodsS3_1.8.2 munsell_0.5.0    
-# [29] withr_3.0.0       cachem_1.0.8      yaml_2.3.8        tools_4.3.3      
+# [29] withr_3.0.2       cachem_1.0.8      yaml_2.3.8        tools_4.3.3      
 # [33] reshape2_1.4.4    colorspace_2.1-0  httpuv_1.6.14     vctrs_0.6.5      
 # [37] R6_2.5.1          lifecycle_1.0.4   git2r_0.33.0      stringr_1.5.1    
-# [41] fs_1.6.5          ragg_1.2.7        callr_3.7.5       pkgconfig_2.0.3  
+# [41] fs_1.6.5          ragg_1.2.7        pkgconfig_2.0.3   callr_3.7.5      
 # [45] pillar_1.9.0      bslib_0.6.1       later_1.3.2       gtable_0.3.4     
-# [49] glue_1.8.0        Rcpp_1.0.12       systemfonts_1.0.6 xfun_0.42        
-# [53] tibble_3.2.1      tidyselect_1.2.1  highr_0.10        rstudioapi_0.15.0
+# [49] glue_1.8.0        Rcpp_1.0.12       systemfonts_1.0.6 highr_0.10       
+# [53] xfun_0.42         tibble_3.2.1      tidyselect_1.2.1  rstudioapi_0.15.0
 # [57] knitr_1.45        farver_2.1.1      htmltools_0.5.8.1 labeling_0.4.3   
 # [61] rmarkdown_2.26    compiler_4.3.3    getPass_0.2-4</code></pre>
 </div>
