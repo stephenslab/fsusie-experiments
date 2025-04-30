@@ -4,9 +4,7 @@
 # HSP90aa1
 
 
-
-rm(list=ls())
-
+ 
 cs_colors <- c("#a6cee3","#33a02c","#1f78b4","#b2df8a","#fb9a99",
                "#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#b15928",
                "#8dd3c7","#bebada","#fb8072","#80b1d3","#fdb462",
@@ -264,7 +262,7 @@ p_gene <- ggplot(hsp90_clean_ordered, aes(xstart = start, xend = end, y = transc
   ) +
   labs(
     title = "",
-    x = "Genomic Position",
+    x = "Genomic Position (bp)",
     y = " "
   ) +
   scale_x_continuous(limits = c(102080692, 102087093), labels = scales::comma) +
@@ -407,3 +405,5 @@ pdf(file_path, width = 8.27, height =8.27 )  # A4 in inches
 
 final_with_lines
 dev.off()
+
+HSP =final_with_lines

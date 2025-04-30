@@ -4,8 +4,7 @@
 # ABHD17A
 
 
-
-rm(list=ls())
+ 
 
 cs_colors <- c("#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99",
                "#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#b15928",
@@ -385,3 +384,4 @@ pdf(file_path, width = 8.27, height =8.27 )  # A4 in inches
 
 final_with_lines
 dev.off()
+ABH=final_with_lines

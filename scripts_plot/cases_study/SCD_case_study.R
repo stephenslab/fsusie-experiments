@@ -1,4 +1,4 @@
-rm(list = ls())
+ 
 
 path="C:/Document/Serieux/Travail/Data_analysis_and_papers/GTEX_analysis_Fsusie"
 source(paste0(path,"/code/plot_all_effect_log.R"))
@@ -194,7 +194,8 @@ p_gene <- ggplot() +
   scale_x_continuous(labels = scales::comma) +
   theme_cowplot() +
   theme(
-    axis.text.y = element_text(angle = 90, vjust = 0.5, hjust = 0.5, face = "bold", size = 8),
+    axis.text.y = element_blank(),
+    axis.ticks.y=element_blank(),
     axis.text.x = element_text(size = 9),
     axis.title.x = element_text(size = 10, face = "bold"),
     axis.title.y = element_text(size = 10, face = "bold", angle = 0, vjust = 0.5),
@@ -373,3 +374,4 @@ pdf(file_path, width =8.27, height = 8.27 )  # A4 in inches
 print(final_with_lines)
 
 dev.off()
+sCD =final_with_lines
