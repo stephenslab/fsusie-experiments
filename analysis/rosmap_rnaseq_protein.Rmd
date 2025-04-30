@@ -1,5 +1,5 @@
 ---
-title: Examine RNA-seq fine-mapping results from the ROSMAP data
+title: Examine ROSMAP RNA-seq and proteomics fine-mapping results
 author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
@@ -20,6 +20,47 @@ Load some packges and custom functions used in the code below:
 library(data.table)
 library(ggplot2)
 library(cowplot)
+```
+
+Load the RNA-seq fine-mapping results.
+
+```{r read-rnaseq-results}
+rnaseq <- fread("../outputs/ROSMAP_DLPFC_mega_eQTL.cs_only.tsv.gz",
+                sep = "\t",header = TRUE,stringsAsFactors = FALSE)
+class(rnaseq) <- "data.frame"
+rnaseq <- rnaseq[c("gene","variant_id","chr","pos","ref","alt","maf",
+                   "pip","cs_coverage_0.95_min_corr","context")]
+rnaseq <-
+  transform(rnaseq,
+            gene = factor(gene),
+            chr = factor(chr),
+			ref = factor(ref),
+			alt = factor(alt),
+			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
+			context = factor(context))
+```
+
+Keep only the results from DLPFC:
+
+```{r prepare-rna-seq-results}
+rnaseq <- subset(rnaseq,context == "DLPFC_DeJager_eQTL")
+```
+
+Plot a histogram of the CS sizes for the RNA-seq fine-mapping:
+
+```{r cs-sizes-rnaseq}
+bins <- c(0,1,2,5,10,20,Inf)
+gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
+gene_cs <- factor(gene_cs)
+cs_size <- as.numeric(table(gene_cs))
+cs_size <- cut(cs_size,bins)
+levels(cs_size) <- bins[-1]
+p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "darkorange",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs") +
+  theme_cowplot(font_size = 10)
+print(p)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
