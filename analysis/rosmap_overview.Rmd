@@ -12,7 +12,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 **Note:** If you would like to run this analysis on your computer, you
 will first need to download the fine-mapping outputs. They can be
 downloaded from [here][box-download-link]. Once you have downloaded
-the files, copy them to the "outputs" subdirectory.
+the files, copy each file to the "data" or "outputs" subdirectory.
 
 Load some packges and custom functions used in the code below:
 
