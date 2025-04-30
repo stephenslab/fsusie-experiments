@@ -5,4 +5,6 @@ site: workflowr::wflow_site
 output: workflowr::wflow_html
 ---
 
-+ [Summaries of susie and fsusie results on ROSMAP data.](rosmap.html)
++ [Summarize ROSMAP RNA-seq and proteomics fine-mapping results.](rosmap_rnaseq_protein.html)
+
++ [Examine methylation and H3K27ac fine-mapping results from the ROSMAP data.](rosmap_overview.html)

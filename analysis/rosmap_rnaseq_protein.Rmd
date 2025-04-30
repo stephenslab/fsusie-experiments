@@ -1,0 +1,25 @@
+---
+title: Examine RNA-seq fine-mapping results from the ROSMAP data
+author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+**Note:** If you would like to run this analysis on your computer, you
+will first need to download the fine-mapping outputs. They can be
+downloaded from [here][box-download-link]. Once you have downloaded
+the files, copy them to the "outputs" subdirectory.
+
+Load some packges and custom functions used in the code below:
+
+```{r load-pkgs, message=FALSE}
+library(data.table)
+library(ggplot2)
+library(cowplot)
+```
+
+[box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
