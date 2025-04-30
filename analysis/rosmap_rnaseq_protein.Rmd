@@ -63,4 +63,8 @@ p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
 print(p)
 ```
 
+Load the protein fine-mapping results.
+
+TO DO.
+
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
