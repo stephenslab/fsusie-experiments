@@ -203,6 +203,8 @@ plotTracks( otCR2 )
 ##### effect plot  -----
 
 res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.rds")
+#res <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/fsusie_object/raw_data/ROSMAP_haQTL.chr1_205117782_208795513.fsusie_mixture_normal_top_pc_weights.input_data (1).rds")
+ 
 fsusie_obj_ha = res$`chr1:205117782-208795513`$ROSMAP_DLPFC_haQTL$fsusie_result
 rm(res)
 
@@ -246,6 +248,23 @@ obj_plot$effect_s=effect_s
 obj_plot$pos_H3Kac_effect =positions
 obj_plot$peak_pos = pos
 positions=obj_plot$pos_H3Kac_effect
+
+effect_list=list()
+
+for ( l in 1:length(fsusie_obj_ha$cs) ){
+  
+  fsusie_obj_ha$cs[[l]][1]
+  tt0= fsusieR:::univariate_TI_regression(Y_w,
+                                          X= matrix(X[, fsusie_obj_ha$cs[[l]][1] ],
+                                                    ncol=1),
+                                          alpha=0.01)
+  effect_list[[l]]= list(effect_s= tt0,
+                          pos_H3Kac_effect =positions,
+                           peak_pos = pos)
+}
+
+obj_plot$effect_list=effect_list
+ 
 pos= obj_plot$peak_pos
 chrom=1
 plot_list=list()
