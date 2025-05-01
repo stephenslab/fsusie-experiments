@@ -14,7 +14,7 @@ will first need to download the fine-mapping outputs. They can be
 downloaded from [here][box-download-link]. Once you have downloaded
 the files, copy each file to the "data" or "outputs" subdirectory.
 
-Load some packges and custom functions used in the code below:
+Load some packages and custom functions used in the code below:
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
