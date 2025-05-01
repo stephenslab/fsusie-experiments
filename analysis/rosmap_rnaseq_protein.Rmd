@@ -14,7 +14,7 @@ will first need to download the fine-mapping outputs. They can be
 downloaded from [here][box-download-link]. Once you have downloaded
 the files, copy them to the "outputs" subdirectory.
 
-Load some packges and custom functions used in the code below:
+Load a few packages used in the code below:
 
 ```{r load-pkgs, message=FALSE}
 library(data.table)
@@ -22,49 +22,82 @@ library(ggplot2)
 library(cowplot)
 ```
 
-Load the RNA-seq fine-mapping results.
+Load the RNA-seq fine-mapping results:
 
 ```{r read-rnaseq-results}
 rnaseq <- fread("../outputs/ROSMAP_DLPFC_mega_eQTL.cs_only.tsv.gz",
                 sep = "\t",header = TRUE,stringsAsFactors = FALSE)
 class(rnaseq) <- "data.frame"
 rnaseq <- rnaseq[c("gene","variant_id","chr","pos","ref","alt","maf",
-                   "pip","cs_coverage_0.95_min_corr","context")]
+                   "pip","cs_coverage_0.95","context")]
 rnaseq <-
   transform(rnaseq,
             gene = factor(gene),
             chr = factor(chr),
 			ref = factor(ref),
 			alt = factor(alt),
-			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
+			cs_coverage_0.95 = factor(cs_coverage_0.95),
 			context = factor(context))
-```
-
-Keep only the results from DLPFC:
-
-```{r prepare-rna-seq-results}
-rnaseq <- subset(rnaseq,context == "DLPFC_DeJager_eQTL")
 ```
 
 Plot a histogram of the CS sizes for the RNA-seq fine-mapping:
 
-```{r cs-sizes-rnaseq}
+```{r cs-sizes-rnaseq, fig.height=2.5, fig.width=2.5, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
+gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95,sep = "_"))
 gene_cs <- factor(gene_cs)
 cs_size <- as.numeric(table(gene_cs))
 cs_size <- cut(cs_size,bins)
 levels(cs_size) <- bins[-1]
 p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
-  geom_histogram(stat = "count",color = "white",fill = "darkorange",
+  geom_histogram(stat = "count",color = "white",fill = "dodgerblue",
                  width = 0.65) +
   labs(x = "CS size",y = "number of CSs") +
   theme_cowplot(font_size = 10)
 print(p)
 ```
 
-Load the protein fine-mapping results.
+```{r cs-sizes-rnaseq-ggsave, echo=FALSE, warning=FALSE}
+ggsave("cs_sizes_rnaseq.pdf",p,height = 2,width = 2)
+```
 
-TO DO.
+Load the protein fine-mapping results:
+
+```{r read-protein-results}
+protein <- fread("../outputs/ROSMAP_DLPFC_pQTL.cs_only.tsv.gz",
+                sep = "\t",header = TRUE,stringsAsFactors = FALSE)
+class(protein) <- "data.frame"
+protein <- protein[c("gene","variant_id","chr","pos","ref","alt","maf",
+                     "pip","cs_coverage_0.95","context")]
+protein <-
+  transform(protein,
+            gene = factor(gene),
+            chr = factor(chr),
+			ref = factor(ref),
+			alt = factor(alt),
+			cs_coverage_0.95 = factor(cs_coverage_0.95),
+			context = factor(context))
+protein <- subset(protein,context == "DLPFC_Bennett_pQTL")
+```
+
+Plot a histogram of the CS sizes for the proteomics fine-mapping:
+
+```{r cs-sizes-protein, fig.height=2.5, fig.width=2.5, warning=FALSE}
+gene_cs <- with(protein,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- factor(gene_cs)
+cs_size <- as.numeric(table(gene_cs))
+cs_size <- cut(cs_size,bins)
+levels(cs_size) <- bins[-1]
+p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "darkorchid",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs") +
+  theme_cowplot(font_size = 10)
+print(p)
+```
+
+```{r cs-sizes-protein-ggsave, echo=FALSE, warning=FALSE}
+ggsave("cs_sizes_protein.pdf",p,height = 2,width = 2)
+```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
