@@ -52,9 +52,16 @@ levels(cs_size) <- bins[-1]
 p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
   geom_histogram(stat = "count",color = "white",fill = "dodgerblue",
                  width = 0.65) +
+  scale_y_continuous(breaks = seq(0,20000,2500)) +
   labs(x = "CS size",y = "number of CSs") +
   theme_cowplot(font_size = 10)
 print(p)
+```
+
+Here are the exact numbers:
+
+```{r cs-sizes-rnaseq-table}
+table(cs_size)
 ```
 
 ```{r cs-sizes-rnaseq-ggsave, echo=FALSE, warning=FALSE}
@@ -94,6 +101,12 @@ p <- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
   labs(x = "CS size",y = "number of CSs") +
   theme_cowplot(font_size = 10)
 print(p)
+```
+
+Here are the exact numbers:
+
+```{r cs-sizes-protein-table}
+table(cs_size)
 ```
 
 ```{r cs-sizes-protein-ggsave, echo=FALSE, warning=FALSE}
