@@ -302,7 +302,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-30
+<strong>Last updated:</strong> 2025-05-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree496ed0fa300134df45d9dd64c5c7e414cfc27389targetblank496ed0fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5a659933e483e9768a57c3acd25b25e08ea6b427targetblank5a65993a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/496ed0fa300134df45d9dd64c5c7e414cfc27389" target="_blank">496ed0f</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/5a659933e483e9768a57c3acd25b25e08ea6b427" target="_blank">5a65993</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree496ed0fa300134df45d9dd64c5c7e414cfc27389targetblank496ed0fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5a659933e483e9768a57c3acd25b25e08ea6b427targetblank5a65993a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/496ed0fa300134df45d9dd64c5c7e414cfc27389" target="_blank">496ed0f</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/5a659933e483e9768a57c3acd25b25e08ea6b427" target="_blank">5a65993</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,8 +467,8 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/#rosmap_overview.Rmd#
-    Untracked:  analysis/.#rosmap_overview.Rmd
+    Untracked:  .DS_Store
+    Untracked:  analysis/cs_sizes_rnaseq.pdf
     Untracked:  analysis/rosmap_overview_cache/
     Untracked:  data/12864_2013_7006_MOESM2_ESM.csv.gz
     Untracked:  data/IlluminaHumanMethylation450K.rda
@@ -546,6 +546,57 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/5a659933e483e9768a57c3acd25b25e08ea6b427/analysis/rosmap_rnaseq_protein.Rmd" target="_blank">5a65993</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-01
+</td>
+<td>
+workflowr::wflow_publish("rosmap_rnaseq_protein.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/1040101a070d4df22cfd82b8777682dfb7090e9a/analysis/rosmap_rnaseq_protein.Rmd" target="_blank">1040101</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-30
+</td>
+<td>
+Small edit to rosmap_rnaseq_protein.Rmd.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/c8753a181abfdb324ba075dae14007e9af8bdf19/docs/rosmap_rnaseq_protein.html" target="_blank">c8753a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-30
+</td>
+<td>
+First build of the rosmap_rnaseq_protein analysis.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/496ed0fa300134df45d9dd64c5c7e414cfc27389/analysis/rosmap_rnaseq_protein.Rmd" target="_blank">496ed0f</a>
 </td>
 <td>
@@ -588,42 +639,103 @@ can be downloaded from <a
 href="https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo">here</a>.
 Once you have downloaded the files, copy them to the “outputs”
 subdirectory.</p>
-<p>Load some packges and custom functions used in the code below:</p>
+<p>Load a few packages used in the code below:</p>
 <pre class="r"><code>library(data.table)
 library(ggplot2)
 library(cowplot)</code></pre>
-<p>Load the RNA-seq fine-mapping results.</p>
+<p>Load the RNA-seq fine-mapping results:</p>
 <pre class="r"><code>rnaseq &lt;- fread(&quot;../outputs/ROSMAP_DLPFC_mega_eQTL.cs_only.tsv.gz&quot;,
                 sep = &quot;\t&quot;,header = TRUE,stringsAsFactors = FALSE)
 class(rnaseq) &lt;- &quot;data.frame&quot;
 rnaseq &lt;- rnaseq[c(&quot;gene&quot;,&quot;variant_id&quot;,&quot;chr&quot;,&quot;pos&quot;,&quot;ref&quot;,&quot;alt&quot;,&quot;maf&quot;,
-                   &quot;pip&quot;,&quot;cs_coverage_0.95_min_corr&quot;,&quot;context&quot;)]
+                   &quot;pip&quot;,&quot;cs_coverage_0.95&quot;,&quot;context&quot;)]
 rnaseq &lt;-
   transform(rnaseq,
             gene = factor(gene),
             chr = factor(chr),
             ref = factor(ref),
             alt = factor(alt),
-            cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
+            cs_coverage_0.95 = factor(cs_coverage_0.95),
             context = factor(context))</code></pre>
-<p>Keep only the results from DLPFC:</p>
-<pre class="r"><code>rnaseq &lt;- subset(rnaseq,context == &quot;DLPFC_DeJager_eQTL&quot;)</code></pre>
 <p>Plot a histogram of the CS sizes for the RNA-seq fine-mapping:</p>
 <pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
-gene_cs &lt;- with(rnaseq,paste(gene,cs_coverage_0.95_min_corr,sep = &quot;_&quot;))
+gene_cs &lt;- with(rnaseq,paste(gene,cs_coverage_0.95,sep = &quot;_&quot;))
 gene_cs &lt;- factor(gene_cs)
 cs_size &lt;- as.numeric(table(gene_cs))
 cs_size &lt;- cut(cs_size,bins)
 levels(cs_size) &lt;- bins[-1]
 p &lt;- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
-  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkorange&quot;,
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;dodgerblue&quot;,
                  width = 0.65) +
   labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;) +
   theme_cowplot(font_size = 10)
-# Warning in geom_histogram(stat = &quot;count&quot;, color = &quot;white&quot;, fill = &quot;darkorange&quot;,
-# : Ignoring unknown parameters: `binwidth`, `bins`, and `pad`
 print(p)</code></pre>
-<p><img src="figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" width="840" style="display: block; margin: auto;" /></p>
+<p><img src="figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cs-sizes-rnaseq-1">
+Past versions of cs-sizes-rnaseq-1.png
+</button>
+</p>
+<div id="fig-cs-sizes-rnaseq-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/c8753a181abfdb324ba075dae14007e9af8bdf19/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" target="_blank">c8753a1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-04-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Load the protein fine-mapping results:</p>
+<pre class="r"><code>protein &lt;- fread(&quot;../outputs/ROSMAP_DLPFC_pQTL.cs_only.tsv.gz&quot;,
+                sep = &quot;\t&quot;,header = TRUE,stringsAsFactors = FALSE)
+class(protein) &lt;- &quot;data.frame&quot;
+protein &lt;- protein[c(&quot;gene&quot;,&quot;variant_id&quot;,&quot;chr&quot;,&quot;pos&quot;,&quot;ref&quot;,&quot;alt&quot;,&quot;maf&quot;,
+                     &quot;pip&quot;,&quot;cs_coverage_0.95&quot;,&quot;context&quot;)]
+protein &lt;-
+  transform(protein,
+            gene = factor(gene),
+            chr = factor(chr),
+            ref = factor(ref),
+            alt = factor(alt),
+            cs_coverage_0.95 = factor(cs_coverage_0.95),
+            context = factor(context))
+protein &lt;- subset(protein,context == &quot;DLPFC_Bennett_pQTL&quot;)</code></pre>
+<p>Plot a histogram of the CS sizes for the proteomics fine-mapping:</p>
+<pre class="r"><code>gene_cs &lt;- with(protein,paste(gene,cs_coverage_0.95,sep = &quot;_&quot;))
+gene_cs &lt;- factor(gene_cs)
+cs_size &lt;- as.numeric(table(gene_cs))
+cs_size &lt;- cut(cs_size,bins)
+levels(cs_size) &lt;- bins[-1]
+p &lt;- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
+  geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;darkorchid&quot;,
+                 width = 0.65) +
+  labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;) +
+  theme_cowplot(font_size = 10)
+print(p)</code></pre>
+<p><img src="figure/rosmap_rnaseq_protein.Rmd/cs-sizes-protein-1.png" width="300" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -654,20 +766,20 @@ Session information
 # [1] cowplot_1.1.3     ggplot2_3.5.0     data.table_1.15.2
 # 
 # loaded via a namespace (and not attached):
-#  [1] gtable_0.3.4      jsonlite_1.8.8    highr_0.10        dplyr_1.1.4      
-#  [5] compiler_4.3.3    promises_1.2.1    tidyselect_1.2.1  Rcpp_1.0.12      
-#  [9] stringr_1.5.1     git2r_0.33.0      later_1.3.2       jquerylib_0.1.4  
-# [13] scales_1.3.0      yaml_2.3.8        fastmap_1.1.1     R6_2.5.1         
-# [17] labeling_0.4.3    generics_0.1.3    workflowr_1.7.1   knitr_1.45       
-# [21] tibble_3.2.1      munsell_0.5.0     rprojroot_2.0.4   bslib_0.6.1      
-# [25] pillar_1.9.0      R.utils_2.12.3    rlang_1.1.5       utf8_1.2.4       
-# [29] cachem_1.0.8      stringi_1.8.3     httpuv_1.6.14     xfun_0.42        
-# [33] fs_1.6.5          sass_0.4.9        cli_3.6.4         withr_3.0.2      
-# [37] magrittr_2.0.3    digest_0.6.34     grid_4.3.3        lifecycle_1.0.4  
-# [41] R.oo_1.26.0       R.methodsS3_1.8.2 vctrs_0.6.5       evaluate_1.0.3   
-# [45] glue_1.8.0        farver_2.1.1      whisker_0.4.1     colorspace_2.1-0 
-# [49] fansi_1.0.6       rmarkdown_2.26    tools_4.3.3       pkgconfig_2.0.3  
-# [53] htmltools_0.5.8.1</code></pre>
+#  [1] sass_0.4.9        utf8_1.2.4        generics_0.1.3    stringi_1.8.3    
+#  [5] digest_0.6.34     magrittr_2.0.3    evaluate_1.0.3    grid_4.3.3       
+#  [9] fastmap_1.1.1     R.oo_1.26.0       rprojroot_2.0.4   workflowr_1.7.1  
+# [13] jsonlite_1.8.8    R.utils_2.12.3    whisker_0.4.1     promises_1.2.1   
+# [17] fansi_1.0.6       scales_1.3.0      textshaping_0.3.7 jquerylib_0.1.4  
+# [21] cli_3.6.4         rlang_1.1.5       R.methodsS3_1.8.2 munsell_0.5.0    
+# [25] withr_3.0.2       cachem_1.0.8      yaml_2.3.8        tools_4.3.3      
+# [29] dplyr_1.1.4       colorspace_2.1-0  httpuv_1.6.14     vctrs_0.6.5      
+# [33] R6_2.5.1          lifecycle_1.0.4   git2r_0.33.0      stringr_1.5.1    
+# [37] fs_1.6.5          ragg_1.2.7        pkgconfig_2.0.3   pillar_1.9.0     
+# [41] bslib_0.6.1       later_1.3.2       gtable_0.3.4      glue_1.8.0       
+# [45] Rcpp_1.0.12       systemfonts_1.0.6 xfun_0.42         tibble_3.2.1     
+# [49] tidyselect_1.2.1  highr_0.10        knitr_1.45        farver_2.1.1     
+# [53] htmltools_0.5.8.1 rmarkdown_2.26    labeling_0.4.3    compiler_4.3.3</code></pre>
 </div>
 
 
