@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5a659933e483e9768a57c3acd25b25e08ea6b427targetblank5a65993a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree94a37347550bcc97d8bd79721f9c7c3fc93b0ce8targetblank94a3734a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/5a659933e483e9768a57c3acd25b25e08ea6b427" target="_blank">5a65993</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/94a37347550bcc97d8bd79721f9c7c3fc93b0ce8" target="_blank">94a3734</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5a659933e483e9768a57c3acd25b25e08ea6b427targetblank5a65993a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree94a37347550bcc97d8bd79721f9c7c3fc93b0ce8targetblank94a3734a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/5a659933e483e9768a57c3acd25b25e08ea6b427" target="_blank">5a65993</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/94a37347550bcc97d8bd79721f9c7c3fc93b0ce8" target="_blank">94a3734</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,7 +467,7 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  .DS_Store
+    Untracked:  analysis/cs_sizes_protein.pdf
     Untracked:  analysis/cs_sizes_rnaseq.pdf
     Untracked:  analysis/rosmap_overview_cache/
     Untracked:  data/12864_2013_7006_MOESM2_ESM.csv.gz
@@ -541,6 +541,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/94a37347550bcc97d8bd79721f9c7c3fc93b0ce8/analysis/rosmap_rnaseq_protein.Rmd" target="_blank">94a3734</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-01
+</td>
+<td>
+workflowr::wflow_publish("rosmap_rnaseq_protein.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/ad758942c5a73c0de239881235df3b4600db40b6/docs/rosmap_rnaseq_protein.html" target="_blank">ad75894</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-01
+</td>
+<td>
+Added histograms to the rosmap_rnaseq_protein analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -667,6 +701,7 @@ levels(cs_size) &lt;- bins[-1]
 p &lt;- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
   geom_histogram(stat = &quot;count&quot;,color = &quot;white&quot;,fill = &quot;dodgerblue&quot;,
                  width = 0.65) +
+  scale_y_continuous(breaks = seq(0,20000,2500)) +
   labs(x = &quot;CS size&quot;,y = &quot;number of CSs&quot;) +
   theme_cowplot(font_size = 10)
 print(p)</code></pre>
@@ -695,6 +730,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/ad758942c5a73c0de239881235df3b4600db40b6/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" target="_blank">ad75894</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-01
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/c8753a181abfdb324ba075dae14007e9af8bdf19/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" target="_blank">c8753a1</a>
 </td>
 <td>
@@ -708,6 +754,11 @@ Peter Carbonetto
 </table>
 </div>
 </div>
+<p>Here are the exact numbers:</p>
+<pre class="r"><code>table(cs_size)
+# cs_size
+#     1     2     5    10    20   Inf 
+#  2857  1659  2925  2917  3817 14278</code></pre>
 <p>Load the protein fine-mapping results:</p>
 <pre class="r"><code>protein &lt;- fread(&quot;../outputs/ROSMAP_DLPFC_pQTL.cs_only.tsv.gz&quot;,
                 sep = &quot;\t&quot;,header = TRUE,stringsAsFactors = FALSE)
@@ -736,6 +787,48 @@ p &lt;- ggplot(data.frame(cs_size = cs_size),aes(x = cs_size)) +
   theme_cowplot(font_size = 10)
 print(p)</code></pre>
 <p><img src="figure/rosmap_rnaseq_protein.Rmd/cs-sizes-protein-1.png" width="300" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cs-sizes-protein-1">
+Past versions of cs-sizes-protein-1.png
+</button>
+</p>
+<div id="fig-cs-sizes-protein-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/ad758942c5a73c0de239881235df3b4600db40b6/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-protein-1.png" target="_blank">ad75894</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Here are the exact numbers:</p>
+<pre class="r"><code>table(cs_size)
+# cs_size
+#    1    2    5   10   20  Inf 
+# 1797  670  835  634  594 1332</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -779,7 +872,7 @@ Session information
 # [41] bslib_0.6.1       later_1.3.2       gtable_0.3.4      glue_1.8.0       
 # [45] Rcpp_1.0.12       systemfonts_1.0.6 xfun_0.42         tibble_3.2.1     
 # [49] tidyselect_1.2.1  highr_0.10        knitr_1.45        farver_2.1.1     
-# [53] htmltools_0.5.8.1 rmarkdown_2.26    labeling_0.4.3    compiler_4.3.3</code></pre>
+# [53] htmltools_0.5.8.1 labeling_0.4.3    rmarkdown_2.26    compiler_4.3.3</code></pre>
 </div>
 
 
