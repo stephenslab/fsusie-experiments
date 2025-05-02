@@ -59,7 +59,7 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   scale_x_continuous(breaks = seq(205,209,0.5)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray") +
   labs(x = "base-pair position on chromosome 1 (Mb)",y = "PIP",
-       title = "CR1/CR2") +
+       title = "CR1/CR2",color = "") +
   guides(color = guide_legend(nrow = 2)) +
   theme_cowplot(font_size = 8) +
   theme(legend.position = "top")
@@ -83,14 +83,14 @@ for (i in 1:n) {
   dat <- interpolate_effect_estimates(dat,peak_pos[seq(2,m-1)])
   dat <- transform(dat,
                    pos     = pos/1e6,
-                   cs      = i,
+                   cs      = paste("CS",i),
                    nonzero = !(low <= 0 & up >= 0))
   j <- which.max(abs(dat$effect))
   dat[j,"label"] <- paste("CS",i)
   effects <- rbind(effects,dat)
 }
 effects <- transform(effects,
-                     cs     = factor(cs,1:n),
+                     cs     = factor(cs),
                      effect = effect/abs(up - low))
 
 # Create the effect plot.
@@ -112,7 +112,8 @@ p2 <- ggplot() +
   scale_y_continuous(breaks = seq(-20,20,2)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray",
                      drop = FALSE) +
-  labs(x = "base-pair position on chromosome 1 (Mb)",y = "effect") +
+  labs(x = "base-pair position on chromosome 1 (Mb)",y = "effect",
+       color = "") +
   guides(color = guide_legend(nrow = 1)) +
   theme_cowplot(font_size = 8) +
   theme(legend.position = "bottom")
