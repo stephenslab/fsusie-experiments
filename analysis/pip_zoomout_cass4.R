@@ -11,42 +11,73 @@ library(ggplot2)
 library(ggrepel)
 library(cowplot)
 set.seed(1)
-zoomin_region <- c(56.34,56.55)
-
-# The top panel is a PIP plot.
 # Colors are from colorbrewer2.org
 cs_colors <- c("#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99",
                "#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#b15928",
                "#8dd3c7","#bebada","#fb8072","#80b1d3","#fdb462",
                "#b3de69","#fccde5","#bc80bd")
+zoomin_region <- c(56.34,56.55)
+
+# Import the Illumina HumanMethylation450 CpG probe data.
+load("../data/IlluminaHumanMethylation450K.rda")
+probes <- IlluminaHumanMethylation450K
+probes <- subset(probes,!is.na(Start_hg38) & !is.na(End_hg38))
+probes <- subset(probes,End_hg38 > Start_hg38)
+probes <- subset(probes,CHR_hg38 == "chr6")
+probes <- probes[c("CHR_hg38","Start_hg38","End_hg38")]
+names(probes) <- c("chr","start","end")
+rownames(probes) <- NULL
+
+# TOP PANEL: PIP PLOT
+# -------------------
 load("../outputs/CASS4_obj.RData")
 ids <- names(obj_plot$fsusie_obj_me$pip)
-pdat <- data.frame(id  = as.character(NA),
-                   pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
-                   pip = obj_plot$fsusie_obj_me$pip,
-                   cs  = as.character(NA),
+pdat <- data.frame(id        = as.character(NA),
+                   pos       = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
+                   pip       = obj_plot$fsusie_obj_me$pip,
+                   cs        = as.numeric(NA),
+                   cs_label  = as.character(NA),
+                   blacklist = FALSE,
                    stringsAsFactors = FALSE)
-pdat <- transform(pdat,pos = as.numeric(pos)/1e6)
 rownames(pdat) <- ids
-zoomout_region <- range(pdat$pos)
 n <- length(obj_plot$fsusie_obj_me$sets$cs)
 for (i in 1:n) {
   snps <- names(obj_plot$fsusie_obj_me$sets$cs[[i]])
-  cs_label <- sprintf("CS %d, %d SNPs",i,length(snps))
-  pdat[snps,"cs"] <- i # cs_label
   j <- snps[which.max(pdat[snps,"pip"])]
-  pdat[j,"id"] <- sprintf("%s (CS %d, %d SNPs)",j,i,length(snps))
+  pdat[snps,"cs"] <- i
+  pdat[snps,"cs_label"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
+  pdat[j,"id"] <- paste("CS",i)
 }
-pdat <- transform(pdat,cs = factor(cs))
+
+# Remove CSs with SNPs inside CpG probes.
+snps <- which(!is.na(pdat$cs))
+for (i in snps) {
+  pos <- pdat[i,"pos"]
+  if (any(pos >= probes$start &
+          pos <= probes$end)) {
+     pdat[i,"blacklist"] <- TRUE
+   }
+}
+blacklisted_cs <- unique(subset(pdat,blacklist)$cs)
+pdat <- subset(pdat,!is.element(cs,blacklisted_cs))
+pdat <- transform(pdat,
+                  cs       = factor(cs),
+                  cs_label = factor(cs_label),
+                  pos      = as.numeric(pos)/1e6)
+zoomout_region <- range(pdat$pos)
+
+# Thin out the SNPs with very small PIPs; visually, they are not all
+# needed.
 i <- which(pdat$pip >= 0.01)
 j <- which(pdat$pip < 0.01)
-j <- sample(j,2500)
-i <- sort(c(i,j))
-pdat <- pdat[i,]
+j <- sample(j,2400)
+rows <- sort(c(i,j))
+pdat <- pdat[rows,]
+
+# Create the PIP plot.
 p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
-  geom_point(color = "black",size = 0.5) +
-  geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs),
-             shape = 1,size = 1.75) +
+  geom_point(color = "black",size = 0.65) +
+  geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs_label)) +
   geom_text_repel(color = "midnightblue",size = 2.25,min.segment.length = 0,
                   max.overlaps = Inf,segment.color = "midnightblue") +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
@@ -57,49 +88,44 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
                inherit.aes = FALSE) +
   scale_x_continuous(breaks = seq(53,58,0.5)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray") +
-  ylim(-0.2,1.5) +
-  guides(color = "none") +
+  guides(color = guide_legend(nrow = 6)) +
   labs(x = "base-pair position on chromosome 20 (Mb)",y = "PIP",
-       title = "CASS4") +
-  theme_cowplot(font_size = 8)
+       title = "CASS4",color = "") +
+  theme_cowplot(font_size = 8) +
+  theme(legend.position = "top")
 
-stop()
-
-# The second panel shows the effects on methylation.
-#
-# TO DO: Need to work on this code.
-#
+# BOTTOM PANEL: EFFECT PLOT
+# -------------------------
 source("../scripts_plot/cases_study/interpolate_effect_estimates.R")
 load("../outputs/CASS4_all_effects.RData")
-n <- length(obj_plot$effect_list)
+keep_cs <- as.numeric(levels(pdat$cs))
 effects <- NULL
-for (i in 1:n) {
+for (i in keep_cs) {
   dat <- obj_plot$effect_list[[i]]
-  peak_pos <- dat$peak_pos
+  me_pos <- dat$me_pos
   dat <- data.frame(effect = dat$effect_s$effect_estimate,
                     up     = dat$effect_s$cred_band["up",],
                     low    = dat$effect_s$cred_band["low",],
-                    pos    = dat$pos_H3Kac_effect,
+                    pos    = dat$pos_est_effect,
                     label  = "",
                     stringsAsFactors = FALSE)
-  m   <- length(peak_pos)
-  dat <- interpolate_effect_estimates(dat,peak_pos[seq(2,m-1)])
+  m   <- length(me_pos)
+  dat <- interpolate_effect_estimates(dat,me_pos[seq(2,m-1)])
   dat <- transform(dat,
-                   pos     = pos/1e6,
-                   cs      = i,
+                   pos = pos/1e6,
+                   cs  = paste("CS",i),
                    nonzero = !(low <= 0 & up >= 0))
   j <- which.max(abs(dat$effect))
   dat[j,"label"] <- paste("CS",i)
   effects <- rbind(effects,dat)
 }
-effects <- transform(effects,cs = factor(cs,1:n))
+effects <- transform(effects,
+                     cs = factor(cs),
+                     effect = effect/abs(up - low))
 p2 <- ggplot() +
   geom_hline(yintercept = 0,linetype = "dotted") +
-  geom_linerange(data = subset(effects,nonzero),
-                 mapping = aes(x = pos,ymin = low,ymax = up,color = cs)) +
   geom_point(data = effects,
-             mapping = aes(x = pos,y = effect,color = cs,shape = nonzero),
-             size = 1) +
+             mapping = aes(x = pos,y = effect,color = cs)) +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
                                    xmax = zoomin_region[2],
                                    y = -0.5),
@@ -108,17 +134,20 @@ p2 <- ggplot() +
                  inherit.aes = FALSE) +
   geom_text_repel(data = effects,
                   mapping = aes(x = pos,y = effect,label = label),
-                  color = "midnightblue",size = 2.25,min.segment.length = 0,
-                  max.overlaps = Inf,segment.color = "midnightblue") +
+                  color = "black",size = 2.25,min.segment.length = 0,
+                  max.overlaps = Inf,segment.color = "black") +
   scale_x_continuous(limits = zoomout_region,
                      breaks = seq(200,210,0.5)) +
-  scale_y_continuous(breaks = seq(-1,1,0.1)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray",
                      drop = FALSE) +
-  scale_shape_manual(values = c(4,19)) +
-  guides(color = "none",shape = "none") +
-  labs(x = "base-pair position on chromosome 20 (Mb)",y = "effect") +
-  theme_cowplot(font_size = 8)
+  guides(color = guide_legend(nrow = 2)) +
+  labs(x = "base-pair position on chromosome 20 (Mb)",y = "effect",
+       color = "") +
+  theme_cowplot(font_size = 8) +
+  theme(legend.position = "bottom")
 
 # Create the final combined plot.
-# TO DO.
+print(plot_grid(p1,p2,nrow = 2,ncol = 1,rel_heights = c(10,6),align = "v"))
+ggsave("zoomout_cd2ap.pdf",
+       plot_grid(p1,p2,nrow = 2,ncol = 1,rel_heights = c(9,6),align = "v"),
+       height = 4,width = 6)

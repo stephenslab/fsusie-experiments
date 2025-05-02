@@ -98,7 +98,6 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
 # -------------------------
 source("../scripts_plot/cases_study/interpolate_effect_estimates.R")
 load("../outputs/CD2AP_all_effects.RData")
-n       <- length(obj_plot$effect_list)
 keep_cs <- as.numeric(levels(pdat$cs))
 effects <- NULL
 for (i in keep_cs) {
