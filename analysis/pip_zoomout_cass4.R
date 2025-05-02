@@ -148,6 +148,6 @@ p2 <- ggplot() +
 
 # Create the final combined plot.
 print(plot_grid(p1,p2,nrow = 2,ncol = 1,rel_heights = c(10,6),align = "v"))
-ggsave("zoomout_cd2ap.pdf",
-       plot_grid(p1,p2,nrow = 2,ncol = 1,rel_heights = c(9,6),align = "v"),
+ggsave("zoomout_cass4.pdf",
+       plot_grid(p1,p2,nrow = 2,ncol = 1,rel_heights = c(10,6),align = "v"),
        height = 4,width = 6)
