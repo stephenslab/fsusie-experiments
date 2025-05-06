@@ -434,15 +434,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreea043de0ba4559a418d7d09717b38c9f66241502dtargetblanka043de0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree0f1725a8b6b497329fbcca59f1349372aed38874targetblank0f1725aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/a043de0ba4559a418d7d09717b38c9f66241502d" target="_blank">a043de0</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/0f1725a8b6b497329fbcca59f1349372aed38874" target="_blank">0f1725a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreea043de0ba4559a418d7d09717b38c9f66241502dtargetblanka043de0a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree0f1725a8b6b497329fbcca59f1349372aed38874targetblank0f1725aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -452,7 +452,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/a043de0ba4559a418d7d09717b38c9f66241502d" target="_blank">a043de0</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/0f1725a8b6b497329fbcca59f1349372aed38874" target="_blank">0f1725a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -467,8 +467,6 @@ were generated:
 </p>
 <pre><code>
 Untracked files:
-    Untracked:  analysis/cs_sizes_protein.pdf
-    Untracked:  analysis/cs_sizes_rnaseq.pdf
     Untracked:  analysis/rosmap_overview_cache/
     Untracked:  analysis/temp.R
     Untracked:  data/ROSMAP_NIA_WGS.leftnorm.bcftools_qc.plink_qc.afreq.gz
@@ -539,6 +537,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/0f1725a8b6b497329fbcca59f1349372aed38874/analysis/rosmap_rnaseq_protein.Rmd" target="_blank">0f1725a</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-06
+</td>
+<td>
+Fixed code in rosmap_rnaseq_protein.Rmd to filter out eSNPs and pSNPS
+with MAF &lt; 0.05.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/aec2431da8f36ca9318e238716137972315ac15f/docs/rosmap_rnaseq_protein.html" target="_blank">aec2431</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-06
+</td>
+<td>
+Added MAF filters to rosmap_rnaseq_protein analysis.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -723,9 +756,15 @@ rnaseq &lt;-
             alt = factor(alt),
             cs_coverage_0.95 = factor(cs_coverage_0.95),
             context = factor(context))
-rnaseq &lt;- subset(rnaseq,context == &quot;DLPFC_DeJager_eQTL&quot;)</code></pre>
-<p>Remove SNPs with MAF &lt; 5%:</p>
-<pre class="r"><code>rnaseq &lt;- subset(rnaseq,maf &gt;= 0.05)</code></pre>
+rnaseq &lt;- subset(rnaseq,context == &quot;DLPFC_DeJager_eQTL&quot;)
+</code></pre>
+<p>Remove RNA expression SNPs (eSNPs) with MAF &lt; 5%:</p>
+<pre class="r"><code>gene_cs &lt;- with(rnaseq,paste(gene,cs_coverage_0.95,sep = &quot;_&quot;))
+gene_cs &lt;- factor(gene_cs)
+maf_cs  &lt;- tapply(rnaseq,gene_cs,function (x) x$maf[which.max(x$pip)])
+keep_cs &lt;- names(which(maf_cs &gt;= 0.05))
+rows    &lt;- is.element(gene_cs,keep_cs)
+rnaseq  &lt;- rnaseq[rows,]</code></pre>
 <p>Plot a histogram of the CS sizes for the RNA-seq fine-mapping:</p>
 <pre class="r"><code>bins &lt;- c(0,1,2,5,10,20,Inf)
 gene_cs &lt;- with(rnaseq,paste(gene,cs_coverage_0.95,sep = &quot;_&quot;))
@@ -762,6 +801,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/aec2431da8f36ca9318e238716137972315ac15f/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" target="_blank">aec2431</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/9da7f17297a74927569ab3deaf9a02448bbc1bd8/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-rnaseq-1.png" target="_blank">9da7f17</a>
@@ -803,7 +853,7 @@ Peter Carbonetto
 <pre class="r"><code>table(cs_size)
 # cs_size
 #    1    2    5   10   20  Inf 
-# 1559  859 1582 1641 2010 4221</code></pre>
+# 1435  829 1541 1584 1941 4104</code></pre>
 <p>Load the protein fine-mapping results:</p>
 <pre class="r"><code>protein &lt;- fread(&quot;../outputs/ROSMAP_DLPFC_pQTL.cs_only.tsv.gz&quot;,
                 sep = &quot;\t&quot;,header = TRUE,stringsAsFactors = FALSE)
@@ -820,7 +870,12 @@ protein &lt;-
             context = factor(context))
 protein &lt;- subset(protein,context == &quot;DLPFC_Bennett_pQTL&quot;)</code></pre>
 <p>Remove SNPs with MAF &lt; 7.5%:</p>
-<pre class="r"><code>protein &lt;- subset(protein,maf &gt;= 0.075)</code></pre>
+<pre class="r"><code>gene_cs &lt;- with(protein,paste(gene,cs_coverage_0.95,sep = &quot;_&quot;))
+gene_cs &lt;- factor(gene_cs)
+maf_cs  &lt;- tapply(protein,gene_cs,function (x) x$maf[which.max(x$pip)])
+keep_cs &lt;- names(which(maf_cs &gt;= 0.05))
+rows    &lt;- is.element(gene_cs,keep_cs)
+protein &lt;- protein[rows,]</code></pre>
 <p>(Note that 7.5% to achieve a similar minor allele count threshold
 with the RNA-seq, methylation and H3K27ac data.)</p>
 <p>Plot a histogram of the CS sizes for the proteomics fine-mapping:</p>
@@ -860,6 +915,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/aec2431da8f36ca9318e238716137972315ac15f/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-protein-1.png" target="_blank">aec2431</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-05-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/ad758942c5a73c0de239881235df3b4600db40b6/docs/figure/rosmap_rnaseq_protein.Rmd/cs-sizes-protein-1.png" target="_blank">ad75894</a>
 </td>
 <td>
@@ -877,7 +943,7 @@ Peter Carbonetto
 <pre class="r"><code>table(cs_size)
 # cs_size
 #    1    2    5   10   20  Inf 
-#  346  188  352  397  441 1045</code></pre>
+#  345  177  364  406  446 1036</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
