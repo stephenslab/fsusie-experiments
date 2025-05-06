@@ -39,7 +39,10 @@ for (i in 1:n) {
     maf <- 0
   else if (length(maf) > 1)
     stop("Ambiguous MAF")
-  if (maf >= 0.05) {
+  if (maf < 0.05) {
+    snps <- setdiff(rownames(pdat),snps)
+    pdat <- pdat[snps,]
+  } else {
     pdat[snps,"cs"]       <- i
     pdat[snps,"cs_label"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
     pdat[j,"id"]          <- paste("CS",i)
