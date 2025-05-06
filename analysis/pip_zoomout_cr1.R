@@ -17,19 +17,33 @@ zoomin_region <- c(207.45,207.75)
 
 # TOP PANEL: PIP PLOT
 # -------------------
+load("../data/afreq.RData")
 load("../outputs/CR1_CR2_obj.RData")
 ids <- names(obj_plot$pip_fsusie_obj)
-pdat <- data.frame(id  = as.character(NA),
-                   pos = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
-                   pip = obj_plot$pip_fsusie_obj,
-                   cs  = as.character(NA),
+pdat <- data.frame(id        = as.character(NA),
+                   pos       = sapply(strsplit(ids,":",fixed = TRUE),"[[",2),
+                   pip       = obj_plot$pip_fsusie_obj,
+                   cs        = as.numeric(NA),
+                   cs_label  = as.character(NA),
                    stringsAsFactors = FALSE)
 n <- length(obj_plot$cs_fsusie_obj)
 for (i in 1:n) {
   snps <- names(obj_plot$cs_fsusie_obj[[i]])
   j <- snps[which.max(pdat[snps,"pip"])]
-  pdat[snps,"cs"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
-  pdat[j,"id"] <- paste("CS",i)
+  
+  # Keep the CS only if the MAF of the sentinel SNP is >5%.
+  sentinel_chr <- unlist(strsplit(j,":",fixed = TRUE))[1]
+  sentinel_pos <- as.numeric(unlist(strsplit(j,":",fixed = TRUE))[2])
+  maf <- subset(afreq,chr == sentinel_chr & pos == sentinel_pos)$maf
+  if (length(maf) == 0)
+    maf <- 0
+  else if (length(maf) > 1)
+    stop("Ambiguous MAF")
+  if (maf >= 0.05) {
+    pdat[snps,"cs"]       <- i
+    pdat[snps,"cs_label"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
+    pdat[j,"id"]          <- paste("CS",i)
+  }
 }
 pdat <- transform(pdat,
                   cs = factor(cs),
@@ -47,7 +61,7 @@ pdat <- pdat[rows,]
 # Create the PIP plot.
 p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   geom_point(color = "black",size = 0.65) +
-  geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs)) +
+  geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs_label)) +
   geom_text_repel(color = "black",size = 2.25,min.segment.length = 0,
                   max.overlaps = Inf,segment.color = "black") +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
@@ -69,8 +83,9 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
 source("../scripts_plot/cases_study/interpolate_effect_estimates.R")
 load("../outputs/CR1_CR2_all_effects.RData")
 n <- length(obj_plot$effect_list)
+keep_cs <- as.numeric(levels(pdat$cs))
 effects <- NULL
-for (i in 1:n) {
+for (i in keep_cs) {
   dat <- obj_plot$effect_list[[i]]
   peak_pos <- dat$peak_pos
   dat <- data.frame(effect = dat$effect_s$effect_estimate,
