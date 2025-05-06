@@ -39,12 +39,18 @@ rnaseq <-
 			cs_coverage_0.95 = factor(cs_coverage_0.95),
 			context = factor(context))
 rnaseq <- subset(rnaseq,context == "DLPFC_DeJager_eQTL")
+
 ```
 
-Remove SNPs with MAF < 5%:
+Remove RNA expression SNPs (eSNPs) with MAF < 5%:
 
 ```{r filter-maf-rnaseq}
-rnaseq <- subset(rnaseq,maf >= 0.05)
+gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- factor(gene_cs)
+maf_cs  <- tapply(rnaseq,gene_cs,function (x) x$maf[which.max(x$pip)])
+keep_cs <- names(which(maf_cs >= 0.05))
+rows    <- is.element(gene_cs,keep_cs)
+rnaseq  <- rnaseq[rows,]
 ```
 
 Plot a histogram of the CS sizes for the RNA-seq fine-mapping:
@@ -96,7 +102,12 @@ protein <- subset(protein,context == "DLPFC_Bennett_pQTL")
 Remove SNPs with MAF < 7.5%:
 
 ```{r filter-maf-protein}
-protein <- subset(protein,maf >= 0.075)
+gene_cs <- with(protein,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- factor(gene_cs)
+maf_cs  <- tapply(protein,gene_cs,function (x) x$maf[which.max(x$pip)])
+keep_cs <- names(which(maf_cs >= 0.05))
+rows    <- is.element(gene_cs,keep_cs)
+protein <- protein[rows,]
 ```
 
 (Note that 7.5% to achieve a similar minor allele count threshold with
