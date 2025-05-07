@@ -102,7 +102,7 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
                                    xmax = zoomin_region[2],
                                    y = -0.1),
                mapping = aes(xmin = xmin,xmax = xmax,y = y),
-               color = "darkgray",linewidth = 0.5,height = 0.1,
+               color = "darkgray",linewidth = 0.5,height = 0.05,
                inherit.aes = FALSE) +
   scale_x_continuous(breaks = seq(53,58,0.5)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray") +
@@ -146,9 +146,9 @@ p2 <- ggplot() +
              mapping = aes(x = pos,y = effect,color = cs)) +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
                                    xmax = zoomin_region[2],
-                                   y = -0.5),
+                                   y = -8),
                  mapping = aes(xmin = xmin,xmax = xmax,y = y),
-                 color = "darkgray",linewidth = 0.5,height = 0.03,
+                 color = "darkgray",linewidth = 0.5,height = 1,
                  inherit.aes = FALSE) +
   geom_text_repel(data = effects,
                   mapping = aes(x = pos,y = effect,label = label),
