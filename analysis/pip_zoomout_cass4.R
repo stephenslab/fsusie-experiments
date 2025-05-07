@@ -54,6 +54,7 @@ for (i in 1:n) {
     maf <- 0
   else if (length(maf) > 1) {
     warning("Ambiguous MAF")
+	print(maf)
     maf <- min(maf)
   }
   if (maf < 0.05) {
@@ -154,7 +155,7 @@ p2 <- ggplot() +
                   color = "black",size = 2.25,min.segment.length = 0,
                   max.overlaps = Inf,segment.color = "black") +
   scale_x_continuous(limits = zoomout_region,
-                     breaks = seq(200,210,0.5)) +
+                     breaks = seq(53,58,0.5)) +
   scale_color_manual(values = cs_colors,na.value = "darkgray",
                      drop = FALSE) +
   guides(color = guide_legend(nrow = 2)) +
