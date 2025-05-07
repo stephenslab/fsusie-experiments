@@ -96,8 +96,8 @@ pdat <- pdat[rows,]
 p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   geom_point(color = "black",size = 0.65) +
   geom_point(data = subset(pdat,!is.na(cs)),mapping = aes(color = cs_label)) +
-  geom_text_repel(color = "midnightblue",size = 2.25,min.segment.length = 0,
-                  max.overlaps = Inf,segment.color = "midnightblue") +
+  geom_text_repel(color = "black",size = 2.25,min.segment.length = 0,
+                  max.overlaps = Inf,segment.color = "black") +
   geom_errorbarh(data = data.frame(xmin = zoomin_region[1],
                                    xmax = zoomin_region[2],
                                    y = -0.1),
@@ -112,6 +112,10 @@ p1 <- ggplot(pdat,aes(x = pos,y = pip,label = id)) +
   theme_cowplot(font_size = 8) +
   theme(legend.position = "top")
 
+# Flag the SNP that has a large PIP but is not in a CS (due to the
+# step that filters the CSs based on purity).
+print(subset(pdat,pip > 0.5 & is.na(cs)))
+  
 # BOTTOM PANEL: EFFECT PLOT
 # -------------------------
 source("../scripts_plot/cases_study/interpolate_effect_estimates.R")
