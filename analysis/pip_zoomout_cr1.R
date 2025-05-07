@@ -37,8 +37,10 @@ for (i in 1:n) {
   maf <- subset(afreq,chr == sentinel_chr & pos == sentinel_pos)$maf
   if (length(maf) == 0)
     maf <- 0
-  else if (length(maf) > 1)
-    stop("Ambiguous MAF")
+  else if (length(maf) > 1) {
+    warning("Ambiguous MAF")
+    maf <- min(maf)
+  }
   if (maf < 0.05) {
     snps <- setdiff(rownames(pdat),snps)
     pdat <- pdat[snps,]

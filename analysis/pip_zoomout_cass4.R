@@ -30,6 +30,7 @@ rownames(probes) <- NULL
 
 # TOP PANEL: PIP PLOT
 # -------------------
+load("../data/afreq.RData")
 load("../outputs/CASS4_obj.RData")
 ids <- names(obj_plot$fsusie_obj_me$pip)
 pdat <- data.frame(id        = as.character(NA),
@@ -44,9 +45,25 @@ n <- length(obj_plot$fsusie_obj_me$sets$cs)
 for (i in 1:n) {
   snps <- names(obj_plot$fsusie_obj_me$sets$cs[[i]])
   j <- snps[which.max(pdat[snps,"pip"])]
-  pdat[snps,"cs"] <- i
-  pdat[snps,"cs_label"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
-  pdat[j,"id"] <- paste("CS",i)
+
+  # Keep the CS only if the MAF of the sentinel SNP is >5%.
+  sentinel_chr <- unlist(strsplit(j,":",fixed = TRUE))[1]
+  sentinel_pos <- as.numeric(unlist(strsplit(j,":",fixed = TRUE))[2])
+  maf <- subset(afreq,chr == sentinel_chr & pos == sentinel_pos)$maf
+  if (length(maf) == 0)
+    maf <- 0
+  else if (length(maf) > 1) {
+    warning("Ambiguous MAF")
+    maf <- min(maf)
+  }
+  if (maf < 0.05) {
+    snps <- setdiff(rownames(pdat),snps)
+    pdat <- pdat[snps,]
+  } else {
+    pdat[snps,"cs"]       <- i
+    pdat[snps,"cs_label"] <- sprintf("CS %d (%d SNPs, %s)",i,length(snps),j)
+    pdat[j,"id"]          <- paste("CS",i)
+  }
 }
 
 # Remove CSs with SNPs inside CpG probes.
