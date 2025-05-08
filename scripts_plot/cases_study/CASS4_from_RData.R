@@ -129,7 +129,7 @@ pdat3[c("chr20:56348142:G:A",
         "chr20:56393188:G:GTA",
         "chr20:56379506:T:C",
         "chr20:56409008:G:C"),"id"] <-
-    c("rs8118732","rs76759019","rs112535545","rs1884913")
+    c("rs8118732","chr20:56393188","rs112535545","rs1884913")
 p3 <- ggplot(pdat3,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +

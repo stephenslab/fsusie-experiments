@@ -167,7 +167,7 @@ pdat4 <- transform(pdat4,pos = pos/1e6)
 pdat4[c("chr1:207577223:T:C",
         "chr1:207598421:CT:CTT",
         "chr1:207619376:CAAA:CAA"),"id"] <-
-  c("rs679515","rs1168807665","rs869302047")
+  c("rs679515","rs11392366","rs869302047")
 p4 <- ggplot(pdat4,aes(x = pos,y = pip,color = cs,label = id)) +
   geom_point(size = 0.75) +
   geom_vline(xintercept = key_marker,linetype = "dotted",color = "darkgray") +
