@@ -500,7 +500,7 @@ p2 <- ggplot(pdat2,aes(x = x)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-```{r, count-cpgs-per-snp-ggave, echo=FALSE, warning=FALSE}
+```{r count-cpgs-per-snp-ggave, echo=FALSE, warning=FALSE}
 ggsave("affected_cpgs_per_snp.pdf",
        plot_grid(p1,p2,nrow = 1,ncol = 2),
        height = 2,width = 4.5)

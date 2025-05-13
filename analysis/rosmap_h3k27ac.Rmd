@@ -432,7 +432,37 @@ mean(peaks_per_snp_assoc > 10)
 mean(peaks_per_snp_fsusie > 40)
 ```
 
-TO DO: Add plot of peak-haSNP distances for the 1-SNP CSs.
+Finally, this plot shows the distribution of the distances between the
+haSNP (in a 1-SNP CS) and the *nearest peak* affected by that SNP:
 
+```{r dist-hasnp-peak-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE}
+peaks_fsusie_cs1snp <- subset(peaks_fsusie,
+                              is.element(cs,cs1snp_fsusie$cs))
+rows <- match(peaks_fsusie_cs1snp$cs,cs1snp_fsusie$cs)
+peaks_fsusie_cs1snp$variant_pos <- cs1snp_fsusie[rows,"pos"]
+peaks_fsusie_cs1snp <-
+  transform(peaks_fsusie_cs1snp,
+            cs   = factor(cs),
+            dist = (peak_start + peak_end)/2 - variant_pos)
+pdat <- tapply(peaks_fsusie_cs1snp$dist,peaks_fsusie_cs1snp$cs,
+               function (x) {
+			     i <- which.min(abs(x))
+				 return(x[i])
+    		   })
+pdat <- data.frame(dist = pdat)
+pdat <- transform(pdat,
+  dist = cut(dist,c(-Inf,-1e6,-1e5,-1e4,-1e3,1e3,1e4,1e5,1e6,+Inf)))
+p <- ggplot(pdat,aes(x = dist)) +
+  geom_bar(color = "white",fill = "darkblue",bins = 64,width = 0.5) +
+  labs(x = "peak - haSNP distance (base-pairs)",
+       y = "number of haSNPs") +
+  theme_cowplot(font_size = 10) +
+  theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
+print(p)
+```
+
+```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, warning=FALSE}
+ggsave("dist_hasnp_peak_cs1snp.pdf",p,height = 2.75,width = 2.5)
+```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
