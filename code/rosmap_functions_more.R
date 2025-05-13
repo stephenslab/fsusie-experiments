@@ -1,4 +1,56 @@
-# Written by Hao Sun.
+# This is a function used to extract the gene annotations from the GTF
+# (“gene transfer format”) file. Only the annotated gene transcripts
+# for protein-coding genes as defined in the Ensembl/Havana database
+# are kept.
+get_gene_annotations <- function (gene_file) {
+  out <- fread(file = gene_file,sep = "\t",header = FALSE,skip = 1)
+  class(out) <- "data.frame"
+  names(out) <- c("chromosome","source","feature","start","end","score",
+                    "strand","frame","attributes")
+  out <- out[c("chromosome","source","feature","start","end","strand",
+               "attributes")]
+  out <- transform(out,
+                   chromosome = factor(chromosome),
+                   source     = factor(source),
+                   feature    = factor(feature),
+                   strand     = factor(strand))
+  out <- subset(out,
+                source == "ensembl_havana" &
+                feature == "transcript")
+  out <-
+    transform(out,
+      ensembl   = sapply(strsplit(attributes,";"),
+                         function (x) substr(x[[1]],10,24)),
+      gene_type = sapply(strsplit(attributes,";"),
+                         function (x) substr(x[[3]],13,nchar(x[[3]]) - 1)),
+      gene_name = sapply(strsplit(attributes,";"),
+                         function (x) substr(x[[4]],13,nchar(x[[4]]) - 1)))
+  out <- out[-7]
+  out <- transform(out,gene_type = factor(gene_type))
+  out <- subset(out,gene_type == "protein_coding")
+  rownames(out) <- NULL
+  return(out)
+}
+
+# Helper function for loading the enrichment results. The "n" argument
+# specifies the number of "meta data" columns.  Columns after that are
+# treated as the enrichment results. These columns contain only binary
+# data (0 or 1) indicating whether or not the genomic feature (genetic
+# variant or molecular trait location) is assigned that specific
+# annotation.
+read_enrichment_results <- function (filename, n) {
+  out <- fread(filename,sep = "\t",stringsAsFactors = FALSE,header = TRUE)
+  class(out) <- "data.frame"
+  out <- transform(out,chr = factor(chr))
+  if (ncol(out) > n) {
+    cols <- seq(n + 1,ncol(out))
+    for (i in cols)
+      out[[i]] <- factor(out[[i]])
+  }
+  return(out)
+}
+
+# Function written by Hao Sun.
 merge_cs_sets <- function (df) {
     
   # df is expected to have at least columns: cs, cs_set
