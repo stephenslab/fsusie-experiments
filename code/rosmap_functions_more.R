@@ -167,3 +167,43 @@ get_cs_vs_tad_size <- function (dat) {
   rownames(out) <- NULL
   return(out)
 }
+
+# This function is used to extract the top SNP per location (e.g.,
+# CpG) from the association tests.
+get_top_snp_per_location <- function (dat) {
+  x <- factor(dat$molecular_trait_id)
+  qval <- dat$qvalue
+  names(qval) <- with(dat,paste(chr,pos,sep = "_"))
+  res <- tapply(qval,x,function (x) names(which.min(x)))
+  res <- strsplit(res,"_",fixed = TRUE)
+  out <- data.frame(chr = factor(sapply(res,"[[",1)),
+                    pos = as.numeric(sapply(res,"[[",2)))
+  out <- transform(out,chr = factor(chr))
+  rownames(out) <- levels(x)
+  return(out)
+}
+
+# This function adds a column to the SNP results containing the minimum
+# distance to the nearest TSS.
+add_min_dist_to_tss <- function (dat, genes) {
+  n <- nrow(dat)
+  dat$min_dist_to_tss <- rep(Inf,n)
+  n <- nrow(genes)
+  for (i in 1:n) {
+    rows <- which(as.character(genes[i,"chromosome"]) == as.character(dat$chr))
+	if (length(rows) > 0) {
+      if (genes[i,"strand"] == "+")
+        d <- genes[i,"start"] - dat[rows,"pos"]
+      else
+        d <- dat[rows,"pos"] - genes[i,"end"]
+	  i <- which(abs(d) < abs(dat[rows,"min_dist_to_tss"]))
+  	  if (length(i) > 0) {
+	    d    <- d[i]
+	    rows <- rows[i]
+	    dat[rows,"min_dist_to_tss"] <- d
+      }
+    }
+  }
+  return(dat)
+}
+
