@@ -50,6 +50,22 @@ read_enrichment_results <- function (filename, n) {
   return(out)
 }
 
+# his function removes CSs so that no two CSs share the same SNP.
+create_cs_maps <- function (info_df) {
+  info_df %>% 
+    arrange(cs) %>%
+    group_by(variant_id) %>%
+    mutate(cs_set = list(sort(unique(cs))),
+           cs_set = sapply(cs_set,paste,collapse = ",")) %>%
+    ungroup %>%
+    count(cs,cs_set) %>%
+    group_by(cs) %>%
+    summarize(
+	  cs_set = paste(sort(unique(unlist(strsplit(cs_set,",")))),
+	                 collapse = ","),.groups = "drop") %>%
+          merge_cs_sets
+}
+
 # Function written by Hao Sun.
 merge_cs_sets <- function (df) {
     

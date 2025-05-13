@@ -150,13 +150,46 @@ print(p)
 ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
 ```
 
-Flag and remove the "duplicate" CSs.
+Flag and remove the "duplicate" CSs:
 
 ```{r remove-duplicated-cs, message=FALSE, cache=TRUE}
 root_cs_susie  <- create_cs_maps(snps_susie)$root
 root_cs_fsusie <- create_cs_maps(snps_fsusie)$root
 snps_susie     <- subset(snps_susie,is.element(cs,root_cs_susie))
 snps_fsusie    <- subset(snps_fsusie,is.element(cs,root_cs_fsusie))
+snps_susie     <- transform(snps_susie,cs = factor(cs))
+snps_fsusie    <- transform(snps_fsusie,cs = factor(cs))
+```
+
+Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
+
+```{r cs-sizes, fig.height=2, fig.width=4, warning=FALSE}
+bins <- c(0,1,2,5,10,20,Inf)
+cs_size_susie  <- as.numeric(table(snps_susie$cs))
+cs_size_fsusie <- as.numeric(table(snps_fsusie$cs))
+cs_size_susie  <- cut(cs_size_susie,bins)
+cs_size_fsusie <- cut(cs_size_fsusie,bins)
+levels(cs_size_susie) <- bins[-1]
+levels(cs_size_fsusie) <- bins[-1]
+p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs",title = "SuSiE-topPC") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
+  geom_histogram(stat = "count",color = "white",fill = "tomato",
+                 width = 0.65) +
+  labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+plot_grid(p1,p2,nrow = 1,ncol = 2)
+```
+
+```{r cs-sizes-ggsave, echo=FALSE, warning=FALSE}
+ggsave("cs_sizes_h3k27ac.pdf",
+       plot_grid(p1,p2,nrow = 1,ncol = 2),
+	   height = 2,width = 4)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo

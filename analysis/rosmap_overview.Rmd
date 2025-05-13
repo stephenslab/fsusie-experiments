@@ -276,28 +276,6 @@ print(p)
 ggsave("cs_per_tad_scatterplot_methyl.pdf",p,height = 3,width = 4)
 ```
 
-For plots counting CSs across the genome, I need to address the issue
-that the same CSs are sometimes discovered in overlapping TADs. To
-this end, this function removes CSs so that no two CSs share the same
-SNP:
-
-```{r create-cs-maps}
-create_cs_maps <- function (info_df) {
-  info_df %>% 
-    arrange(cs) %>%
-    group_by(variant_id) %>%
-    mutate(cs_set = list(sort(unique(cs))),
-           cs_set = sapply(cs_set,paste,collapse = ",")) %>%
-    ungroup %>%
-    count(cs,cs_set) %>%
-    group_by(cs) %>%
-    summarize(
-	  cs_set = paste(sort(unique(unlist(strsplit(cs_set,",")))),
-	                 collapse = ","),.groups = "drop") %>%
-    merge_cs_sets
-}
-```
-
 Now let's use this function to flag and remove the "duplicate" CSs.
 
 ```{r remove-duplicated-cs-methyl, message=FALSE, cache=TRUE}
