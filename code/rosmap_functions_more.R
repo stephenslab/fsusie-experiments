@@ -168,6 +168,32 @@ get_cs_vs_tad_size <- function (dat) {
   return(out)
 }
 
+# Extract the information about the TADs from the TAD labels.
+get_tad_info <- function (tads) {
+  res <- strsplit(tads,"_")
+  return(data.frame(tad   = tads,
+                    chr   = factor(sapply(res,"[[",1)),
+                    start = as.numeric(sapply(res,"[[",2)),
+  			        end   = as.numeric(sapply(res,"[[",3))))
+}
+
+# Count the number of features (e.g., CpGs) in each TAD.
+count_features_per_tad <- function (features, tads) {
+  tads$chr <- as.character(tads$chr)
+  features$chr <- as.character(features$chr)
+  n <- nrow(tads)
+  out <- rep(0,n)
+  names(out) <- tads$tad
+  for (i in 1:n) {
+    rows <- which(features$chr == tads[i,"chr"] &
+                  features$pos >= tads[i,"start"] &
+	  		  	  features$pos <= tads[i,"end"])
+    out[i] <- length(unique(features[rows,"molecular_trait_id"]))
+
+  }
+  return(out)
+}
+
 # This function is used to extract the top SNP per location (e.g.,
 # CpG) from the association tests.
 get_top_snp_per_location <- function (dat) {
