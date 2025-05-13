@@ -195,7 +195,7 @@ Also remove the duplicate CSs from the fSuSiE peak-level results:
 ```{r remove-duplicated-cs-2}
 nodup_cs     <- levels(snps_fsusie$cs)
 peaks_fsusie <- subset(peaks_fsusie,is.element(cs,nodup_cs))
-peaks_fsusie <- transform(peaks_fsusie,vcs = factor(cs))
+peaks_fsusie <- transform(peaks_fsusie,cs = factor(cs))
 ```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
@@ -347,36 +347,36 @@ pdat1 <- data.frame(x = peaks_per_tad_assoc)
 pdat2 <- data.frame(x = peaks_per_tad_fsusie)
 p1 <- ggplot(pdat1,aes(x = x)) +
   geom_histogram(color = "white",fill = "tomato",bins = 64) +
-  xlim(0,200) +
+  xlim(0,100) +
   labs(x = "number of H3K27ac peaks",y = "number of TADs",
        title = "SNP-peak association tests") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 p2 <- ggplot(pdat2,aes(x = x)) +
   geom_histogram(color = "white",fill = "tomato",bins = 64) +
-  xlim(0,200) +
+  xlim(0,100) +
   labs(x = "number of H3K27ac peaks",y = "number of TADs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-A very small number of TADs have more than 200 affected peaks:
+A very small number of TADs have more than 100 affected peaks:
 
 ```{r peaks-per-tad-more}
-mean(peaks_per_tad_assoc > 200,na.rm = TRUE)
-mean(peaks_per_tad_fsusie > 200,na.rm = TRUE)
+mean(peaks_per_tad_assoc > 100,na.rm = TRUE)
+mean(peaks_per_tad_fsusie > 100,na.rm = TRUE)
 ```
 
-This plot compares the number of affected H3K27ac peaks identified by
-fSuSiE and the SNP-peak association tests:
+This plot compares the number of affected H3K27ac peaks per TAD
+identified by fSuSiE and by the SNP-peak association tests:
 
 ```{r compare-peaks-per-tad, fig.height=2.5, fig.width=2.5, warning=FALSE}
 pdat <- data.frame(assoc  = peaks_per_tad_assoc,
                    fsusie = peaks_per_tad_fsusie)
 p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   geom_point(color = "tomato") +
-  geom_abline(intercept = 0,slope = 1,color = "magenta",linetype = "dotted") +
+  geom_abline(intercept = 0,slope = 1,color = "black",linetype = "dotted") +
   labs(x = "SNP-peak association tests",y = "fSusiE") +
   xlim(0,200) + 
   ylim(0,200) + 
