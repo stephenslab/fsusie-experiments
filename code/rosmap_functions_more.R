@@ -132,3 +132,22 @@ merge_cs_sets <- function (df) {
   # Return both the mapping of each CS to its root and the merged sets
 return(left_join(cs_to_root, merged_sets))
 }
+
+# This function is used below to get the sizes of the TADs (in Mb).
+get_tad_sizes <- function (tads) {
+  tads <- strsplit(tads,"_",fixed = TRUE)
+  pos0 <- as.numeric(sapply(tads,"[[",2))
+  pos1 <- as.numeric(sapply(tads,"[[",3))
+  return((pos1 - pos0)/1e6)
+}
+
+# This function is used to summarize the number of CSs per TAD.
+get_cs_vs_tad_size <- function (dat) {
+  tads <- levels(dat$region)
+  out <- data.frame(tad      = tads,
+                    tad_size = get_tad_sizes(tads),
+                    num_cs   = tapply(dat$cs,dat$region,
+                                      function (x) length(unique(x))))
+  rownames(out) <- NULL
+  return(out)
+}
