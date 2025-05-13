@@ -1,0 +1,27 @@
+---
+title: Examine ROSMAP H3K27ac fine-mapping results
+author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
+output: workflowr::wflow_html
+---
+
+**Note:** If you would like to run this analysis on your computer, you
+will first need to download the fine-mapping outputs. They can be
+downloaded from [here][box-download-link]. Once you have downloaded
+the files, copy each file to the "data" or "outputs" subdirectory.
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load some packages and custom functions used in the code below:
+
+```{r load-pkgs, message=FALSE}
+library(data.table)
+library(dplyr)
+library(ggplot2)
+library(cowplot)
+source("../code/merge_cs_sets.R")
+```
+
+[box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo

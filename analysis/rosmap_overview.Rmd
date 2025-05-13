@@ -1,5 +1,5 @@
 ---
-title: Examine methylation and H3K27ac fine-mapping results from the ROSMAP data
+title: Examine ROSMAP methylation fine-mapping results
 author: William Denault, Hao Sun, Angjing Liu, Peter Carbonetto, Gao Wang
 output: workflowr::wflow_html
 ---
