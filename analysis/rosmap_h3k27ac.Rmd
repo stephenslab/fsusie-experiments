@@ -461,7 +461,9 @@ p <- ggplot(pdat,aes(x = dist)) +
 print(p)
 ```
 
-```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, warning=FALSE}
+```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, wa
+
+rning=FALSE}
 ggsave("dist_hasnp_peak_cs1snp.pdf",p,height = 2.75,width = 2.5)
 ```
 
