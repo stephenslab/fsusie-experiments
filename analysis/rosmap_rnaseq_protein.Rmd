@@ -29,23 +29,27 @@ rnaseq <- fread("../outputs/ROSMAP_DLPFC_mega_eQTL.cs_only.tsv.gz",
                 sep = "\t",header = TRUE,stringsAsFactors = FALSE)
 class(rnaseq) <- "data.frame"
 rnaseq <- rnaseq[c("gene","variant_id","chr","pos","ref","alt","maf",
-                   "pip","cs_coverage_0.95","context")]
+                   "pip","cs_coverage_0.95_min_corr","context")]
 rnaseq <-
   transform(rnaseq,
             gene = factor(gene),
             chr = factor(chr),
 			ref = factor(ref),
 			alt = factor(alt),
-			cs_coverage_0.95 = factor(cs_coverage_0.95),
+			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
 			context = factor(context))
 rnaseq <- subset(rnaseq,context == "DLPFC_DeJager_eQTL")
 
 ```
 
+Note that, as discussed, we are using the "cs_coverage_0.95_min_corr"
+results, which applies a purity filter of 0.8 to the 95% CSs (the
+naming of this column does not make that clear).
+
 Remove RNA expression SNPs (eSNPs) with MAF < 5%:
 
 ```{r filter-maf-rnaseq}
-gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
 gene_cs <- factor(gene_cs)
 maf_cs  <- tapply(rnaseq,gene_cs,function (x) x$maf[which.max(x$pip)])
 keep_cs <- names(which(maf_cs >= 0.05))
@@ -57,7 +61,7 @@ Plot a histogram of the CS sizes for the RNA-seq fine-mapping:
 
 ```{r cs-sizes-rnaseq, fig.height=2.5, fig.width=2.5, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- with(rnaseq,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
 gene_cs <- factor(gene_cs)
 cs_size <- as.numeric(table(gene_cs))
 cs_size <- cut(cs_size,bins)
@@ -87,14 +91,14 @@ protein <- fread("../outputs/ROSMAP_DLPFC_pQTL.cs_only.tsv.gz",
                 sep = "\t",header = TRUE,stringsAsFactors = FALSE)
 class(protein) <- "data.frame"
 protein <- protein[c("gene","variant_id","chr","pos","ref","alt","maf",
-                     "pip","cs_coverage_0.95","context")]
+                     "pip","cs_coverage_0.95_min_corr","context")]
 protein <-
   transform(protein,
             gene = factor(gene),
             chr = factor(chr),
 			ref = factor(ref),
 			alt = factor(alt),
-			cs_coverage_0.95 = factor(cs_coverage_0.95),
+			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
 			context = factor(context))
 protein <- subset(protein,context == "DLPFC_Bennett_pQTL")
 ```
@@ -102,7 +106,7 @@ protein <- subset(protein,context == "DLPFC_Bennett_pQTL")
 Remove SNPs with MAF < 7.5%:
 
 ```{r filter-maf-protein}
-gene_cs <- with(protein,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- with(protein,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
 gene_cs <- factor(gene_cs)
 maf_cs  <- tapply(protein,gene_cs,function (x) x$maf[which.max(x$pip)])
 keep_cs <- names(which(maf_cs >= 0.05))
@@ -116,7 +120,7 @@ the RNA-seq, methylation and H3K27ac data.)
 Plot a histogram of the CS sizes for the proteomics fine-mapping:
 
 ```{r cs-sizes-protein, fig.height=2.5, fig.width=2.5, warning=FALSE}
-gene_cs <- with(protein,paste(gene,cs_coverage_0.95,sep = "_"))
+gene_cs <- with(protein,paste(gene,cs_coverage_0.95_min_corr,sep = "_"))
 gene_cs <- factor(gene_cs)
 cs_size <- as.numeric(table(gene_cs))
 cs_size <- cut(cs_size,bins)
