@@ -108,9 +108,14 @@ snps_fsusie <- transform(snps_fsusie,
                          cs     = factor(cs))
 ```
 
-Apply this same MAF filter to the peak-level results:
+Apply this same MAF filter to the SNP-peak association tests and the
+fSuSiE peak-level results:
 
-```{r filter-by-maf-peaks}
+```{r filter-by-maf-more}
+ids  <- with(snps_assoc,paste(chr,pos,sep = "_"))
+rows <- match(ids,afreq$id)
+snps_assoc$maf <- afreq[rows,"maf"]
+snps_assoc   <- subset(snps_assoc,maf >= 0.05)
 peaks_fsusie <- subset(peaks_fsusie,is.element(cs,keep_cs))
 peaks_fsusie <- transform(peaks_fsusie,
                           region = factor(region),
