@@ -555,35 +555,6 @@ methyl_cs1snp_fsusie <- subset(methyl_snps_fsusie,
                               is.element(cs,methyl_cs1snp_fsusie))
 ```
 
-Compare the MAFs of the 1-SNP CSs to the MAFs across SNPs in CSs:
-
-```{r one-snp-cs-mafs, fig.height=5, fig.width=5}
-p1 <- ggplot(methyl_cs1snp_susie,aes(x = log10(maf))) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of SNPs",
-       title = "SuSiE-topPC, 1-SNP CSs") +
-  theme_cowplot(font_size = 10)
-p2 <- ggplot(methyl_cs1snp_fsusie,aes(x = log10(maf))) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of SNPs",
-       title = "fSuSiE, 1-SNP CSs") +
-  theme_cowplot(font_size = 10)
-p3 <- ggplot(methyl_snps_susie_nodup,aes(x = log10(maf))) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of SNPs",
-       title = "SuSiE-topPC, all CSs") +
-  theme_cowplot(font_size = 10)
-p4 <- ggplot(methyl_snps_fsusie_nodup,aes(x = log10(maf))) +
-  geom_histogram(color = "white",fill = "darkblue",bins = 36) +
-  labs(x = "log10(MAF)",y = "number of SNPs",
-       title = "fSuSiE, all CSs") +
-  theme_cowplot(font_size = 10)
-plot_grid(p1,p2,p3,p4,nrow = 2,ncol = 2)
-```
-
-What is most striking is the excess of rarer SNPs in the 1-SNP CSs,
-particularly in the 1-SNP CSs identified by SuSiE-topPC.
-
 TO DO: Add plots showing distribution of PIPs for SNPs in 1-SNP CSs.
 
 Finally, this plot shows the distribution of the distances between the

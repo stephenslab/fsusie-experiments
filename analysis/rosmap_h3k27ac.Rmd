@@ -264,4 +264,27 @@ print(p)
 ggsave("dist_to_tss_h3k27ac.pdf",p,height = 2.5,width = 3.5)
 ```
 
+Now let's look closely at the 1-SNP CSs.
+
+```{r get-1-snp-cs}
+cs1snp_susie  <- table(snps_susie$cs)
+cs1snp_susie  <- names(cs1snp_susie)[cs1snp_susie == 1]
+cs1snp_susie  <- subset(snps_susie,is.element(cs,cs1snp_susie))
+cs1snp_fsusie <- table(snps_fsusie$cs)
+cs1snp_fsusie <- names(cs1snp_fsusie)[cs1snp_fsusie == 1]
+cs1snp_fsusie <- subset(snps_fsusie,is.element(cs,cs1snp_fsusie))
+```
+
+Many of the PIPs in the 1-SNP CSs are 1 or very close to 1:
+
+```{r pip-1-snp-cs}
+table(cut(1 - cs1snp_susie$pip,c(0,0.0001,0.001,0.01,1)))
+table(cut(1 - cs1snp_fsusie$pip,c(0,0.0001,0.001,0.01,1)))
+```
+
+This plot shows the distribution of the distances between the haSNP
+(in the 1-SNP CS) and the nearest H3K27ac peak affected by that SNP:
+
+TO DO.
+
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
