@@ -222,6 +222,7 @@ p1 <- ggplot(data.frame(cs_size = cs_size_susie),aes(x = cs_size)) +
 p2 <- ggplot(data.frame(cs_size = cs_size_fsusie),aes(x = cs_size)) +
   geom_histogram(stat = "count",color = "white",fill = "tomato",
                  width = 0.65) +
+  scale_y_continuous(breaks = seq(0,2000,250)) + 
   labs(x = "CS size",y = "number of CSs",title = "fSuSiE") +
   theme_cowplot(font_size = 10) +
   theme(plot.title = element_text(size = 10,face = "plain"))
@@ -440,7 +441,7 @@ mean(peaks_per_snp_fsusie > 40)
 Finally, this plot shows the distribution of the distances between the
 haSNP (in a 1-SNP CS) and the *nearest peak* affected by that SNP:
 
-```{r dist-hasnp-peak-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE}
+```{r dist-hasnp-peak-cs1snp, fig.height=2, fig.width=2.5, warning=FALSE}
 peaks_fsusie_cs1snp <- subset(peaks_fsusie,
                               is.element(cs,cs1snp_fsusie$cs))
 rows <- match(peaks_fsusie_cs1snp$cs,cs1snp_fsusie$cs)
@@ -458,7 +459,7 @@ pdat <- data.frame(dist = pdat/1e6)
 p <- ggplot(subset(pdat,abs(dist) < 2),aes(x = dist)) +
   geom_histogram(bins = 128,color = "tomato",fill = "tomato") +
   scale_y_continuous(breaks = seq(0,500,100)) +
-  labs(x = "peak - haSNP position (Mb)",
+  labs(x = "H3K27ac peak - haSNP pos. (Mb)",
        y = "number of haSNPs") +
   theme_cowplot(font_size = 10)
 print(p)
