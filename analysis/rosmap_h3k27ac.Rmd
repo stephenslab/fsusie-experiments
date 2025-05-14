@@ -245,12 +245,6 @@ ggsave("cs_sizes_h3k27ac.pdf",
 We expect that the vast majority of the causal SNPs will be very close
 to the TSS. Let's verify this empirically.
 
-```{r cs-sizes-h3k27ac, echo=FALSE, warning=FALSE}
-ggsave("cs_sizes_h3k27ac.pdf",
-       plot_grid(p1,p2,nrow = 1,ncol = 2),
-	   height = 2,width = 4)
-```
-
 First, add a "min_dist_to_TSS" column to each set of results:
 
 ```{r add-min-dist-to-tss}

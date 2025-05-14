@@ -273,16 +273,20 @@ snps_fsusie <- transform(snps_fsusie,cs = factor(cs))
 
 Also remove the duplicate CSs from the fSuSiE CpG-level results:
 
-TO DO.
+```{r remove-duplicated-cs-2}
+nodup_cs    <- levels(snps_fsusie$cs)
+cpgs_fsusie <- subset(cpgs_fsusie,is.element(cs,nodup_cs))
+cpgs_fsusie <- transform(cpgs_fsusie,cs = factor(cs))
+```
 
 Compare the sizes of the CSs in the SuSiE-topPC and fSuSiE analyses:
 
-```{r cs-sizes-methyl, fig.height=2, fig.width=4, warning=FALSE, eval=FALSE}
+```{r cs-sizes, fig.height=2, fig.width=4, warning=FALSE}
 bins <- c(0,1,2,5,10,20,Inf)
-methyl_snps_susie_nodup <- transform(methyl_snps_susie_nodup,cs = factor(cs))
-methyl_snps_fsusie_nodup <- transform(methyl_snps_fsusie_nodup,cs = factor(cs))
-cs_size_susie  <- as.numeric(table(methyl_snps_susie_nodup$cs))
-cs_size_fsusie <- as.numeric(table(methyl_snps_fsusie_nodup$cs))
+snps_susie     <- transform(snps_susie,cs = factor(cs))
+snps_fsusie    <- transform(snps_fsusie,cs = factor(cs))
+cs_size_susie  <- as.numeric(table(snps_susie$cs))
+cs_size_fsusie <- as.numeric(table(snps_fsusie$cs))
 cs_size_susie  <- cut(cs_size_susie,bins)
 cs_size_fsusie <- cut(cs_size_fsusie,bins)
 levels(cs_size_susie) <- bins[-1]
@@ -305,51 +309,47 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 
 Here are the exact numbers:
 
-```{r cs-sizes-table-methyl, eval=FALSE}
+```{r cs-sizes-table}
 table(cs_size_susie)
 table(cs_size_fsusie)
 ```
 
-### Distance-to-TSS plot
-
-We expect that most of the causal SNPs to be very close to the nearest
-TSS. Let's check this. This will involve a couple of intermediate
-calculations.
-
-```{r cs-sizes-methyl-ggsave, echo=FALSE, warning=FALSE, eval=FALSE}
+```{r cs-sizes-methyl-ggsave, echo=FALSE, warning=FALSE}
 ggsave("cs_sizes_methyl.pdf",
        plot_grid(p1,p2,nrow = 1,ncol = 2),
 	   height = 2,width = 4)
 ```
 
-With these functions, we can compile the data needed for this plot.
+We expect that most of the causal SNPs to be very close to the nearest
+TSS. Let's check this. This will involve a couple of intermediate
+calculations.
 
-```{r add-min-dist-to-tss-methyl, eval=FALSE}
-methyl_snps_assoc        <- get_top_snp_per_location(methyl_cpg_assoc)
-methyl_snps_assoc        <- add_min_dist_to_tss(methyl_snps_assoc,genes)
-methyl_snps_susie_nodup  <- add_min_dist_to_tss(methyl_snps_susie_nodup,genes)
-methyl_snps_fsusie_nodup <- add_min_dist_to_tss(methyl_snps_fsusie_nodup,genes)
+```{r add-min-dist-to-tss}
+snps_assoc  <- get_top_snp_per_location(assoc)
+snps_assoc  <- add_min_dist_to_tss(snps_assoc,genes)
+snps_susie  <- add_min_dist_to_tss(snps_susie,genes)
+snps_fsusie <- add_min_dist_to_tss(snps_fsusie,genes)
 ```
 
 For SuSiE-topPC and fSuSiE, we calculate "weighted" counts of SNPs,
 in which the weights are given by the PIPs.
 
-```{r compute-weighted-distance-to-tss-methyl, eval=FALSE}
+```{r compute-weighted-distance-to-tss}
 bin_size <- 10000
 bins <- c(-Inf,seq(-2e5,2e5,bin_size),Inf)
 bins <- bins + bin_size/2
-counts_assoc <- as.numeric(table(cut(methyl_snps_assoc$min_dist_to_tss,bins)))
-counts_susie <- tapply(methyl_snps_susie_nodup$pip,
-                       cut(methyl_snps_susie_nodup$min_dist_to_tss,bins),
+counts_assoc <- as.numeric(table(cut(snps_assoc$min_dist_to_tss,bins)))
+counts_susie <- tapply(snps_susie$pip,
+                       cut(snps_susie$min_dist_to_tss,bins),
 					   function (x) sum(x,na.rm = TRUE))
-counts_fsusie <- tapply(methyl_snps_fsusie_nodup$pip,
-                        cut(methyl_snps_fsusie_nodup$min_dist_to_tss,bins),
+counts_fsusie <- tapply(snps_fsusie$pip,
+                        cut(snps_fsusie$min_dist_to_tss,bins),
 						function (x) sum(x,na.rm = TRUE))
 ```
 
 Now we can plot the result:
 
-```{r plot-weighted-distance-to-tss-methyl, fig.height=2.5, fig.width=3.5, eval=FALSE}
+```{r plot-weighted-distance-to-tss, fig.height=2.5, fig.width=3.5}
 n <- length(bins)
 i <- seq(2,n-2)
 bin_centers   <- bins[i] + bin_size/2
@@ -375,9 +375,13 @@ p <- ggplot(pdat,aes(x = dist,y = freq,color = method)) +
 print(p)
 ```
 
-```{r ggsave-weighted-distance-to-tss-methyl, echo=FALSE, warning=FALSE, eval=FALSE}
+```{r ggsave-weighted-distance-to-tss, echo=FALSE, warning=FALSE}
 ggsave("dist_to_tss_methyl.pdf",p,height = 2.5,width = 3.5)
 ```
+
+Now let's look closely at the 1-SNP CSs.
+
+TO DO.
 
 Now let's turn to the recovery of affected CpGs.
 
@@ -462,9 +466,6 @@ x <- factor(methyl_cpg_assoc$variant_id)
 cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
-nodup_cs <- levels(methyl_snps_fsusie_nodup$cs)
-methyl_cpg_fsusie_nodup <- subset(methyl_cpg_fsusie,is.element(cs,nodup_cs))
-methyl_cpg_fsusie_nodup <- transform(methyl_cpg_fsusie_nodup,cs = factor(cs))
 cpgs_per_snp_fsusie <-
   with(methyl_cpg_fsusie_nodup,
        tapply(ID,cs,function (x) length(unique(x))))
