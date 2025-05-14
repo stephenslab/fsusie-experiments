@@ -314,10 +314,25 @@ table(cs_size_susie)
 table(cs_size_fsusie)
 ```
 
+Here's another visualization of the same result:
+
+```{r cs-sizes-another-plot, fig.height=2, fig.width=3.2}}
+pdat <- rbind(data.frame(method = "SuSiE-topPC",cs_size = cs_size_susie),
+              data.frame(method = "fSuSiE",cs_size = cs_size_fsusie))
+pdat <- transform(pdat,method = factor(method))
+p <- ggplot(pdat,aes(x = cs_size,fill = method)) +
+  geom_histogram(stat = "count",color = "white",width = 0.65,
+                 position = "dodge") +
+  labs(x = "CS size",y = "number of CSs") +
+  scale_fill_manual(values = c("darkorange","dodgerblue")) +
+  scale_y_continuous(breaks = seq(0,10000,1000)) +
+  theme_cowplot(font_size = 10) +
+  theme(plot.title = element_text(size = 10,face = "plain"))
+print(p)
+```
+
 ```{r cs-sizesggsave, echo=FALSE, warning=FALSE}
-ggsave("cs_sizes_methyl.pdf",
-       plot_grid(p1,p2,nrow = 1,ncol = 2),
-	   height = 2,width = 4)
+ggsave("cs_sizes_methyl.pdf",p,height = 2,width = 3.2)
 ```
 
 We expect that most of the causal SNPs to be very close to the nearest
