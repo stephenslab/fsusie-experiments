@@ -517,7 +517,7 @@ mean(cpgs_per_snp_fsusie > 150)
 Finally, this plot shows the distribution of the distances between the
 mSNP and the *nearest CpG* affected by that SNP:
 
-```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE}
+```{r dist-msnp-cpg-cs1snp, fig.height=2, fig.width=2.5, warning=FALSE}
 cpgs_fsusie_cs1snp <- subset(cpgs_fsusie,
                              is.element(cs,cs1snp_fsusie$cs))
 rows <- match(cpgs_fsusie_cs1snp$cs,cs1snp_fsusie$cs)
