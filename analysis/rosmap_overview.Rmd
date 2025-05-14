@@ -314,7 +314,7 @@ table(cs_size_susie)
 table(cs_size_fsusie)
 ```
 
-```{r cs-sizes-methyl-ggsave, echo=FALSE, warning=FALSE}
+```{r cs-sizesggsave, echo=FALSE, warning=FALSE}
 ggsave("cs_sizes_methyl.pdf",
        plot_grid(p1,p2,nrow = 1,ncol = 2),
 	   height = 2,width = 4)
@@ -381,7 +381,21 @@ ggsave("dist_to_tss_methyl.pdf",p,height = 2.5,width = 3.5)
 
 Now let's look closely at the 1-SNP CSs.
 
-TO DO.
+```{r get-1-snp-cs}
+cs1snp_susie  <- table(snps_susie$cs)
+cs1snp_susie  <- names(cs1snp_susie)[cs1snp_susie == 1]
+cs1snp_susie  <- subset(snps_susie,is.element(cs,cs1snp_susie))
+cs1snp_fsusie <- table(snps_fsusie$cs)
+cs1snp_fsusie <- names(cs1snp_fsusie)[cs1snp_fsusie == 1]
+cs1snp_fsusie <- subset(snps_fsusie,is.element(cs,cs1snp_fsusie))
+```
+
+Many of the PIPs in the 1-SNP CSs are 1 or very close to 1:
+
+```{r pip-1-snp-cs}
+table(cut(1 - cs1snp_susie$pip,c(0,0.0001,0.001,0.01,1)))
+table(cut(1 - cs1snp_fsusie$pip,c(0,0.0001,0.001,0.01,1)))
+```
 
 Now let's turn to the recovery of affected CpGs.
 
@@ -389,23 +403,23 @@ Counting the number of CpGs per TAD is quite simple from the way the
 fSuSiE results were compiled. It involves counting the number of unique
 CpGs in each TAD:
 
-```{r get-cpgs-per-tad-fsusie, eval=FALSE}
+```{r get-cpgs-per-tad-fsusie}
 cpgs_per_tad_fsusie <-
-  with(methyl_cpg_fsusie,tapply(ID,region,function (x) length(unique(x))))
+  with(cpgs_fsusie,tapply(ID,region,function (x) length(unique(x))))
 ```
 
-Counting the number of CpGs per TAD from the SNP-CpG association tests is a
-little more complicated because the CpGs were not assigned to TADs in the
-results.
+Counting the number of CpGs per TAD from the SNP-CpG association tests
+is a little more complicated because the CpGs were not assigned to
+TADs in the results.
 
-```{r, eval=FALSE}
-tads <- get_tad_info(levels(methyl_cpg_fsusie$region))
-cpgs_per_tad_assoc <- count_features_per_tad(methyl_cpg_assoc,tads)
+```{r get-cpgs-per-tad-assoc}
+tads <- get_tad_info(levels(cpgs_fsusie$region))
+cpgs_per_tad_assoc <- count_features_per_tad(assoc,tads)
 ```
 
 These plots summarize the number of affected CpGs per TAD:
 
-```{r plot-cpgs-per-tad, fig.height=2, fig.width=5, warning=FALSE, eval=FALSE}
+```{r plot-cpgs-per-tad, fig.height=2, fig.width=5, warning=FALSE}
 cpgs_per_tad_assoc[cpgs_per_tad_assoc == 0] <- NA
 cpgs_per_tad_fsusie[cpgs_per_tad_fsusie == 0] <- NA
 pdat1 <- data.frame(x = cpgs_per_tad_assoc)
@@ -428,7 +442,7 @@ plot_grid(p1,p2,nrow = 1,ncol = 2)
 
 A small number of TADs have more than 2,000 affected CpGs:
 
-```{r cpgs-per-tad-more, eval=FALSE}
+```{r cpgs-per-tad-more}
 sum(cpgs_per_tad_assoc > 2000,na.rm = TRUE)
 sum(cpgs_per_tad_fsusie > 2000,na.rm = TRUE)
 ```
@@ -436,7 +450,7 @@ sum(cpgs_per_tad_fsusie > 2000,na.rm = TRUE)
 This plot compares the number of affected CpGs identified by fSuSiE
 and the SNP-CpG association tests:
 
-```{r compare-cpgs-per-tad, fig.height=2.5, fig.width=2.5, warning=FALSE, eval=FALSE}
+```{r compare-cpgs-per-tad, fig.height=2.5, fig.width=2.5, warning=FALSE}
 pdat <- data.frame(assoc  = cpgs_per_tad_assoc,
                    fsusie = cpgs_per_tad_fsusie)
 p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
@@ -449,7 +463,7 @@ p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
 print(p)
 ```
 
-```{r compare-cpgs-per-tad-ggsave, echo=FALSE, warning=FALSE, eval=FALSE}
+```{r compare-cpgs-per-tad-ggsave, echo=FALSE, warning=FALSE}
 ggsave("affected_cpgs_per_tad.pdf",p,height = 2.5,width = 2.5)
 ```
 
@@ -461,14 +475,13 @@ per CS for fSuSiE to the number of affected CpGs per SNP from the
 association tests. The result is much fewer CSs and many more
 affected CpGs per CS:
 
-```{r count-cpgs-per-snp, fig.height=2, fig.width=4.5, eval=FALSE}
-x <- factor(methyl_cpg_assoc$variant_id)
-cpgs_per_snp_assoc <- tapply(methyl_cpg_assoc$molecular_trait_id,x,
+```{r count-cpgs-per-snp, fig.height=2, fig.width=4.5}
+x <- factor(assoc$variant_id)
+cpgs_per_snp_assoc <- tapply(assoc$molecular_trait_id,x,
                              function (x) length(unique(x)))
 rm(x)
 cpgs_per_snp_fsusie <-
-  with(methyl_cpg_fsusie_nodup,
-       tapply(ID,cs,function (x) length(unique(x))))
+  with(cpgs_fsusie,tapply(ID,cs,function (x) length(unique(x))))
 pdat1 <- data.frame(x = cpgs_per_snp_assoc)
 pdat2 <- data.frame(x = cpgs_per_snp_fsusie)
 pdat1 <- subset(pdat1,x <= 25)
@@ -487,7 +500,7 @@ p2 <- ggplot(pdat2,aes(x = x)) +
 plot_grid(p1,p2,nrow = 1,ncol = 2)
 ```
 
-```{r count-cpgs-per-snp-ggave, echo=FALSE, warning=FALSE, eval=FALSE}
+```{r count-cpgs-per-snp-ggave, echo=FALSE, warning=FALSE}
 ggsave("affected_cpgs_per_snp.pdf",
        plot_grid(p1,p2,nrow = 1,ncol = 2),
        height = 2,width = 4.5)
@@ -496,57 +509,34 @@ ggsave("affected_cpgs_per_snp.pdf",
 A small proportion of the SNPs and CSs are not plotted because they
 have an unusually large number of CpGs:
 
-```{r count-cpgs-per-snp-more, eval=FALSE}
-mean(cpgs_per_snp_assoc > 20)
+```{r count-cpgs-per-snp-more}
+mean(cpgs_per_snp_assoc > 25)
 mean(cpgs_per_snp_fsusie > 150)
 ```
 
-Now let's look closely at the 1-SNP CSs for methylation.
-
-```{r get-1-snp-cs, eval=FALSE}
-methyl_cs1snp_susie  <- table(methyl_snps_susie_nodup$cs)
-methyl_cs1snp_susie  <- names(methyl_cs1snp_susie)[methyl_cs1snp_susie == 1]
-methyl_cs1snp_susie  <- subset(methyl_snps_susie,
-                               is.element(cs,methyl_cs1snp_susie))
-methyl_cs1snp_fsusie <- table(methyl_snps_fsusie_nodup$cs)
-methyl_cs1snp_fsusie <- names(methyl_cs1snp_fsusie)[methyl_cs1snp_fsusie == 1]
-methyl_cs1snp_fsusie <- subset(methyl_snps_fsusie,
-                              is.element(cs,methyl_cs1snp_fsusie))
-```
-
-TO DO: Add plots showing distribution of PIPs for SNPs in 1-SNP CSs.
-
 Finally, this plot shows the distribution of the distances between the
-mSNP and the nearest CpG affected by that SNP:
+mSNP and the *nearest CpG* affected by that SNP:
 
-```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE, eval=FALSE}
-methyl_cpg_fsusie_cs1snp <- subset(methyl_cpg_fsusie,
-                                   is.element(cs,methyl_cs1snp_fsusie$cs))
-rows <- match(methyl_cpg_fsusie_cs1snp$cs,methyl_cs1snp_fsusie$cs)
-methyl_cpg_fsusie_cs1snp$variant_pos <- methyl_cs1snp_fsusie[rows,"pos"]
-methyl_cpg_fsusie_cs1snp <- transform(methyl_cpg_fsusie_cs1snp,
-                                      cs = factor(cs),
-                                      dist = peak_start - variant_pos)
-pdat <- tapply(methyl_cpg_fsusie_cs1snp$dist,methyl_cpg_fsusie_cs1snp$cs,
+```{r dist-msnp-cpg-cs1snp, fig.height=2.5, fig.width=2.5, warning=FALSE}
+cpgs_fsusie_cs1snp <- subset(cpgs_fsusie,
+                             is.element(cs,cs1snp_fsusie$cs))
+rows <- match(cpgs_fsusie_cs1snp$cs,cs1snp_fsusie$cs)
+cpgs_fsusie_cs1snp$variant_pos <- cs1snp_fsusie[rows,"pos"]
+cpgs_fsusie_cs1snp <- transform(cpgs_fsusie_cs1snp,
+                                cs = factor(cs),
+                                dist = peak_start - variant_pos)
+pdat <- tapply(cpgs_fsusie_cs1snp$dist,cpgs_fsusie_cs1snp$cs,
                function (x) {
 			     i <- which.min(abs(x))
 				 return(x[i])
     		   })
-pdat <- data.frame(dist = pdat)
-pdat <- transform(pdat,
-  dist = cut(dist,c(-Inf,-1e6,-1e5,-1e4,-1e3,-100,
-                    100,1e3,1e4,1e5,1e6,+Inf)))
-p <- ggplot(pdat,aes(x = dist)) +
-  geom_bar(color = "white",fill = "darkblue",bins = 64,width = 0.5) +
-  labs(x = "CpG - mSNP distance (base-pairs)",
+pdat <- data.frame(dist = pdat/1e6)
+p <- ggplot(subset(pdat,abs(dist) < 2),aes(x = dist)) +
+  geom_histogram(bins = 128,color = "tomato",fill = "tomato") +
+  labs(x = "CpG - mSNP pos. (Mb)",
        y = "number of mSNPs") +
-  theme_cowplot(font_size = 10) +
-  theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
+  theme_cowplot(font_size = 10)
 print(p)
 ```
-
-As we can see, the nearest affected CpG is very likely to be nearby,
-although there are some putative long-range effects (which may or
-may not be real).
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
