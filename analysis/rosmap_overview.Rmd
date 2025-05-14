@@ -124,15 +124,15 @@ Let's now get an overview of the TADs. This is the number of
 fine-mapping regions (TADs) that contained at least one CS in each of
 the analyses:
 
-```{r methyl-tad-counts, eval=FALSE}
-nlevels(methyl_snps_susie$region)
-nlevels(methyl_snps_fsusie$region)
+```{r tad-counts}
+nlevels(snps_susie$region)
+nlevels(snps_fsusie$region)
 ```
 
 This plot summarizes the sizes of the TADs that were analyzed by
 SuSiE-topPC and fSuSiE:
 
-```{r plot-methyl-tad-sizes, fig.height=2.75, fig.width=2.75, warning=FALSE, eval=FALSE}
+```{r plot-tad-sizes, fig.height=2.75, fig.width=2.75, warning=FALSE}
 plot_tad_sizes <- function (tads) {
   tad_size <- get_tad_sizes(tads)
   pdat <- data.frame(tad_size = tad_size)
@@ -141,20 +141,20 @@ plot_tad_sizes <- function (tads) {
          labs(x = "size (Mb)",y = "number of TADs") +
          theme_cowplot(font_size = 10))
 }
-tads <- levels(methyl_snps_fsusie$region)
+tads <- levels(snps_fsusie$region)
 p <- plot_tad_sizes(tads) +
   scale_x_continuous(limits = c(2,9),breaks = 1:10) +
   scale_y_continuous(breaks = seq(0,100,10))
 print(p)
 ```
 
-```{r save-plot-methyl-tad-sizes, echo=FALSE, warning=FALSE, eval=FALSE}
+```{r save-plot-tad-sizes, echo=FALSE, warning=FALSE}
 ggsave("tad_sizes_histogram.pdf",p,height = 3,width = 3)
 ```
 
 Some other useful statistics on the TAD sizes:
 
-```{r summarize-methyl-tad-sizes, eval=FALSE}
+```{r summarize-methyl-tad-sizes}
 tad_size <- get_tad_sizes(tads)
 length(tad_size)
 range(tad_size)
@@ -163,77 +163,48 @@ median(tad_size)
 sum(tad_size > 9)
 ```
 
-There are some technical concerns about fine-mapping mSNPs that are
-also CpGs, so these SNPs (and the CSs that include these SNPs)
+There are some technical concerns about fine-mapping mSNPs that
+overlap with CpGs, so these SNPs (and the CSs that include these SNPs)
 should be removed from the results.
 
-For the SNP-CpG association tests, finding the "blacklisted" is 
-quite straightforward because they are just the mSNPs that have the
-same positions as the CpGs:
+For the SNP-CpG association tests, it turns out that there are no
+SNPs to "blacklist":
 
-```{r blacklist-assoc, eval=FALSE}
-rows <- which(with(methyl_cpg_assoc,pos == molecular_trait_id_pos))
-length(rows)
-ids  <- with(methyl_cpg_assoc[rows,],paste(chr,pos,sep = "_"))
-i <- match(ids,afreq$id)
-table(cut(afreq[i,"maf"],c(0,0.01,0.1,1)))
-rows <- which(with(methyl_cpg_assoc,pos != molecular_trait_id_pos))
-methyl_cpg_assoc <- methyl_cpg_assoc[rows,]
+```{r blacklist-assoc}
+sum(with(assoc,pos == molecular_trait_id_pos))
 ```
 
 Now identify the blacklisted mSNPs as the mSNPs that have the same
-position as a CpG (I will  use both "peak start" and "peak end"):
+position as a CpG (I will use both "peak start" and "peak end"):
 
-```{r get-blacklisted-snps, eval=FALSE}
-ids_snp <- c(with(methyl_snps_susie,paste(chr,pos,sep = "_")),
-             with(methyl_snps_fsusie,paste(chr,pos,sep = "_")))
-ids_cpg <- with(methyl_cpg_fsusie,
+```{r get-blacklisted-snps}
+ids_snp <- c(with(snps_susie,paste(chr,pos,sep = "_")),
+             with(snps_fsusie,paste(chr,pos,sep = "_")))
+ids_cpg <- with(cpgs_fsusie,
                 c(paste(chr,peak_start,sep = "_"),
 				  paste(chr,peak_end,sep = "_")))
 blacklisted_ids <- intersect(ids_snp,ids_cpg)
-length(blacklisted_ids)
 ```
 
-Before removing the blacklisted SNPs from the results, let's
-take a quick look at them:
+Now remove all SuSiE and fSuSiE CSs containing one or more blacklisted
+SNPs:
 
-```{r examine-blacklisted-snps, eval=FALSE}
-ids <- with(methyl_snps_fsusie,paste(chr,pos,sep = "_"))
-rows <- which(is.element(ids,blacklisted_ids))
-methyl_snps_fsusie_blacklisted <- methyl_snps_fsusie[rows,]
-nrow(methyl_snps_fsusie_blacklisted)
-sum(methyl_snps_fsusie_blacklisted$pip > 0.5)
-```
-
-It is interesting that a large fraction of the blacklisted SNPs have a
-high PIPs. Let's also look at the MAFs of these "blacklisted" SNPs:
-
-```{r blacklisted-snps-maf-hist, fig.height=2.5, fig.width=2.5, eval=FALSE}
-ggplot(methyl_snps_fsusie_blacklisted,aes(x = log10(maf))) +
-  geom_histogram(fill = "darkblue",color = "white",bins = 32) +
-  labs(x = "log10(MAF)",y = "number of SNPs") +
-  theme_cowplot(font_size = 10)
-```
-
-Before moving forward with the analysis, remove all SuSiE and
-fSuSiE CSs containing the blacklisted SNPs:
-
-```{r remove-blacklisted-cs, eval=FALSE}
-ids                <- with(methyl_snps_susie,paste(chr,pos,sep = "_"))
-rows               <- which(is.element(ids,blacklisted_ids))
-blacklisted_cs     <- unique(methyl_snps_susie[rows,]$cs)
-methyl_snps_susie  <- subset(methyl_snps_susie,!is.element(cs,blacklisted_cs))
-ids                <- with(methyl_snps_fsusie,paste(chr,pos,sep = "_"))
-rows               <- which(is.element(ids,blacklisted_ids))
-blacklisted_cs     <- unique(methyl_snps_fsusie[rows,]$cs)
-methyl_snps_fsusie <- subset(methyl_snps_fsusie,!is.element(cs,blacklisted_cs))
-methyl_snps_susie  <- transform(methyl_snps_susie,cs = factor(cs))
-methyl_snps_fsusie <- transform(methyl_snps_fsusie,cs = factor(cs))
+```{r remove-blacklisted-cs}
+ids            <- with(snps_susie,paste(chr,pos,sep = "_"))
+rows           <- which(is.element(ids,blacklisted_ids))
+blacklisted_cs <- unique(snps_susie[rows,]$cs)
+snps_susie     <- subset(snps_susie,!is.element(cs,blacklisted_cs))
+ids            <- with(snps_fsusie,paste(chr,pos,sep = "_"))
+rows           <- which(is.element(ids,blacklisted_ids))
+blacklisted_cs <- unique(snps_fsusie[rows,]$cs)
+snps_fsusie    <- subset(snps_fsusie,!is.element(cs,blacklisted_cs))
+snps_susie     <- transform(snps_susie,cs = factor(cs))
+snps_fsusie    <- transform(snps_fsusie,cs = factor(cs))
 ```
 
 These histograms summarize the number of CSs per TAD:
 
-```{r num-cs-per-tad-methyl, fig.height=2, fig.width=5, warning=FALSE, eval=FALSE}
+```{r num-cs-per-tad, fig.height=2, fig.width=5, warning=FALSE}
 pdat1 <- get_cs_vs_tad_size(methyl_snps_susie)
 pdat2 <- get_cs_vs_tad_size(methyl_snps_fsusie)
 pdat1 <- transform(pdat1,num_cs = factor(num_cs,1:20))
