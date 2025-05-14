@@ -112,6 +112,7 @@ for (i in keep_cs) {
 effects <- transform(effects,
                      cs     = factor(cs),
                      effect = effect/abs(up - low))
+print(nrow(subset(effects,cs == "CS 2" & nonzero)))
 
 # Create the effect plot.
 p2 <- ggplot() +
