@@ -532,7 +532,7 @@ pdat <- tapply(cpgs_fsusie_cs1snp$dist,cpgs_fsusie_cs1snp$cs,
     		   })
 pdat <- data.frame(dist = pdat/1000)
 p <- ggplot(subset(pdat,abs(dist) < 100),aes(x = dist)) +
-  geom_histogram(bins = 128,color = "tomato",fill = "tomato") +
+  geom_histogram(bins = 128,color = "darkblue",fill = "darkblue") +
   labs(x = "CpG - mSNP pos. (kb)",
        y = "number of mSNPs") +
   theme_cowplot(font_size = 10)
