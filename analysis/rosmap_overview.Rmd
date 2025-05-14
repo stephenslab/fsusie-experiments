@@ -530,13 +530,21 @@ pdat <- tapply(cpgs_fsusie_cs1snp$dist,cpgs_fsusie_cs1snp$cs,
 			     i <- which.min(abs(x))
 				 return(x[i])
     		   })
-pdat <- data.frame(dist = pdat/1e6)
-p <- ggplot(subset(pdat,abs(dist) < 2),aes(x = dist)) +
+pdat <- data.frame(dist = pdat/1000)
+p <- ggplot(subset(pdat,abs(dist) < 100),aes(x = dist)) +
   geom_histogram(bins = 128,color = "tomato",fill = "tomato") +
-  labs(x = "CpG - mSNP pos. (Mb)",
+  labs(x = "CpG - mSNP pos. (kb)",
        y = "number of mSNPs") +
   theme_cowplot(font_size = 10)
 print(p)
+```
+
+```{r dist-msnp-cpg-cs1np-more}
+table(abs(pdat$dist) < 100)
+```
+
+```{r dist-msnp-peak-cs1snp-ggsave, echo=FALSE, warning=FALSE}
+ggsave("dist_msnp_cpg_cs1snp.pdf",p,height = 2.25,width = 2.5)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
