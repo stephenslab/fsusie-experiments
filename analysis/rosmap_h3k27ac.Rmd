@@ -179,15 +179,20 @@ print(p)
 ggsave("cs_per_tad_scatterplot_h3k27ac.pdf",p,height = 3,width = 4)
 ```
 
-Flag and remove the "duplicate" CSs:
+Flag the "duplicate" CSs:
 
-```{r remove-duplicated-cs, message=FALSE, cache=TRUE}
+```{r flag-duplicated-cs, message=FALSE, cache=TRUE}
 root_cs_susie  <- create_cs_maps(snps_susie)$root
 root_cs_fsusie <- create_cs_maps(snps_fsusie)$root
-snps_susie     <- subset(snps_susie,is.element(cs,root_cs_susie))
-snps_fsusie    <- subset(snps_fsusie,is.element(cs,root_cs_fsusie))
-snps_susie     <- transform(snps_susie,cs = factor(cs))
-snps_fsusie    <- transform(snps_fsusie,cs = factor(cs))
+```
+
+Then remove the duplicate CSs:
+
+```{r remove-duplicated-cs}
+snps_susie  <- subset(snps_susie,is.element(cs,root_cs_susie))
+snps_fsusie <- subset(snps_fsusie,is.element(cs,root_cs_fsusie))
+snps_susie  <- transform(snps_susie,cs = factor(cs))
+snps_fsusie <- transform(snps_fsusie,cs = factor(cs))
 ```
 
 Also remove the duplicate CSs from the fSuSiE peak-level results:
@@ -449,22 +454,22 @@ pdat <- tapply(peaks_fsusie_cs1snp$dist,peaks_fsusie_cs1snp$cs,
 			     i <- which.min(abs(x))
 				 return(x[i])
     		   })
-pdat <- data.frame(dist = pdat)
-pdat <- transform(pdat,
-  dist = cut(dist,c(-Inf,-1e6,-1e5,-1e4,-1e3,1e3,1e4,1e5,1e6,+Inf)))
-p <- ggplot(pdat,aes(x = dist)) +
-  geom_bar(color = "white",fill = "darkblue",bins = 64,width = 0.5) +
-  labs(x = "peak - haSNP distance (base-pairs)",
+pdat <- data.frame(dist = pdat/1e6)
+p <- ggplot(subset(pdat,abs(dist) < 2),aes(x = dist)) +
+  geom_histogram(bins = 128,color = "tomato",fill = "tomato") +
+  scale_y_continuous(breaks = seq(0,500,100)) +
+  labs(x = "peak - haSNP position (Mb)",
        y = "number of haSNPs") +
-  theme_cowplot(font_size = 10) +
-  theme(axis.text.x = element_text(angle = 45,hjust = 1)) 
+  theme_cowplot(font_size = 10)
 print(p)
 ```
 
-```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, wa
+```{r dist-hasnp-peak-cs1np-more}
+table(abs(pdat$dist) < 2)
+```
 
-rning=FALSE}
-ggsave("dist_hasnp_peak_cs1snp.pdf",p,height = 2.75,width = 2.5)
+```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, warning=FALSE}
+ggsave("dist_hasnp_peak_cs1snp.pdf",p,height = 2.25,width = 2.5)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
