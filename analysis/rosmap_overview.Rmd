@@ -316,7 +316,7 @@ table(cs_size_fsusie)
 
 Here's another visualization of the same result:
 
-```{r cs-sizes-another-plot, fig.height=2, fig.width=3.2}}
+```{r cs-sizes-another-plot, fig.height=2, fig.width=3.2}
 pdat <- rbind(data.frame(method = "SuSiE-topPC",cs_size = cs_size_susie),
               data.frame(method = "fSuSiE",cs_size = cs_size_fsusie))
 pdat <- transform(pdat,method = factor(method))
@@ -476,6 +476,13 @@ p <- ggplot(pdat,aes(x = assoc,y = fsusie)) +
   ylim(0,4100) + 
   theme_cowplot(font_size = 10)
 print(p)
+```
+
+Note that none of the TADs have more than 4,100 affected CpGs:
+
+```{r compare-cpgs-per-tad-more}
+sum(pdat$assoc > 4100,na.rm = TRUE)
+sum(pdat$fsusie > 4100,na.rm = TRUE)
 ```
 
 ```{r compare-cpgs-per-tad-ggsave, echo=FALSE, warning=FALSE}
