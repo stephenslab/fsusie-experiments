@@ -405,7 +405,12 @@ cs1snp_fsusie <- names(cs1snp_fsusie)[cs1snp_fsusie == 1]
 cs1snp_fsusie <- subset(snps_fsusie,is.element(cs,cs1snp_fsusie))
 ```
 
-Many of the PIPs in the 1-SNP CSs are 1 or very close to 1:
+Save the fSuSiE 1-SNP CS results to an .rds file (this will be used
+for another analysis):
+
+```{r save-1-snp-cs}
+saveRDS(cs1snp_fsusie,"methyl_cs1snp_fsusie.rds")
+```
 
 ```{r pip-1-snp-cs}
 table(cut(1 - cs1snp_susie$pip,c(0,0.0001,0.001,0.01,1)))

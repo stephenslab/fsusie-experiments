@@ -143,4 +143,13 @@ table(cs_size)
 ggsave("cs_sizes_protein.pdf",p,height = 2,width = 2)
 ```
 
+
+Save the SuSiE CSs to .rds files (these will be used for another
+analysis):
+
+```{r save-cs}
+saveRDS(rnaseq,"rnaseq_susie.rds")
+saveRDS(protein,"protein_susie.rds")
+```
+
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
