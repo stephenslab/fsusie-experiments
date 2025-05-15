@@ -77,3 +77,9 @@ p <- ggplot(pdat,aes(x = traits)) +
   labs(x = "",y = "number of 1-SNP CSs") +
   theme_cowplot(font_size = 10)
 ggsave("upset_plot.pdf",p,height = 4,width = 4)
+
+# Print out some statistics I will add to the figure caption.
+print(c(RNA     = nrow(rnaseq_susie),
+        protein = nrow(protein_susie),
+        H3K27ac = nrow(ha_fsusie),
+        methyl  = nrow(methyl_fsusie)))
