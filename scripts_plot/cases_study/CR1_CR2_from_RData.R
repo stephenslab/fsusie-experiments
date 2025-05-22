@@ -95,6 +95,8 @@ pdat2 <- transform(pdat2,
 # > nrow(subset(pdat2,CS == 3))
 # 12
 #
+# > intersect(subset(pdat1,CS)$pos,subset(pdat2,CS == 1)$pos)*1e6
+# 207577223 207629207
 ids <- pdat2$id
 ids[] <- NA
 ids[pdat2$id == "chr1:207577223:T:C"] <- "rs679515"
@@ -126,6 +128,8 @@ pdat3 <- transform(pdat3,pos = pos/1e6)
 # chr1:207577223:T:C 207.6 TRUE 9.661 -6.348
 # > nrow(subset(pdat3,CS))
 # 20
+# > intersect(subset(pdat1,CS)$pos,subset(pdat3,CS)$pos)*1e6
+# 207510847 207577223
 ids <- pdat3$id
 ids[] <- NA
 ids[pdat3$id == "chr1:207577223:T:C"] <- "rs679515"
