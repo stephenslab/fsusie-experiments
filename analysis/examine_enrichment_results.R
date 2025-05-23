@@ -39,12 +39,10 @@ p <- ggplot(dat,aes(x = Enrichment_log2,y = Annotation,color = method,
                     xmax = Enrichment_log2 + Enrichment_SE_log2)) +
   geom_point(shape = 20,size = 3) +
   geom_errorbarh(height = 0) +
-  geom_vline(xintercept = 1,linetype = "dotted") +
+  geom_vline(xintercept = 0,linetype = "dotted") +
   scale_color_manual(values = c("magenta","dodgerblue")) +
-  # scale_x_continuous(breaks = c(0,1,seq(2,16,2)),limits = c(0,14)) +
   labs(x = "enrichment",y = "",title = trait) +
   theme_cowplot(font_size = 10)
-  # theme(panel.grid.major.y = element_line(color = "lightgray"))
 print(p)
 outfile <- paste0("enrichment_ldsc_",trait,".pdf")
 ggsave(outfile,p,height = 2.5,width = 4.5)
