@@ -1,71 +1,50 @@
 library(ggplot2)
 library(cowplot)
-trait <- "mQTL"
-# trait <- "haQTL"
-infile1 <-
-  file.path("../outputs",
-    paste(trait,"cs_snp_toppc1_pip0.5.enrichment_results_summary.tsv.gz",
-          sep = "_"))
-infile2 <-
-  file.path("../outputs",
-    paste(trait,"cs_snp_pip0.5.enrichment_results_summary.tsv.gz",sep = "_"))
-dat1 <- read.table(infile1,sep = "\t",header = TRUE,stringsAsFactors = FALSE)
-dat2 <- read.table(infile2,sep = "\t",header = TRUE,stringsAsFactors = FALSE)
-hist(dat1$Enrichment,n = 32)
-hist(dat2$Enrichment,n = 32)
-plot(dat1$Enrichment,dat2$Enrichment,pch = 20)
-abline(a = 0,b = 1,col = "magenta",lty = "dotted")
-annotations <- c("Repressed_Hoffman.to_hg38",
-                 "Intron_UCSC.to_hg38",
-                 # "SuperEnhancer_Hnisz.to_hg38",
-                 "UTR_3_UCSC.to_hg38",
-                 "CTCF_Hoffman.to_hg38",
-                 "DHS_peaks_Trynka.to_hg38",
-                 # "Enhancer_Andersson.to_hg38",
-                 # "PromoterFlanking_Hoffman.to_hg38",
-                 # "WeakEnhancer_Hoffman.to_hg38",
-                 "FetalDHS_Trynka.to_hg38",
-                 "Enhancer_Hoffman.to_hg38",
-                 # "DNaseI.to_hg38",
-                 "Coding_UCSC.to_hg38",
-                 "Promoter_UCSC.to_hg38",
-                 # "E081-DNase.macs2.narrowPeak.to_hg38",
-                 "TSS_Hoffman.to_hg38",
-                 "UTR_5_UCSC.to_hg38")
-rows <- which(is.element(dat1$Annotation,annotations))
-plot(dat1[rows,"Enrichment"],dat2[rows,"Enrichment"],pch = 20)
-abline(a = 0,b = 1,col = "magenta",lty = "dotted")
-dat1 <- dat1[rows,]
-dat2 <- dat2[rows,]
-# rows <- order(pmax(dat1$Enrichment,dat2$Enrichment))
-# dat1 <- dat1[rows,]
-# dat2 <- dat2[rows,]
-# annotations <- dat1$Annotation
-pdat <- rbind(data.frame(method = "SuSiE-topPC",
-                         annotation = dat1$Annotation,
-                         enrichment = dat1$Enrichment,
-                         se         = dat1$Enrichment_SE,
-                         stringsAsFactors = FALSE),
-              data.frame(method = "fSuSiE",
-                         annotation = dat2$Annotation,
-                         enrichment = dat2$Enrichment,
-                         se         = dat2$Enrichment_SE,
-                         stringsAsFactors = FALSE))
-pdat <- transform(pdat,
-                  method     = factor(method),
-                  annotation = factor(annotation,annotations),
-                  enrichment = enrichment)
-p <- ggplot(pdat,aes(x = enrichment,y = annotation,color = method,
-                      xmin = enrichment - se,
-                      xmax = enrichment + se)) +
+# trait <- "ROSMAP_mQTL"
+trait <- "ROSMAP_haQTL"
+infile <- paste("../outputs/all.fsusie.susie_toppc1.haQTL.mQTL.enrichment",
+                "results_encode.tsv.gz",sep = "_")
+dat <- read.table(infile,sep = "\t",header = TRUE,stringsAsFactors = FALSE)
+dat <- dat[c("Annotation","Enrichment_log2","Enrichment_SE_log2",
+             "Enrichment_P_value","context","method","resource")]
+dat <- transform(dat,
+                 context  = factor(context), 
+                 method   = factor(method),
+                 resource = factor(resource))
+dat <- subset(dat,context == trait)             
+annotations <- c("CTCF_Hoffman",
+                 "Coding_UCSC",
+                 # "Conserved_LindbladToh",
+                 "DHS_peaks_Trynka",
+                 # "DNaseI",
+                 "Enhancer_Andersson",
+                 "Enhancer_Hoffman",
+                 # "FetalDHS_Trynka",
+                 "PromoterFlanking_Hoffman",
+                 "Promoter_UCSC",
+                 "Repressed_Hoffman",
+                 "SuperEnhancer_Hnisz",
+                 "TSS_Hoffman",
+                 "UTR_3_UCSC",
+                 "UTR_5_UCSC",
+                 "WeakEnhancer_Hoffman",
+                 "Intron_UCSC")
+dat <- subset(dat,is.element(Annotation,annotations))
+dat <- transform(dat,Annotation = factor(Annotation,annotations))
+x   <- tapply(dat$Enrichment_log2,dat$Annotation,max)
+annotations <- names(sort(x))
+dat <- transform(dat,Annotation = factor(Annotation,annotations))
+p <- ggplot(dat,aes(x = Enrichment_log2,y = Annotation,color = method,
+                    xmin = Enrichment_log2 - Enrichment_SE_log2,
+                    xmax = Enrichment_log2 + Enrichment_SE_log2)) +
   geom_point(shape = 20,size = 3) +
   geom_errorbarh(height = 0) +
   geom_vline(xintercept = 1,linetype = "dotted") +
   scale_color_manual(values = c("magenta","dodgerblue")) +
-  scale_x_continuous(breaks = c(0,1,seq(2,16,2)),limits = c(0,14)) +
+  # scale_x_continuous(breaks = c(0,1,seq(2,16,2)),limits = c(0,14)) +
   labs(x = "enrichment",y = "",title = trait) +
   theme_cowplot(font_size = 10)
   # theme(panel.grid.major.y = element_line(color = "lightgray"))
 print(p)
 outfile <- paste0("enrichment_ldsc_",trait,".pdf")
-ggsave(outfile,p,height = 2,width = 5)
+ggsave(outfile,p,height = 2.5,width = 4.5)
