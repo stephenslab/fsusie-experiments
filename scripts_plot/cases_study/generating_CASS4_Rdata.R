@@ -17,7 +17,7 @@ cex=1
 path= getwd()
 
 obj_plot=list()
-AD_GWAS <- fread("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/CASS4/GWAS_sumstat.chr20_55439357_57610823.AD_Jansen_2021.tsv") 
+AD_GWAS <- fread("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/GWAS_sumstat.chr20_55439357_57610823.AD_Jansen_2021.tsv") 
 obj_plot$AD_GWAS =AD_GWAS
 AD_GWAS=obj_plot$AD_GWAS
 qTLdata= fread(paste0("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/eQTL.chr20_55439357_57610823.tsv.tsv"))
@@ -267,6 +267,25 @@ obj_plot$pos_est_effect =positions
 obj_plot$me_pos = pos
 positions=obj_plot$pos_est_effect
 pos= obj_plot$me_pos
+
+
+effect_list=list()
+
+for ( l in 1:length(fsusie_obj_me$cs) ){
+  
+ 
+  tt0= fsusieR:::univariate_smash_regression(Y_w,
+                                          X= matrix(X[, fsusie_obj_me$cs[[l]][1] ],
+                                                    ncol=1),
+                                          alpha=0.01)
+  effect_list[[l]]= list(effect_s= tt0,
+                         pos_est_effect =positions,
+                         me_pos = pos)
+}
+
+obj_plot$effect_list=effect_list 
+
+ 
 chrom=20
 plot_list=list()
 df_list=list()

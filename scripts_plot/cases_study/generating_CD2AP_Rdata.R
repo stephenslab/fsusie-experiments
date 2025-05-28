@@ -62,7 +62,7 @@
   
   
   
-  pdat =fread(paste0(path,"/data/fig_4_data/GWAS_eQTL_sumstat.chr6_44880827_48309905.tsv"))
+  pdat =fread(paste0(path,"/data/fig_4_data/GWAS_eQTL_sumstat.chr6_44880827_48309905.tsv.gz"))
   
   pdat
   
@@ -304,6 +304,22 @@
   obj_plot$me_pos = pos
   positions=obj_plot$pos_est_effect
   pos= obj_plot$me_pos
+  
+  effect_list=list()
+  
+  for ( l in 1:length(fsusie_obj_me$cs) ){
+    
+    
+    tt0=  fsusieR:::univariate_TI_regression(Y_w,
+                                               X= matrix(X[, fsusie_obj_me$cs[[l]][1] ],
+                                                         ncol=1),
+                                               alpha=0.01)
+    effect_list[[l]]= list(effect_s= tt0,
+                           pos_est_effect =positions,
+                           me_pos = pos)
+  }
+  
+  obj_plot$effect_list=effect_list 
   
   
   chrom=6
