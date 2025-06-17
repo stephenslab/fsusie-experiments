@@ -228,8 +228,8 @@ rows2 <- sample(rows2,5000)
 rows  <- c(rows1,rows2)
 pdat6 <- pdat6[rows,]
 pdat6 <- transform(pdat6,pos = pos/1e6)
-pdat6 <- melt(pdat6,id.vars = "pos",variable.name = "genotype",
-              value.name = "count")
+pdat6 <- reshape2::melt(pdat6,id.vars = "pos",variable.name = "genotype",
+                        value.name = "count")
 pdat6 <- transform(pdat6,genotype = factor(genotype))
 rows  <- order(pdat6$genotype,decreasing = TRUE)
 pdat6 <- pdat6[rows,]
