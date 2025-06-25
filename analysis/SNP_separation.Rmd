@@ -116,7 +116,7 @@ vs
  
 
 ```{r echo=FALSE}
-load("../outputs/1SNP_simulations/test_one_SNP_difference_susie.RData")
+load("../outputs/1SNP_simulations/test_one_SNP_difference_susie_strongest_assoc.RData")
 tt= list()
 for (k in 1:length(res)){
 
@@ -158,6 +158,24 @@ Psusie= ggplot(df, aes(x = predictor, y = response)) +
   labs(title = "SuSiE", x = "-log10 pv", y = "Probability seperating SNP") +
   theme_minimal()
 
+
+# Create breaks and labels
+breaks <- seq(10, 60, by = 5)
+labels <- paste0(breaks[-length(breaks)], "-", breaks[-1])
+
+# Cut the predictor into bins
+df$bin <- cut(df$predictor, breaks = breaks, right = FALSE, labels = labels)
+
+# Compute mean response in each bin
+bin_means <- aggregate(response ~ bin, data = df, FUN = mean, na.rm = TRUE)
+
+print(bin_means)
+
+library(ggplot2)
+Psusiebin = ggplot(bin_means, aes(x = bin, y = response)) +
+  geom_col(fill = "steelblue") +
+  labs(x = "-log10(pv) bin", y = " Proportion of 1 SNP CS", title = "SuSiE")+
+  theme_minimal()+ylim(c(0,1))
  
 
 load("../outputs/1SNP_simulations/test_one_SNP_difference_10cpgmvsusie.RData")
@@ -205,6 +223,23 @@ Pmvsusie = ggplot(df, aes(x = predictor, y = response)) +
   theme_minimal()
 
  
+# Create breaks and labels
+breaks <- seq(10, 60, by = 5)
+labels <- paste0(breaks[-length(breaks)], "-", breaks[-1])
+
+# Cut the predictor into bins
+df$bin <- cut(df$predictor, breaks = breaks, right = FALSE, labels = labels)
+
+# Compute mean response in each bin
+bin_means <- aggregate(response ~ bin, data = df, FUN = mean, na.rm = TRUE)
+
+print(bin_means)
+
+library(ggplot2)
+Pmvsusiebin = ggplot(bin_means, aes(x = bin, y = response)) +
+  geom_col(fill = "steelblue") +
+  labs(x = "-log10(pv) bin", y = " Proportion of 1 SNP CS", title = "mvSuSiE")+
+  theme_minimal()+ylim(c(0,1))
 
 
 load("../outputs/1SNP_simulations/test_one_SNP_difference.RData")
@@ -245,7 +280,29 @@ Pfsusie= ggplot(df, aes(x = predictor, y = response)) +
   labs(title = "fSuSiE", x = "-log10 pv", y = "Probability seperating SNP") +
   theme_minimal()
 
-grid.arrange(Psusie,Pmvsusie, Pfsusie, ncol=3)
+
+# Create breaks and labels
+breaks <- seq(10, 60, by = 5)
+labels <- paste0(breaks[-length(breaks)], "-", breaks[-1])
+
+# Cut the predictor into bins
+df$bin <- cut(df$predictor, breaks = breaks, right = FALSE, labels = labels)
+
+# Compute mean response in each bin
+bin_means <- aggregate(response ~ bin, data = df, FUN = mean, na.rm = TRUE)
+
+print(bin_means)
+
+library(ggplot2)
+Pfsusiebin = ggplot(bin_means, aes(x = bin, y = response)) +
+  geom_col(fill = "steelblue") +
+  labs(x = "-log10(pv) bin", y = " Proportion of 1 SNP CS", title = "fSuSiE")+
+  theme_minimal()+ylim(c(0,1))
+
+
+grid.arrange(Psusie,Pmvsusie, Pfsusie,
+             Psusiebin, Pmvsusiebin, Pfsusiebin,
+             ncol=3)
 ```
 
 

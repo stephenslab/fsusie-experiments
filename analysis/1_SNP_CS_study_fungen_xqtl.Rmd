@@ -1,0 +1,30 @@
+---
+title: "Analysis_1_SNPS_CS"
+author: "William Denault"
+date: "2025-06-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+ Here we have a look  at the 1 SNP CS reported by fSuSiE in the fungen xqtl 
+ study
+
+```{r load_data}
+ out <- readRDS("../data/analysis_result/1_SNP_CS.rds")
+```
+
+
+First we can have a look at the  
+
+minimum Hamming distance between the 1-SNP-CS and the closest SNP in the vincinity
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
