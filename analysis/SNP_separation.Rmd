@@ -1,0 +1,411 @@
+---
+title: Testing performance fSuSiE to separate SNP
+author: William Denault 
+output: workflowr::wflow_html
+---
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+## Simulation description
+
+
+The scripts to replicate these simulations are avalailbe in 
+the sub directory code/Simulations_script_1_SNP.
+
+In this simulation we focus on a simple scenario where we have two
+SNPs that differs only in a single individual and $n=573$ which is 
+roughly the size of the fungen_xqtl study
+
+
+
+
+```{r}
+library(susieR)
+library(fsusieR)
+library(mvsusieR)
+library(gridExtra)
+  set.seed(123)
+  n_diff=1 # number of individual in which the SNP differs
+  # Set parameters
+  effect_size = 0.8
+  lev_res     = 7
+  sd_noise    = 1
+
+  n <- nrow(N3finemapping$X)         # number of samples
+  #number of individual having a different snp
+
+
+  # Simulate
+  X1 <-  N3finemapping$X[ , sample(size=1, 1:ncol(N3finemapping$X))]
+  X2=X1
+
+  val = unique(X1)
+
+  id= sample( size = n_diff, 1:length(X1))
+
+  for ( k in id){
+
+    val_id=  which ( !(val==X2[k] ))
+    X2[k]= val[ sample(size=1, val_id)]
+  }
+
+   plot(X1,X2)
+  X=cbind(X1,X2)
+  table(X1,X2)
+```
+
+Now we simulate the effect of the first SNP (the causal one) as a functional effect that affects 10 CpGs out of 128
+
+```{r}
+
+  
+  lf= rep(0,2^lev_res)
+  lf[20:30]=effect_size
+
+  dl= list()
+  for ( i in 1:n){
+    dl[[i]] = X[i,1]*lf + rnorm (n=2^lev_res, sd=sd_noise)
+  }
+
+  Y =do.call(rbind,dl)
+```
+
+We then check the performance of SuSiE, mvSuSiE and fSuSiE in separating the 
+two SNPs, for mvSuSiE we only provide the 10 CpG that are actually affected 
+by the causal SNP. The different method handle different response type so, for SuSiE we provide the CpG the most associated with the causal SNP and for fSuSiE we provide the all region
+
+
+```{r  }
+tpv1= c()
+  for ( j in 1:ncol(Y)){
+    tt= summary(lm(Y[,j]~X[,1]))$coefficients[2,4]
+    tpv1= c(tpv1,tt)
+
+  }
+idx_susie=which.min(tpv1)
+
+res0= susiF(Y=Y,X=X)
+
+res1=  susie(y=Y[,idx_susie], X=X)
+
+Y_t=Y[,20:30]
+prior <- create_mixture_prior(R = ncol(  Y_t))
+res2= mvsusie(X=X, Y= Y_t, prior_variance = prior)
+ 
+```
+
+We can see that fSuSiE is able to separate compared to the other methods
+
+
+```{r}
+res0$cs
+res1$sets$cs
+res2$sets$cs
+```
+
+## Simulation Summary
+
+
+The example above is simply base on a single simulation below, we describe the results on 10,000 simulation in which we keep everything constant except the effect size that varies from 0.01 to   1, (step size =0.01) and for each effect size we performed 100 simulations.
+
+We present the performance in terms probability of the strongest association  vs probabilty of selecting the correct SNP
+vs 
+
+ 
+
+```{r echo=FALSE}
+load("../outputs/1SNP_simulations/test_one_SNP_difference_susie.RData")
+tt= list()
+for (k in 1:length(res)){
+
+
+  if(is.null(res[[k]]$cs)){
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }else{
+    if(length( res[[k]]$cs )==1 & ( res[[k]]$cs[[1]][1])==1){
+
+
+      tt[[k]]= c(1, res[[k]]$pv1)
+    }else{
+
+      tt[[k]]= c(0, res[[k]]$pv1)
+    }
+  }
+
+
+
+}
+
+susie_res =do.call(rbind, tt)
+
+df <- data.frame(response =susie_res[,1], predictor =-log10( susie_res[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+# Step 4: Plot with ggplot2
+library(ggplot2)
+
+Psusie= ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title = "SuSiE", x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+ 
+
+load("../outputs/1SNP_simulations/test_one_SNP_difference_10cpgmvsusie.RData")
+tt= list()
+for (k in 1:length(res)){
+
+
+  if(is.null(res[[k]]$cs)){
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }else{
+    if(length( res[[k]]$cs )==1 & ( res[[k]]$cs[[1]][1])==1){
+
+
+      tt[[k]]= c(1, res[[k]]$pv1)
+    }else{
+
+      tt[[k]]= c(0, res[[k]]$pv1)
+    }
+  }
+
+
+
+}
+
+mvsusie_res=do.call(rbind, tt)
+
+
+
+df <- data.frame(response = mvsusie_res[,1], predictor =-log10( mvsusie_res[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+# Step 4: Plot with ggplot2
+library(ggplot2)
+
+Pmvsusie = ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title = "mvSuSiE", x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+ 
+
+
+load("../outputs/1SNP_simulations/test_one_SNP_difference.RData")
+
+
+tt= list()
+for (k in 1:length(res)){
+  
+  
+  if(length( res[[k]]$cs[[1]])==1 & ( res[[k]]$cs[[1]][1])==1){
+    
+    
+    tt[[k]]= c(1, res[[k]]$pv1)
+  }else{
+    
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }
+  
+}
+
+temp =do.call(rbind, tt)
+
+df <- data.frame(response = temp[,1], predictor =-log10( temp[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+# Step 4: Plot with ggplot2
+library(ggplot2)
+
+Pfsusie= ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title = "fSuSiE", x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+grid.arrange(Psusie,Pmvsusie, Pfsusie, ncol=3)
+```
+
+
+
+
+
+
+
+we see that fSuSiE clearly outperform mvSuSie and fSuSiE and has decent performance of separating SNP in very high LD if the maximum association as a 
+$-\log_{10}(pv) \approx 40$  (about 75% chance)
+
+
+
+
+
+Alternatively one can ask, how often does this method pick the wrong SNP.
+Below the same analysis (based on the same 10,000 simulation)
+
+```{r echo=FALSE}
+load("../outputs/1SNP_simulations/test_one_SNP_difference_susie.RData")
+tt= list()
+for (k in 1:length(res)){
+
+
+  if(is.null(res[[k]]$cs)){
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }else{
+    if(length( res[[k]]$cs )==1 & ( res[[k]]$cs[[1]][1])==2){
+
+
+      tt[[k]]= c(1, res[[k]]$pv1)
+    }else{
+
+      tt[[k]]= c(0, res[[k]]$pv1)
+    }
+  }
+
+
+
+}
+
+susie_res =do.call(rbind, tt)
+
+df <- data.frame(response =susie_res[,1], predictor =-log10( susie_res[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+
+nfalse= sum(susie_res[,1])
+# Step 4: Plot with ggplot2
+library(ggplot2)
+
+Psusie= ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title = paste0("SuSiE, n false= ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+ 
+
+load("../outputs/1SNP_simulations/test_one_SNP_difference_10cpgmvsusie.RData")
+tt= list()
+for (k in 1:length(res)){
+
+
+  if(is.null(res[[k]]$cs)){
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }else{
+    if(length( res[[k]]$cs )==1 & ( res[[k]]$cs[[1]][1])==2){
+
+
+      tt[[k]]= c(1, res[[k]]$pv1)
+    }else{
+
+      tt[[k]]= c(0, res[[k]]$pv1)
+    }
+  }
+
+
+
+}
+
+mvsusie_res=do.call(rbind, tt)
+
+
+
+df <- data.frame(response = mvsusie_res[,1], predictor =-log10( mvsusie_res[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+# Step 4: Plot with ggplot2
+library(ggplot2)
+nfalse= sum(mvsusie_res[,1])
+Pmvsusie = ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title =  paste0("mvSuSiE, n false= ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+
+
+
+load("../outputs/1SNP_simulations/test_one_SNP_difference.RData")
+
+
+tt= list()
+for (k in 1:length(res)){
+  
+  
+  if(length( res[[k]]$cs[[1]])==1 & ( res[[k]]$cs[[1]][1])==2){
+    
+    
+    tt[[k]]= c(1, res[[k]]$pv1)
+  }else{
+    
+    tt[[k]]= c(0, res[[k]]$pv1)
+  }
+  
+}
+
+temp =do.call(rbind, tt)
+
+df <- data.frame(response = temp[,1], predictor =-log10( temp[,2]))
+
+# Step 2: Fit logistic regression model
+model <- glm(response ~ predictor, data = df, family = binomial)
+
+# Step 3: Create new data for smooth prediction curve
+x_new <- data.frame(predictor = seq(min(df$predictor), max(df$predictor), length.out = 100))
+x_new$predicted_prob <- predict(model, newdata = x_new, type = "response")
+
+# Step 4: Plot with ggplot2
+library(ggplot2)
+nfalse = sum(temp[,1])
+Pfsusie= ggplot(df, aes(x = predictor, y = response)) +
+  geom_point(size = 2) +
+  geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
+  labs(title = paste0("fSuSiE, n false= ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  theme_minimal()
+
+grid.arrange(Psusie,Pmvsusie, Pfsusie, ncol=3)
+```
+
+
+
+
+
+
+
+
+fSuSiE outputs slightly more wrong CSs but its perfectly acceptable 
+$\frac{36}{10000}= 0.36\%$ which is way below the target coverage of $5\%$
+
