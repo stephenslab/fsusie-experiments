@@ -14,17 +14,100 @@ knitr::opts_chunk$set(echo = TRUE)
  study
 
 ```{r load_data}
+library(cowplot)
+library(tidyverse)
  out <- readRDS("../data/analysis_result/1_SNP_CS.rds")
 ```
 
 
-First we can have a look at the  
 
-minimum Hamming distance between the 1-SNP-CS and the closest SNP in the vincinity
+Fsusie was applied to H3K9ac and to DNAm we start by investigating the 1 SNP CS in DNAm.
+Then we have a look at H3K9ac.
 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+## Definition Hamming distance
+
+The Hamming distance between two vectors say $x_1=  (a,b,c,d,e)$ and  $x_2=  (a,c,c,d,e)$ 
+
+is the number of bit in which $x_1$ and $x_2$ differs, so in our case above the Hamming distance
+between $x_1$ and $x_2$ is 1. In the case  $x_1=  (a,b,c,d,e)$ and  $x_2=  (v,c,c,d,e)$ 
+the Hamming distance between $x_1$ and $x_2$ is 2.
+
+## DNAm
+
+
+First we start by looking at the 1 SNP CS and what is the distance to the Hamming distance of the  closest SNP in the region.
+In other what is SNP that is the most similar to the 1-SNP-CS and by "how many individual" do they differ.
+
+
+
+
+```{r}
+n_people_m = out$m_long_ratio%>%mutate(people = ceiling ( ratio  * 636+1 )) 
+n_people_m$cs_id <- gsub("ha", "m", n_people_m$cs_id)
+tm= merge(n_people_m  ,out$m, by= "cs_id")
+table(n_people_m$people)[1:10] 
+length(n_people_m$people)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+so for DNAm we only have 19 CSs out of 1742 1-SNP-CS that have a Hamming distance of 1 to the closest SNPs.
+
+
+```{r}
+plot(c(table(n_people_m$people)  )/length(n_people_m$people)*100 ,
+     xlab="Hamming distance to nearest SNP",
+     ylab ="% of 1-SNP-CS",
+     pch=19)
+```
+
+Now we look 
+
+for each 1-SNP-CS we test for association all the molecular trait (here CpG) in the vincinity
+and report the minimum pvalue (i.e. the strongest association).
+
+Below we plot the -log10 minimun pvalue distribution conditional of the 1-SNP-CS Hamming distance to the closest
+SNP. The results for  1-SNP-CS with Hamming distance 1 or 2 we see that most of the -log10  pvalue are 
+above 50 which is in line with the simulations on separating SNPs.
+
+```{r}
+ 
+ggplot(tm[ which(tm$people<30),], aes(x=as.factor(people), y= -log10(min_pval)))+
+  xlab("Hamming distance")+
+    scale_y_continuous(breaks = c(0, 50, 100, 150, 200, 250, 300)) +
+  geom_boxplot() + 
+  theme_cowplot()
+```
+
+
+ 
+ 
+ 
+ 
+ 
+```{r}
+
+n_people_ha= out$ha_long_ratio%>%mutate(people = ceiling (ratio  * 592 +1) )%>%filter() 
+tha= merge(n_people_ha  ,out$ha, by= "cs_id")
+ 
+table(n_people_ha$people)[1:10] 
+length(n_people_ha$people)
+```
+ 
+ 
+```{r}
+
+ 
+plot(c(table(n_people_ha$people)  )/length(n_people_ha$people)*100 ,
+     xlab="Hamming distance to nearest SNP",
+     ylab ="% of 1-SNP-CS",
+     pch=19)
+```
+
+```{r}
+ 
+ggplot(tha[ which(tha$people<30),], aes(x=as.factor(people), y= -log10(min_pval)))+
+  xlab("Hamming distance")+
+    scale_y_continuous(breaks = seq(0,100, by=10)) +
+  geom_boxplot() + 
+  theme_cowplot()
+```
