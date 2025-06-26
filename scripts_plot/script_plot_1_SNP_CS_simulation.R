@@ -298,7 +298,7 @@ library(ggplot2)
 Psusie= ggplot(df, aes(x = predictor, y = response)) +
   geom_point(size = 2) +
   geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
-  labs(title = paste0("SuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  labs(title = paste0("SuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability selecting the wrong SNP") +
   theme_minimal()
 
 
@@ -344,7 +344,7 @@ nfalse= sum(mvsusie_res[,1])
 Pmvsusie = ggplot(df, aes(x = predictor, y = response)) +
   geom_point(size = 2) +
   geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
-  labs(title =  paste0("mvSuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  labs(title =  paste0("mvSuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability selecting the wrong SNP") +
   theme_minimal()
 
 
@@ -385,7 +385,7 @@ nfalse = sum(temp[,1])
 Pfsusie= ggplot(df, aes(x = predictor, y = response)) +
   geom_point(size = 2) +
   geom_line(data = x_new, aes(x = predictor, y = predicted_prob), color = "blue", size = 1) +
-  labs(title = paste0("fSuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability seperating SNP") +
+  labs(title = paste0("fSuSiE, false discovery = ",nfalse), x = "-log10 pv", y = "Probability selecting the wrong SNP") +
   theme_minimal()
 
 Pout2= grid.arrange(Psusie,Pmvsusie, Pfsusie, ncol=3)
