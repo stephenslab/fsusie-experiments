@@ -39,7 +39,11 @@ rnaseq <-
 			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
 			context = factor(context))
 rnaseq <- subset(rnaseq,context == "DLPFC_DeJager_eQTL")
-
+write.table(transform(rnaseq,
+                      maf = round(maf,digits = 6),
+					  pip = round(pip,digits = 6)),
+            "ROSMAP_DLPFC_DeJager_eQTL.cs_only.tsv",sep = "\t",
+            row.names = FALSE,col.names = TRUE,quote = FALSE)
 ```
 
 Note that, as discussed, we are using the "cs_coverage_0.95_min_corr"
@@ -101,6 +105,11 @@ protein <-
 			cs_coverage_0.95_min_corr = factor(cs_coverage_0.95_min_corr),
 			context = factor(context))
 protein <- subset(protein,context == "DLPFC_Bennett_pQTL")
+write.table(transform(rnaseq,
+                      maf = round(maf,digits = 6),
+					  pip = round(pip,digits = 6)),
+            "ROSMAP_DLPFC_Bennett_pQTL.cs_only.tsv",sep = "\t",
+            row.names = FALSE,col.names = TRUE,quote = FALSE)
 ```
 
 Remove SNPs with MAF < 7.5%:
