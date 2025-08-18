@@ -5,12 +5,21 @@ This folder hosts (i) raw model outputs from our pipeline for **Topological asso
 ## What’s here
 
 ### A) Model files (RDS)
-Raw outputs for AD-colocalized TADB regions:
-File name convention: {event_ID}.{region_ID}.fsusie_mixture_normal_top_pc_weights.rds
-- **`fsusie` models** — default output from the `fsusie` function, containing both the essential components of a `susie` object and the fSuSiE-specific regional estimated effect.
-- **`susie_top_pc` models** — default output from the `susie` function from the fine-mapping of the top **1–10 phenotype PC** derived from the phenotype matrix.
-- **Meta data** — the TADB region, the list of variants that goes into the analysis, and the genomic coordinates for the input epigenetics marks.
-- **Result summaries** — (1) the variant-level information for variants in a 95% credible set (CS); (2) a trimmed-down version of the fSuSiE object supplemented by correlation of the CS identified in the fSuSiE.
+
+Raw outputs for AD-colocalized TADB regions.  
+**File name convention:** `{event_ID}.{region_ID}.fsusie_mixture_normal_top_pc_weights.rds`
+- **`event_ID`** — string; molecular phenotype + cohort context exactly as used in analysis.  
+  **Format:** `<cohort>_<phenotype>` (e.g., `ROSMAP_DLPFC_haQTL`).  
+  **Used in** filenames and the `event_ID` column.
+
+- **`region_ID`** — string; TADB cis region identifier.  
+  **Format:** `chr<CHR>_<START>_<END>` where **START/END are 1-based, closed** (e.g., `chr5_85967320_89904257`).  
+  **Used in** filenames and the `region_ID` column.
+
+- **`fsusie` models** — default output from `fsusie`, containing the essential components of a `susie` object **and** the fSuSiE-specific regional estimated effect.
+- **`susie_top_pc` models** — default output from `susie` from the fine-mapping of the top **1–10 phenotype PCs** derived from the phenotype matrix.
+- **Metadata** — the TADB region, the list of variants that go into the analysis, and the genomic coordinates for the input epigenetics marks.
+- **Result summaries** — (1) variant-level information for variants in a **95% credible set (CS)**; (2) a trimmed-down fSuSiE object supplemented by **correlation** of the CS identified in fSuSiE.
 
 **Notes**  
 There are **30** pair-wise colocalizations being done. This release includes **26** model RDS files; **4** of the pair-wise colocalizations are done within the same TADBs. The **18 loci** colocalized with AD reported in the manuscript are among them.
@@ -37,20 +46,10 @@ _Types shown as **R / Python** for quick reference; storage for list-like fields
 | `#chr` | integer / int | Chromosome number |
 | `start` | integer / int | Genomic start coordinate (**0-based**) |
 | `end` | integer / int | Genomic end coordinate (**1-based**) |
-| `a1` | character / str | Effect allele |
-| `a2` | character / str | Reference allele |
 | `variant_ID` | character / str | Variant ID `chr:pos:ref:alt` |
 | `region_ID` | character / str | id for the TADB cis region |
 | `event_ID` | character / str | The molecular phenotype and cohort ID |
 | `PIP` | double / float | Posterior inclusion probability |
-
-**Credible-set membership (index or 0 if not in set)**  
-_minimum correlation purity thresholds as indicated_
-| Column Name | Type (R / Py) | Description |
-|---|---|---|
-| `cs_coverage_0.95` | integer / int | CS index if in **95%** CS with **purity > 0.5**, else 0 |
-| `cs_coverage_0.7`  | integer / int | CS index if in **70%** CS with **purity > 0.5**, else 0 |
-| `cs_coverage_0.5`  | integer / int | CS index if in **50%** CS with **purity > 0.5**, else 0 |
 
 **Frequency / region / set identifiers**
 | Column Name | Type (R / Py) | Description |
@@ -60,6 +59,7 @@ _minimum correlation purity thresholds as indicated_
 | `TADB_start` | integer / int | Cis-window start position, typically defined by TAD boundary |
 | `TADB_end` | integer / int | Cis-window end position, typically defined by TAD boundary |
 | `grid_resolution` | integer / int | Number of grid rows used (typically 512 or 1024) |
+| `cs_coverage_0.95` | integer / int | CS index if in **95%** CS with **purity > 0.5**, else 0 |
 | `cs_id` | character / str | ID of the 95% credible set within this context and TAD |
 | `cs_root` | character / str | Unified root name for overlapping CS in the same context |
 
