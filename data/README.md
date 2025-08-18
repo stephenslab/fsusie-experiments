@@ -7,7 +7,7 @@ This folder hosts (i) raw model outputs from our pipeline for **Topological asso
 ### A) Model files (RDS)
 Raw outputs for AD-colocalized TADB regions:
 File name convention: {event_ID}.{region_ID}.fsusie_mixture_normal_top_pc_weights.rds
-- **`fsusie` models** — default output from the `fsusie` function, containing both the essential components of a `susie` object (credible sets) and the fSuSiE-specific regional estimated effect.
+- **`fsusie` models** — default output from the `fsusie` function, containing both the essential components of a `susie` object and the fSuSiE-specific regional estimated effect.
 - **`susie_top_pc` models** — default output from the `susie` function from the fine-mapping of the top **1–10 phenotype PC** derived from the phenotype matrix.
 - **Meta data** — the TADB region, the list of variants that goes into the analysis, and the genomic coordinates for the input epigenetics marks.
 - **Result summaries** — (1) the variant-level information for variants in a 95% credible set (CS); (2) a trimmed-down version of the fSuSiE object supplemented by correlation of the CS identified in the fSuSiE.
