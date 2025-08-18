@@ -7,19 +7,11 @@ This folder hosts (i) raw model outputs from our pipeline for **Topological asso
 ### A) Model files (RDS)
 
 Raw outputs for AD-colocalized TADB regions.  
-**File name convention:** `{event_ID}.{region_ID}.fsusie_mixture_normal_top_pc_weights.rds`
-- **`event_ID`** — string; molecular phenotype + cohort context exactly as used in analysis.  
-  **Format:** `<cohort>_<phenotype>` (e.g., `ROSMAP_DLPFC_haQTL`).  
-  **Used in** filenames and the `event_ID` column.
-
-- **`region_ID`** — string; TADB cis region identifier.  
-  **Format:** `chr<CHR>_<START>_<END>` where **START/END are 1-based, closed** (e.g., `chr5_85967320_89904257`).  
-  **Used in** filenames and the `region_ID` column.
-
+**Filename convention:** `{event_ID}.{region_ID}.fsusie_mixture_normal_top_pc_weights.rds` where (**`event_ID`** — molecular phenotype + cohort context exactly as used in analysis, e.g., `ROSMAP_DLPFC_haQTL`; **`region_ID`** — TADB cis region identifier, e.g., `chr5_85967320_89904257`). Each RDS contains:
 - **`fsusie` models** — default output from `fsusie`, containing the essential components of a `susie` object **and** the fSuSiE-specific regional estimated effect.
 - **`susie_top_pc` models** — default output from `susie` from the fine-mapping of the top **1–10 phenotype PCs** derived from the phenotype matrix.
-- **Metadata** — the TADB region, the list of variants that go into the analysis, and the genomic coordinates for the input epigenetics marks.
-- **Result summaries** — (1) variant-level information for variants in a **95% credible set (CS)**; (2) a trimmed-down fSuSiE object supplemented by **correlation** of the CS identified in fSuSiE.
+- **Metadata** — the TADB region, the list of variants that go into the analysis, and the genomic coordinates for the input epigenetic marks.
+- **Result summaries** — (1) variant-level information for variants in a **95% credible set (CS)**; (2) a trimmed-down fSuSiE object supplemented by **correlations** of the CS identified in fSuSiE.
 
 **Notes**  
 There are **30** pair-wise colocalizations being done. This release includes **26** model RDS files; **4** of the pair-wise colocalizations are done within the same TADBs. The **18 loci** colocalized with AD reported in the manuscript are among them.
