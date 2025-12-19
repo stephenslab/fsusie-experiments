@@ -1,5 +1,5 @@
 ---
-title: Illustration of whitening property of wavelets
+title: Illustrate whitening property of wavelets
 author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
