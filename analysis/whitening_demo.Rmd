@@ -1,0 +1,27 @@
+---
+title: Illustration of whitening property of wavelets
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+ADD TEXT HERE
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the wavethresh package as well as a few other packages used this
+demo:
+
+```{r load-pkgs}
+library(wavethresh)
+library(ggplot2)
+library(cowplot)
+```
+
+Set the seed for reproducibility:
+
+```{r set-seed}
+set.seed(1)
+```
