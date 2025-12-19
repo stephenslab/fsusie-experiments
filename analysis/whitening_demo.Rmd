@@ -14,7 +14,7 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 Load the wavethresh package as well as a few other packages used this
 demo:
 
-```{r load-pkgs}
+```{r load-pkgs, messages=FALSE, results="hide"}
 library(wavethresh)
 library(ggplot2)
 library(cowplot)
@@ -25,3 +25,61 @@ Set the seed for reproducibility:
 ```{r set-seed}
 set.seed(1)
 ```
+
+Simulate a set of noisy ARIMA signals:
+
+```{r sim-amira}
+n <- 1024
+m <- 100
+SNR <- 2
+v <- DJ.EX()
+x <- seq(1,n)/n
+ssig <- sd(v$bumps)
+sigma <- ssig/SNR
+e <- arima.sim(n = n,model = list(ar = 0.99,ma = 1))
+Y <- matrix(0,m,n)
+for (i in 1:m) {
+  e <- sigma*e/sqrt(var(e))
+  y <- v$bumps + e
+  Y[i,] <- y
+}
+```
+
+This is the first noisy signal:
+
+```{r plot-amira, fig.height=2, fig.width=3.5}
+y <- Y[1,]
+pdat <- data.frame(x = x,y = y)
+ggplot(pdat,aes(x = x,y = y)) +
+  geom_line() +
+  theme_cowplot(font_size = 12)
+```
+
+Now let's compute the discrete wavelet transform (DWT) for each
+signal:
+
+```{r wd}
+D <- matrix(0,m,n-1)
+for (i in 1:m) {
+  y <- Y[i,]
+  D[i,] <- wd(y)$D
+}
+```
+
+One way to illustrate the decorrelating effect of the wavelet
+transform is to compare the autocorrelation for the original signal
+and for the wavelet coefficients (WCs). Let's try this on the first
+noisy signal:
+
+```{r acf, fig.height=3, fig.width=6}
+par(mfrow = c(1,2))
+y <- Y[1,]
+d <- D[1,]
+acf(y)
+acf(d)
+```
+
+Observe that the autocorrelation is mostly near zero for the WCs
+(right).
+
+
