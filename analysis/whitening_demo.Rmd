@@ -4,8 +4,6 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-ADD TEXT HERE
-
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
@@ -91,12 +89,12 @@ cD <- cor(D)
 p1 <- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
   geom_histogram(fill = "black",color = "white",bins = 64) +
   xlim(-1,1) +
-  labs(x = "correlation") +
+  labs(x = "correlation",title = "data space") +
   theme_cowplot(font_size = 12)
 p2 <- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
   geom_histogram(fill = "black",color = "white",bins = 64) +
   xlim(-1,1) +
-  labs(x = "correlation") +
+  labs(x = "correlation",title = "wavelet space") +
   theme_cowplot(font_size = 12)
 plot_grid(p1,p2,nrow = 2,ncol = 1)
 ```
