@@ -237,7 +237,7 @@ names(dat2) <- c("tad","num_cs_fsusie")
 dat <- merge(dat1,dat2,all = TRUE)
 rows <- which(is.na(dat$num_cs_susie))
 dat[rows,"num_cs_susie"] <- 0
-pdat <- melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
+pdat <- reshape2::melt(with(dat,table(num_cs_susie,num_cs_fsusie)))
 rows <- which(pdat$value == 0)
 pdat[rows,"value"] <- NA
 p <- ggplot(pdat,aes(x = num_cs_susie,y = num_cs_fsusie,size = value)) +
