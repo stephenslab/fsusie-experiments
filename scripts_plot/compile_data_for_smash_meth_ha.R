@@ -1,5 +1,5 @@
-library(smashr)
 library(tools)
+library(smashr)
 
 # M example.
 set.seed(1)
@@ -37,4 +37,9 @@ pos   <- pos[i]
 res <- smash.poiss(y,post.var = FALSE)
 plot(pos/1e6,y,pch = 20,col = "black",xlab = "pos (Mb)",ylab = "read count")
 lines(pos/1e6,res,type = "l",col = "royalblue")
-h3k27ac_dat <- data.frame(pos = pos,y = y)
+h3k9ac_dat <- data.frame(pos = pos,y = y)
+
+# Save the signals to an .RData file.
+save(list = c("methyl_dat","h3k9ac_dat"),
+     file = "smash_meth_ha.RData")
+resaveRdaFiles("smash_meth_ha.RData")
