@@ -5,6 +5,8 @@ site: workflowr::wflow_site
 output: workflowr::wflow_html
 ---
 
++ [Illustration of spatial structure in WGBS methylation and H3K27ac ChIP-seq](smash_meth_ha.html)
+
 + [Illustrate whitening property of wavelets](whitening_demo.html)
 
 + [Examine ROSMAP RNA-seq and proteomics fine-mapping results](rosmap_rnaseq_protein.html)
