@@ -4,8 +4,6 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
-*Add text here.*
-
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
