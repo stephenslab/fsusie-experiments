@@ -1,0 +1,76 @@
+---
+title: Illustration of spatial structure in WGBS methylation and H3K27ac ChIP-seq
+author: Peter Carbonetto
+output: workflowr::wflow_html
+---
+
+*Add text here.*
+
+```{r knitr-opts, include=FALSE}
+knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
+                      fig.align = "center",dpi = 120)
+```
+
+Load the example DNA methylation (WGBS) and H3K9ac (ChIP-seq) signals.
+
+```{r load-data}
+load("../data/smash_meth_ha.RData")
+```
+
+Load smashr:
+
+```{r load-pkgs}
+library(smashr)
+```
+
+Set the seed to make the results reproducible:
+
+```{r set-seed}
+set.seed(1)
+```
+
+WGBS DNA methylation example
+----------------------------
+
+This plot shows the beta values at the CpG locations for a single
+sample (black dots) and the "smoothed" signal obtained by running
+SMASH on these data (blue curve):
+
+```{r methyl-plot, fig.height=2.75, fig.width=7}
+y <- methyl_dat$beta
+res <- smash.gaus(y,v.est = FALSE)
+plot(y,pch = 20,col = "black",cex = 0.65,xlab = "CpG",ylab = "beta value")
+lines(res,type = "l",col = "royalblue")
+```
+
+Note that the CpG locations are ordered sequencing by base-pair
+position along the chromosome (specifically, chromosome 20, near gene
+*CASS4*). However, the positions of the CpG probes are not distributed
+uniformly; there are some large gaps where there is no probe. The
+methylation data are shown in this way to make the spatial structure
+more obvious.
+
+ChIP-seq H3K9ac example
+-----------------------
+
+This plot shows the read count data from the ChIP-seq assay (black
+dots) and the "smoothed" signal obtained by running SMASH on these
+data (blue curve):
+
+```{r h3k9ac-plot, fig.height=2.75, fig.width=7}
+y <- h3k9ac_dat$y
+pos <- h3k9ac_dat$pos
+res <- smash.poiss(y,post.var = FALSE)
+plot(pos/1e6,y,pch = 20,col = "black",
+     xlab = "base-pair position on chromosome 1 (Mb)",
+     ylab = "read count")
+lines(pos/1e6,res,type = "l",col = "royalblue")
+```
+
+This the H3K9ac signal from a region on chromosome 1 near genes *CR1*
+and *CR2*.
+
+Note that since these are counts, we used the Poisson-based SMASH
+method. Also note that the read counts are actually read counts
+averaged across a few samples, so the read counts are not actually
+integers.
