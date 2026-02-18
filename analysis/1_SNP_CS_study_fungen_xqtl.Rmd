@@ -16,7 +16,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load_data}
 library(cowplot)
 library(tidyverse)
- out <- readRDS("../data/analysis_result/1_SNP_CS.rds")
+library(data.table) 
+ out <- fread("../data/fsusie_LD.tsv")
+ 
 ```
 
 
@@ -43,32 +45,61 @@ In other what is SNP that is the most similar to the 1-SNP-CS and by "how many i
 
 
 ```{r}
-n_people_m = out$m_long_ratio%>%mutate(people = ceiling ( ratio  * 636+1 )) 
-n_people_m$cs_id <- gsub("ha", "m", n_people_m$cs_id)
-tm= merge(n_people_m  ,out$m, by= "cs_id")
-table(n_people_m$people)[1:10] 
-length(n_people_m$people)
-```
-
-so for DNAm we only have 19 CSs out of 1742 1-SNP-CS that have a Hamming distance of 1 to the closest SNPs.
-
-
-```{r}
-plot(c(table(n_people_m$people)  )/length(n_people_m$people)*100 ,
+library(tidyverse)
+library(scales)
+library(cowplot)
+plot_df=out
+haQTL_df0 =plot_df%>% filter()%>%filter(str_detect(cs_id,"haQTL") )
+ plot(c(table(haQTL_df0$N_diff_samples)  )/length(haQTL_df0$N_diff_samples)*100 ,
      xlab="Hamming distance to nearest SNP",
      ylab ="% of 1-SNP-CS",
      pch=19)
+
+haQTL_df =plot_df%>% filter()%>%filter(str_detect(cs_id,"haQTL"),N_diff_samples< 31)
+#percentage of 1 SNP CS in haQTL
+table(haQTL_df$N_diff_samples)[1:6]/nrow(haQTL_df0)
+
+ggplot(haQTL_df, aes( x= as.factor(N_diff_samples),
+                      y=-log10(haQTL_df$min_P)))+
+  geom_boxplot()
+```
+For haQTL we have about 6 % of 1 SNP CS
+with a -log10 pvalue of 
+
+```{r}
+quantile(-log10(haQTL_df$min_P[which(haQTL_df$N_diff_samples==1)]))
 ```
 
-Now we look 
+which is relatively high level  of significance
 
-for each 1-SNP-CS we test for association all the molecular trait (here CpG) in the vincinity
-and report the minimum pvalue (i.e. the strongest association).
 
-Below we plot the -log10 minimun pvalue distribution conditional of the 1-SNP-CS Hamming distance to the closest
-SNP. The results for  1-SNP-CS with Hamming distance 1 or 2 we see that most of the -log10  pvalue are 
-above 50 which is in line with the simulations on separating SNPs.
+### DNAm
 
+```{r}
+mQTL_df0 = plot_df%>% filter()%>%filter(str_detect(cs_id,"mQTL") )
+mQTL_df = plot_df%>% filter()%>%filter(str_detect(cs_id,"mQTL"),N_diff_samples< 31)
+table(mQTL_df$N_diff_samples)[1:5]/ nrow(mQTL_df0)
+
+
+ggplot(mQTL_df, aes( x= top_R2))+
+  geom_histogram(bins = 100)+
+  xlim(c(0.99,1.0002))
+
+ggplot(mQTL_df, aes( x= as.factor(N_diff_samples),
+                      y=-log10(mQTL_df$min_P)))+
+  geom_boxplot()
+
+```
+
+
+So for DNAm of we have a much higher number but we also see very strong association
+with a lower quantile 
+
+```{r}
+quantile(-log10(mQTL_df$min_P[which(mQTL_df$N_diff_samples==1)]))
+```
+
+we have a larger percentage for DNAm but the 
 ```{r}
  
 ggplot(tm[ which(tm$people<30),], aes(x=as.factor(people), y= -log10(min_pval)))+
@@ -105,9 +136,5 @@ plot(c(table(n_people_ha$people)  )/length(n_people_ha$people)*100 ,
 
 ```{r}
  
-ggplot(tha[ which(tha$people<30),], aes(x=as.factor(people), y= -log10(min_pval)))+
-  xlab("Hamming distance")+
-    scale_y_continuous(breaks = seq(0,100, by=10)) +
-  geom_boxplot() + 
-  theme_cowplot()
+ 
 ```

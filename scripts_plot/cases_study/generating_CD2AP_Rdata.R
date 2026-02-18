@@ -192,7 +192,7 @@
   res_me <- readRDS("C:/Document/Serieux/Travail/Data_analysis_and_papers/fsusie-experiments/data/fig_4_data/ROSMAP_mQTL.chr6_44880827_48309905.fsusie_mixture_normal_top_pc_weights.input_data_1.rds")
   ## to work from here
   
-  
+  length(fsusie_obj_me$pip)
   
   snp_names=attr( fsusie_obj_me$pip, "names")
   pos_SNP_me <- as.numeric(sub("chr[0-9XY]+:([0-9]+):.*", "\\1", snp_names))
@@ -251,6 +251,13 @@
   # we actually care about CS 13
   #plot_susiF(fsusie_obj_me)
   fsusie_obj_me$cs[[13]]
+  
+  X= res_me$X#(res_me$residual_X[[1]])
+  tt= X[,fsusie_obj_me$cs[[13]]]
+  X_t =X[,-fsusie_obj_me$cs[[13]]]
+  which.max(cor(tt, X_t))
+  
+  plot( tt, X_t[,12199])
   
   ## reprendre de la WW---- 
   plotTracks(list_track)

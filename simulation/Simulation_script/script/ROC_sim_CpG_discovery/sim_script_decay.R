@@ -1,4 +1,7 @@
  
+rmse=function(x,y){
+  sqrt(mean((x-y)^2))
+}
 
 
 sim_perf_finding_CpG= function(n=100 ,
