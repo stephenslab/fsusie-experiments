@@ -5,8 +5,8 @@ output: workflowr::wflow_html
 ---
 
 Here we give two simple examples to illustrate the decorrelating
-("biwhitening") effect of the wavelet transform (on signals that are
-not generated using wavelets).
+("biwhitening") effect of the wavelet transform. These examples use
+synthetic signals not generated using wavelets.
 
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
@@ -94,7 +94,7 @@ compute the sample correlations. Compare the sample correlations in
 the original data space to the sample correlations in the wavelet
 space:
 
-```{r cor, fig.height=4, fig.width=3}
+```{r cor, fig.height=4, fig.width=3, warning=FALSE}
 cY <- cor(Y)
 cD <- cor(D)
 p1 <- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
@@ -145,7 +145,9 @@ Now perform the discrete wavelet transform on these data:
 D <- t(apply(Y,1,function (x) wd(x)$D))
 ```
 
-ADD TEXT HERE
+Examining the first signal, the autocorrelation is very strong in the
+original data space, and almost completely vanishes after applying the
+DWT:
 
 ```{r acf-gp, fig.height=3, fig.width=6}
 par(mfrow = c(1,2))
@@ -155,7 +157,8 @@ acf(y)
 acf(d)
 ```
 
-ADD TEXT HERE.
+Likewise, the original correlations are very strong, whereas the
+correlations among the WCs are mostly zero or close to zero:
 
 ```{r cor-gp, fig.height=4, fig.width=3, warning=FALSE}
 cY <- cor(Y)
