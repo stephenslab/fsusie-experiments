@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5f829034ea52cb5c7b4b8f50df1e16596b7c6b90targetblank5f82903a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreea9b12fcb6363a72d1c5d8000aff3ad3dd1d4ff20targetblanka9b12fca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/5f829034ea52cb5c7b4b8f50df1e16596b7c6b90" target="_blank">5f82903</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/a9b12fcb6363a72d1c5d8000aff3ad3dd1d4ff20" target="_blank">a9b12fc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5f829034ea52cb5c7b4b8f50df1e16596b7c6b90targetblank5f82903a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreea9b12fcb6363a72d1c5d8000aff3ad3dd1d4ff20targetblanka9b12fca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/5f829034ea52cb5c7b4b8f50df1e16596b7c6b90" target="_blank">5f82903</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/a9b12fcb6363a72d1c5d8000aff3ad3dd1d4ff20" target="_blank">a9b12fc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,9 +465,6 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    analysis/figure/
-
 Untracked files:
     Untracked:  analysis/h3k27ac_cs1snp_fsusie.rds
     Untracked:  analysis/rosmap_h3k27ac_cache/
@@ -535,6 +532,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/a9b12fcb6363a72d1c5d8000aff3ad3dd1d4ff20/analysis/whitening_demo.Rmd" target="_blank">a9b12fc</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+wflow_publish("whitening_demo.Rmd", view = F, verbose = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/whitening_demo.html" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+Added GP example to whitening_demo.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -696,8 +727,8 @@ wflow_publish("index.Rmd")
 </div>
 </div>
 <p>Here we give two simple examples to illustrate the decorrelating
-(“biwhitening”) effect of the wavelet transform (on signals that are not
-generated using wavelets).</p>
+(“biwhitening”) effect of the wavelet transform. These examples use
+synthetic signals not generated using wavelets.</p>
 <p>Load the wavethresh package as well as a few other packages used this
 demo:</p>
 <pre class="r"><code>library(wavethresh)
@@ -753,6 +784,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/figure/whitening_demo.Rmd/plot-amira-1.png" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/03384449a8249d6c5aaa11c0273c8b2ace6fa543/docs/figure/whitening_demo.Rmd/plot-amira-1.png" target="_blank">0338444</a>
@@ -839,11 +881,7 @@ p2 &lt;- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
   xlim(-1,1) +
   labs(x = &quot;correlation&quot;,title = &quot;wavelet space&quot;) +
   theme_cowplot(font_size = 12)
-plot_grid(p1,p2,nrow = 2,ncol = 1)
-# Warning: Removed 2 rows containing missing values or values outside the scale range
-# (`geom_bar()`).
-# Removed 2 rows containing missing values or values outside the scale range
-# (`geom_bar()`).</code></pre>
+plot_grid(p1,p2,nrow = 2,ncol = 1)</code></pre>
 <p><img src="figure/whitening_demo.Rmd/cor-1.png" width="360" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cor-1">
@@ -867,6 +905,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/figure/whitening_demo.Rmd/cor-1.png" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/6bc1fb18ead4f53e35cb3f8df557f835315e9e19/docs/figure/whitening_demo.Rmd/cor-1.png" target="_blank">6bc1fb1</a>
@@ -914,16 +963,93 @@ ggplot(pdat,aes(x = x,y = y,fill = cor)) +
   scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;) +
   theme_cowplot(font_size = 12)</code></pre>
 <p><img src="figure/whitening_demo.Rmd/plot-cor-gp-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plot-cor-gp-1">
+Past versions of plot-cor-gp-1.png
+</button>
+</p>
+<div id="fig-plot-cor-gp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/figure/whitening_demo.Rmd/plot-cor-gp-1.png" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Now perform the discrete wavelet transform on these data:</p>
 <pre class="r"><code>D &lt;- t(apply(Y,1,function (x) wd(x)$D))</code></pre>
-<p>ADD TEXT HERE</p>
+<p>Examining the first signal, the autocorrelation is very strong in the
+original data space, and almost completely vanishes after applying the
+DWT:</p>
 <pre class="r"><code>par(mfrow = c(1,2))
 y &lt;- Y[1,]
 d &lt;- D[1,]
 acf(y)
 acf(d)</code></pre>
 <p><img src="figure/whitening_demo.Rmd/acf-gp-1.png" width="720" style="display: block; margin: auto;" /></p>
-<p>ADD TEXT HERE.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-acf-gp-1">
+Past versions of acf-gp-1.png
+</button>
+</p>
+<div id="fig-acf-gp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/figure/whitening_demo.Rmd/acf-gp-1.png" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Likewise, the original correlations are very strong, whereas the
+correlations among the WCs are mostly zero or close to zero:</p>
 <pre class="r"><code>cY &lt;- cor(Y)
 cD &lt;- cor(D)
 p1 &lt;- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
@@ -938,6 +1064,43 @@ p2 &lt;- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
   theme_cowplot(font_size = 12)
 plot_grid(p1,p2,nrow = 2,ncol = 1)</code></pre>
 <p><img src="figure/whitening_demo.Rmd/cor-gp-1.png" width="360" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cor-gp-1">
+Past versions of cor-gp-1.png
+</button>
+</p>
+<div id="fig-cor-gp-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/78ad4fd51c256fd7b8b4adde94ed20f860feec02/docs/figure/whitening_demo.Rmd/cor-gp-1.png" target="_blank">78ad4fd</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
