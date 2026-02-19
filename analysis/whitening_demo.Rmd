@@ -4,6 +4,10 @@ author: Peter Carbonetto
 output: workflowr::wflow_html
 ---
 
+Here we give two simple examples to illustrate the decorrelating
+("biwhitening") effect of the wavelet transform (on signals that are
+not generated using wavelets).
+
 ```{r knitr-opts, include=FALSE}
 knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
                       fig.align = "center",dpi = 120)
@@ -12,8 +16,9 @@ knitr::opts_chunk$set(comment = "#",collapse = TRUE,results = "hold",
 Load the wavethresh package as well as a few other packages used this
 demo:
 
-```{r load-pkgs, messages=FALSE, results="hide"}
+```{r load-pkgs, message=FALSE, results="hide"}
 library(wavethresh)
+library(reshape)
 library(ggplot2)
 library(cowplot)
 ```
@@ -24,7 +29,11 @@ Set the seed for reproducibility:
 set.seed(1)
 ```
 
-Simulate a set of signals with ARMA noise:
+1. Bumps example
+----------------
+
+Simulate a set of signals using the "bumps" test function from Donoho
+& Johnson, with ARMA noise:
 
 ```{r sim-amira}
 n <- 1024
@@ -43,7 +52,7 @@ for (i in 1:m) {
 }
 ```
 
-This is the first noisy signal:
+This is was the first noisy signal looks like:
 
 ```{r plot-amira, fig.height=2, fig.width=3.5}
 y <- Y[1,]
@@ -78,10 +87,12 @@ acf(d)
 ```
 
 Observe that the autocorrelation is mostly near zero for the WCs
-(right).
+(right-hand plot).
 
 Another way to illustrate the decorrelating effect of the DWT is to
-compute the sample correlations:
+compute the sample correlations. Compare the sample correlations in
+the original data space to the sample correlations in the wavelet
+space:
 
 ```{r cor, fig.height=4, fig.width=3}
 cY <- cor(Y)
@@ -101,3 +112,63 @@ plot_grid(p1,p2,nrow = 2,ncol = 1)
 
 Indeed, the strong correlations in the original data space are removed
 in the wavelet space.
+
+2. Gaussian process example
+---------------------------
+
+In the second example, we simulate a small data set from a Gaussian
+process (GP) with a Ornstein-Uhlenbeck (O-H) kernel:
+
+```{r sim-gp}
+n <- 2000
+x <- seq(1,32)
+d <- as.matrix(dist(x))
+Sigma <- exp(-d/200)
+Y <- mvrnorm(n,rep(0,32),Sigma)
+```
+
+In a GP model, the correlations between the points "decay" with
+distance:
+
+```{r plot-cor-gp, fig.height=3.25, fig.width=4, warning=FALSE}
+pdat <- melt(cor(Y))
+colnames(pdat) <- c("x","y","cor")
+ggplot(pdat,aes(x = x,y = y,fill = cor)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "white", high = "red") +
+  theme_cowplot(font_size = 12)
+```
+
+Now perform the discrete wavelet transform on these data:
+
+```{r wd-gp}
+D <- t(apply(Y,1,function (x) wd(x)$D))
+```
+
+ADD TEXT HERE
+
+```{r acf-gp, fig.height=3, fig.width=6}
+par(mfrow = c(1,2))
+y <- Y[1,]
+d <- D[1,]
+acf(y)
+acf(d)
+```
+
+ADD TEXT HERE.
+
+```{r cor-gp, fig.height=4, fig.width=3, warning=FALSE}
+cY <- cor(Y)
+cD <- cor(D)
+p1 <- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
+  geom_histogram(fill = "black",color = "white",bins = 64) +
+  xlim(-1,1) +
+  labs(x = "correlation",title = "data space") +
+  theme_cowplot(font_size = 12)
+p2 <- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
+  geom_histogram(fill = "black",color = "white",bins = 64) +
+  xlim(-1,1) +
+  labs(x = "correlation",title = "wavelet space") +
+  theme_cowplot(font_size = 12)
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+```
