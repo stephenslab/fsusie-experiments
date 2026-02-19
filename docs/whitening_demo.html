@@ -301,7 +301,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-12-19
+<strong>Last updated:</strong> 2026-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -433,15 +433,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreed772f042be003df30c4676792708c0a33bbede75targetblankd772f04a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5f829034ea52cb5c7b4b8f50df1e16596b7c6b90targetblank5f82903a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/d772f042be003df30c4676792708c0a33bbede75" target="_blank">d772f04</a>
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/5f829034ea52cb5c7b4b8f50df1e16596b7c6b90" target="_blank">5f82903</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstreed772f042be003df30c4676792708c0a33bbede75targetblankd772f04a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomstephenslabfsusieexperimentstree5f829034ea52cb5c7b4b8f50df1e16596b7c6b90targetblank5f82903a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -451,7 +451,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/stephenslab/fsusie-experiments/tree/d772f042be003df30c4676792708c0a33bbede75" target="_blank">d772f04</a>.
+<a href="https://github.com/stephenslab/fsusie-experiments/tree/5f829034ea52cb5c7b4b8f50df1e16596b7c6b90" target="_blank">5f82903</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -465,7 +465,11 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
+Ignored files:
+    Ignored:    analysis/figure/
+
 Untracked files:
+    Untracked:  analysis/h3k27ac_cs1snp_fsusie.rds
     Untracked:  analysis/rosmap_h3k27ac_cache/
     Untracked:  analysis/rosmap_overview_cache/
     Untracked:  data/afreq.RData
@@ -483,6 +487,9 @@ Untracked files:
     Untracked:  outputs/ROSMAP_mQTL_cs_effect_cpg_annotation.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_cs_snp_annotation.tsv.gz
     Untracked:  outputs/ROSMAP_mQTL_cs_snp_toppc1_annotation.tsv.gz
+    Untracked:  scripts_plot/cases_study/#CR1_CR2_from_RData.R#
+    Untracked:  scripts_plot/cases_study/.#CR1_CR2_from_RData.R
+    Untracked:  scripts_plot/cases_study/CR1CR2_zoomin_plot.pdf
 
 </code></pre>
 <p>
@@ -528,6 +535,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/5f829034ea52cb5c7b4b8f50df1e16596b7c6b90/analysis/whitening_demo.Rmd" target="_blank">5f82903</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2026-02-19
+</td>
+<td>
+wflow_publish("whitening_demo.Rmd", view = F, verbose = T)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/stephenslab/fsusie-experiments/6bc1fb18ead4f53e35cb3f8df557f835315e9e19/docs/whitening_demo.html" target="_blank">6bc1fb1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-12-19
+</td>
+<td>
+A few small fixes to the whitening demo.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -654,18 +695,21 @@ wflow_publish("index.Rmd")
 </div>
 </div>
 </div>
+<p>Here we give two simple examples to illustrate the decorrelating
+(“biwhitening”) effect of the wavelet transform (on signals that are not
+generated using wavelets).</p>
 <p>Load the wavethresh package as well as a few other packages used this
 demo:</p>
 <pre class="r"><code>library(wavethresh)
-# Loading required package: MASS
-# WaveThresh: R wavelet software, release 4.7.2, installed
-# Copyright Guy Nason and others 1993-2022
-# Note: nlevels has been renamed to nlevelsWT
+library(reshape)
 library(ggplot2)
 library(cowplot)</code></pre>
 <p>Set the seed for reproducibility:</p>
 <pre class="r"><code>set.seed(1)</code></pre>
-<p>Simulate a set of signals with ARMA noise:</p>
+<div id="bumps-example" class="section level2">
+<h2>1. Bumps example</h2>
+<p>Simulate a set of signals using the “bumps” test function from Donoho
+&amp; Johnson, with ARMA noise:</p>
 <pre class="r"><code>n &lt;- 1024
 m &lt;- 100
 SNR &lt;- 2
@@ -680,7 +724,7 @@ for (i in 1:m) {
   y &lt;- v$bumps + e
   Y[i,] &lt;- y
 }</code></pre>
-<p>This is the first noisy signal:</p>
+<p>This is was the first noisy signal looks like:</p>
 <pre class="r"><code>y &lt;- Y[1,]
 pdat &lt;- data.frame(x = x,y = y)
 ggplot(pdat,aes(x = x,y = y)) +
@@ -779,9 +823,10 @@ Peter Carbonetto
 </div>
 </div>
 <p>Observe that the autocorrelation is mostly near zero for the WCs
-(right).</p>
+(right-hand plot).</p>
 <p>Another way to illustrate the decorrelating effect of the DWT is to
-compute the sample correlations:</p>
+compute the sample correlations. Compare the sample correlations in the
+original data space to the sample correlations in the wavelet space:</p>
 <pre class="r"><code>cY &lt;- cor(Y)
 cD &lt;- cor(D)
 p1 &lt;- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
@@ -794,7 +839,11 @@ p2 &lt;- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
   xlim(-1,1) +
   labs(x = &quot;correlation&quot;,title = &quot;wavelet space&quot;) +
   theme_cowplot(font_size = 12)
-plot_grid(p1,p2,nrow = 2,ncol = 1)</code></pre>
+plot_grid(p1,p2,nrow = 2,ncol = 1)
+# Warning: Removed 2 rows containing missing values or values outside the scale range
+# (`geom_bar()`).
+# Removed 2 rows containing missing values or values outside the scale range
+# (`geom_bar()`).</code></pre>
 <p><img src="figure/whitening_demo.Rmd/cor-1.png" width="360" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cor-1">
@@ -820,6 +869,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/stephenslab/fsusie-experiments/blob/6bc1fb18ead4f53e35cb3f8df557f835315e9e19/docs/figure/whitening_demo.Rmd/cor-1.png" target="_blank">6bc1fb1</a>
+</td>
+<td>
+Peter Carbonetto
+</td>
+<td>
+2025-12-19
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/stephenslab/fsusie-experiments/blob/03384449a8249d6c5aaa11c0273c8b2ace6fa543/docs/figure/whitening_demo.Rmd/cor-1.png" target="_blank">0338444</a>
 </td>
 <td>
@@ -835,6 +895,49 @@ Peter Carbonetto
 </div>
 <p>Indeed, the strong correlations in the original data space are
 removed in the wavelet space.</p>
+</div>
+<div id="gaussian-process-example" class="section level2">
+<h2>2. Gaussian process example</h2>
+<p>In the second example, we simulate a small data set from a Gaussian
+process (GP) with a Ornstein-Uhlenbeck (O-H) kernel:</p>
+<pre class="r"><code>n &lt;- 2000
+x &lt;- seq(1,32)
+d &lt;- as.matrix(dist(x))
+Sigma &lt;- exp(-d/200)
+Y &lt;- mvrnorm(n,rep(0,32),Sigma)</code></pre>
+<p>In a GP model, the correlations between the points “decay” with
+distance:</p>
+<pre class="r"><code>pdat &lt;- melt(cor(Y))
+colnames(pdat) &lt;- c(&quot;x&quot;,&quot;y&quot;,&quot;cor&quot;)
+ggplot(pdat,aes(x = x,y = y,fill = cor)) +
+  geom_tile(color = &quot;white&quot;) +
+  scale_fill_gradient(low = &quot;white&quot;, high = &quot;red&quot;) +
+  theme_cowplot(font_size = 12)</code></pre>
+<p><img src="figure/whitening_demo.Rmd/plot-cor-gp-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Now perform the discrete wavelet transform on these data:</p>
+<pre class="r"><code>D &lt;- t(apply(Y,1,function (x) wd(x)$D))</code></pre>
+<p>ADD TEXT HERE</p>
+<pre class="r"><code>par(mfrow = c(1,2))
+y &lt;- Y[1,]
+d &lt;- D[1,]
+acf(y)
+acf(d)</code></pre>
+<p><img src="figure/whitening_demo.Rmd/acf-gp-1.png" width="720" style="display: block; margin: auto;" /></p>
+<p>ADD TEXT HERE.</p>
+<pre class="r"><code>cY &lt;- cor(Y)
+cD &lt;- cor(D)
+p1 &lt;- ggplot(data.frame(x = cY[upper.tri(cY)]),aes(x = x)) +
+  geom_histogram(fill = &quot;black&quot;,color = &quot;white&quot;,bins = 64) +
+  xlim(-1,1) +
+  labs(x = &quot;correlation&quot;,title = &quot;data space&quot;) +
+  theme_cowplot(font_size = 12)
+p2 &lt;- ggplot(data.frame(x = cD[upper.tri(cD)]),aes(x = x)) +
+  geom_histogram(fill = &quot;black&quot;,color = &quot;white&quot;,bins = 64) +
+  xlim(-1,1) +
+  labs(x = &quot;correlation&quot;,title = &quot;wavelet space&quot;) +
+  theme_cowplot(font_size = 12)
+plot_grid(p1,p2,nrow = 2,ncol = 1)</code></pre>
+<p><img src="figure/whitening_demo.Rmd/cor-gp-1.png" width="360" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -862,21 +965,24 @@ Session information
 # [1] stats     graphics  grDevices utils     datasets  methods   base     
 # 
 # other attached packages:
-# [1] cowplot_1.1.3    ggplot2_3.5.2    wavethresh_4.7.2 MASS_7.3-60.0.1 
+# [1] cowplot_1.1.3    ggplot2_4.0.1    reshape_0.8.9    wavethresh_4.7.2
+# [5] MASS_7.3-60.0.1 
 # 
 # loaded via a namespace (and not attached):
 #  [1] gtable_0.3.6       jsonlite_2.0.0     dplyr_1.1.4        compiler_4.3.3    
 #  [5] promises_1.3.3     tidyselect_1.2.1   Rcpp_1.1.0         stringr_1.5.1     
 #  [9] git2r_0.33.0       dichromat_2.0-0.1  later_1.4.2        jquerylib_0.1.4   
 # [13] scales_1.4.0       yaml_2.3.10        fastmap_1.2.0      R6_2.6.1          
-# [17] labeling_0.4.3     generics_0.1.4     workflowr_1.7.1    knitr_1.50        
-# [21] tibble_3.3.0       rprojroot_2.0.4    RColorBrewer_1.1-3 bslib_0.9.0       
-# [25] pillar_1.11.0      rlang_1.1.6        cachem_1.1.0       stringi_1.8.7     
-# [29] httpuv_1.6.14      xfun_0.52          fs_1.6.6           sass_0.4.10       
-# [33] cli_3.6.5          withr_3.0.2        magrittr_2.0.3     digest_0.6.37     
-# [37] grid_4.3.3         lifecycle_1.0.4    vctrs_0.6.5        evaluate_1.0.4    
-# [41] glue_1.8.0         farver_2.1.2       whisker_0.4.1      rmarkdown_2.29    
-# [45] tools_4.3.3        pkgconfig_2.0.3    htmltools_0.5.8.1</code></pre>
+# [17] plyr_1.8.9         labeling_0.4.3     generics_0.1.4     workflowr_1.7.1   
+# [21] knitr_1.50         tibble_3.3.0       rprojroot_2.0.4    RColorBrewer_1.1-3
+# [25] bslib_0.9.0        pillar_1.11.0      rlang_1.1.6        cachem_1.1.0      
+# [29] stringi_1.8.7      httpuv_1.6.14      xfun_0.52          S7_0.2.0          
+# [33] fs_1.6.6           sass_0.4.10        cli_3.6.5          withr_3.0.2       
+# [37] magrittr_2.0.3     digest_0.6.37      grid_4.3.3         lifecycle_1.0.4   
+# [41] vctrs_0.6.5        evaluate_1.0.4     glue_1.8.0         farver_2.1.2      
+# [45] whisker_0.4.1      rmarkdown_2.29     tools_4.3.3        pkgconfig_2.0.3   
+# [49] htmltools_0.5.8.1</code></pre>
+</div>
 </div>
 
 
