@@ -123,7 +123,7 @@ process (GP) with a Ornstein-Uhlenbeck (O-H) kernel:
 n <- 2000
 x <- seq(1,32)
 d <- as.matrix(dist(x))
-Sigma <- exp(-d/200)
+Sigma <- exp(-d/30)
 Y <- mvrnorm(n,rep(0,32),Sigma)
 ```
 
