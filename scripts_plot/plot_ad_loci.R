@@ -67,14 +67,36 @@ for (i in 1:n) {
                     pvalue = -log10(pvalue))
   chr <- dat1[i,"chrom"]
   study <- dat1[i,"AD"]
-  p1 <- ggplot(dat1,aes(x = pos,y = pvalue,)) +
+  p1 <- ggplot(dat1,aes(x = pos,y = pvalue)) +
     geom_point() +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
          y = "-log10 p-value",
          title = study) +
     theme_cowplot(font_size = 10)
-  print(p1)
   
-  # Save the plots in a PDF.
-  # TO DO.
+  # Plot the fsusie fine-mapping results (PIPs and CSs).
+  rdsname <-
+    file.path("../outputs/fsusie_ad_loci",
+              sprintf("ROSMAP_%s.%s.fsusie_mixture_normal_top_pc_weights.rds",
+                      trait,region))
+  fsusie <- readRDS(rdsname)$fsusie_obj
+  pip    <- fsusie$pip
+  dat2   <- data.frame(pip = pip,
+                       pos = as.numeric(sapply(names(pip),
+                               function (x) unlist(strsplit(x,":"))[2])))
+  dat2   <- transform(dat2,pos = pos/1e6)
+  rownames(dat2) <- NULL
+  p2 <- ggplot(dat2,aes(x = pos,y = pip)) +
+    geom_point() +
+    theme_cowplot(font_size = 10)  
+  
+  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
+  
+  # Save the plots to a PDF.
+  pdfname <- sprintf("%s_%s_plots.pdf",trait,region)
+  ggsave(pdfname,
+         plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
+         height = 4,width = 4)
+
+  stop()
 }
