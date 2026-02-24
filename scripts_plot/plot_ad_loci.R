@@ -72,7 +72,8 @@ for (i in 1:n) {
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
          y = "-log10 p-value",
          title = study) +
-    theme_cowplot(font_size = 10)
+    theme_cowplot(font_size = 10) +
+    theme(plot.title = element_text(size = 10,face = "plain"))
   
   # Plot the fsusie fine-mapping results (PIPs and CSs).
   rdsname <-
@@ -88,7 +89,11 @@ for (i in 1:n) {
   rownames(dat2) <- NULL
   p2 <- ggplot(dat2,aes(x = pos,y = pip)) +
     geom_point() +
-    theme_cowplot(font_size = 10)  
+    labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
+         y = "PIP",
+         title = ifelse(trait == "haQTL","haSNPs in DFPLC","mSNPs in DFPLC")) +
+    theme_cowplot(font_size = 10) +
+    theme(plot.title = element_text(size = 10,face = "plain"))
   
   print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
   
@@ -96,7 +101,7 @@ for (i in 1:n) {
   pdfname <- sprintf("%s_%s_plots.pdf",trait,region)
   ggsave(pdfname,
          plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
-         height = 4,width = 4)
+         height = 3,width = 5)
 
   stop()
 }
