@@ -71,12 +71,12 @@ for (o  in (length(res)+1):10000) {
   Y <- signal_scale * Y_signal + Y_noise
 
 
-  m1 <- susiF(Y=Y, X=G,L=20 ,L_start=11 ,nullweight= 1,
+  m1 <- susiF(Y=Y, X=G,L=20 ,L_start=11 ,nullweight= 10,
               prior="mixture_normal",
               cal_obj =FALSE,
               maxit=10)
   m2 <- susiF(Y=Y, X=G,L=20,L_start=11 ,
-              prior="mixture_normal_per_scale"  ,nullweight= 1, maxit=10)
+              prior="mixture_normal_per_scale"  ,nullweight= 10, maxit=10)
 
   cal_purity <- function(l_cs,X){
     tt <- list()

@@ -23,21 +23,21 @@ for (k in seq_len(20)) {
     Y = log1p(out$Y),
     X = X_perm,
     L = 2,
-    nullweight = 0.500,
+    nullweight = 0.010,
     post_processing = "none",
     quantile_trans = TRUE,
-    thresh_lowcount = 0.050
+    thresh_lowcount = 0.600
   )
 
   tt_small <- fsusieR::susiF(
     Y = log1p(out$Y),
     X = X_perm,
     L = 2,
-    nullweight = 0.500,
+    nullweight = 0.010,
     post_processing = "none",
     quantile_trans = TRUE,
     cor_small = TRUE,
-    thresh_lowcount = 0.050
+    thresh_lowcount = 0.600
   )
 
   lol <- susieR::susie(
@@ -47,13 +47,16 @@ for (k in seq_len(20)) {
 
   res_job[[k]] <- list(
     fsusie = tt$cs,
+    fsusie_purity= min(abs( cor(X[,tt$cs[[1]], drop=FALSE]))),
     fsusie_corsmall = tt_small$cs,
+
+    fsusie_small_purity= min(abs( cor(X[,tt_small$cs[[1]], drop=FALSE]))),
     susie = lol$sets,
     file_used = lf[id]
   )
   out_res <- list(
   results = res_job,
-  param = c(nullweight = 0.500, thresh_lowcount = 0.050),
+  param = c(nullweight = 0.010, thresh_lowcount = 0.600),
   job_id = 40
 )
 

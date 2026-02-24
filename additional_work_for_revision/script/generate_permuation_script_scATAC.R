@@ -7,8 +7,8 @@ input_path  <- "/project2/mstephens/wdenault/anjing_data/data/"
 job_path    <- "/home/wdenault/fsusi_simu/script/additional_simulations/permutation_scATAC/"
 result_path <- "/home/wdenault/fsusi_simu/correlated_sim/permutation_scATAC_results/"
 
-nullweights <- c(0.1, 0.5)
-thresh_lowcounts <- c(0.01, 0.05, 0.1, 0.5)
+nullweights <- c(0.01, 0.05,0.1, 0.5)
+thresh_lowcounts <- c(0.05, 0.1, 0.5, 0.6)
 
 n_jobs_rep <- 10      # jobs per parameter combo
 n_rep_job  <- 10      # permutations inside each job
@@ -160,8 +160,13 @@ for (rep_id in seq_len(%d)) {
     mfsusie = tt_m$cs,
     mfsusie_corsmall = tt_msmall$cs,
     fsusie = tt$cs,
-    fsusie_corsmall = tt_small$cs,
-    region = reg_num
+    fsusie_corsmall = tt_small$cs
+    fsusie_purity= min(abs( cor(X[,tt$cs[[1]], drop=FALSE]))),
+
+
+    fsusie_small_purity= min(abs( cor(X[,tt_small$cs[[1]], drop=FALSE]))),
+     mfsusie_purity = min(abs( cor(X[,tt_m$cs[[1]], drop=FALSE]))),
+    mfsusie_corsmall_purity = min(abs( cor(X[, tt_msmall$cs[[1]], drop=FALSE])))
   )
 
 out <- list(

@@ -7,8 +7,8 @@ input_path  <- "/project2/mstephens/wdenault/GTEX_analysis_Fsusie/result_Gao/"
 output_path <- "/home/wdenault/fsusi_simu/script/additional_simulations/permutation_job/"
 result_path <- "/home/wdenault/fsusi_simu/correlated_sim/results/"
 
-nullweights <- c(0.1, 0.5)
-thresh_lowcounts <- c(0.05, 0.1, 0.5)
+nullweights <- c(0.01, 0.05,0.1, 0.5)
+thresh_lowcounts <- c(0.05, 0.1, 0.5, 0.6)
 
 n_rep_job <- 20      # replicates INSIDE each job
 n_jobs_rep <- 10     # number of jobs per parameter combo
@@ -80,7 +80,10 @@ for (k in seq_len(%d)) {
 
   res_job[[k]] <- list(
     fsusie = tt$cs,
+    fsusie_purity= min(abs( cor(X[,tt$cs[[1]], drop=FALSE]))),
     fsusie_corsmall = tt_small$cs,
+
+    fsusie_small_purity= min(abs( cor(X[,tt_small$cs[[1]], drop=FALSE]))),
     susie = lol$sets,
     file_used = lf[id]
   )

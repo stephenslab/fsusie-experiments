@@ -93,48 +93,53 @@ for (rep_id in seq_len(10)) {
     cor_small=FALSE,
     post_processing="none",
     quantile_trans=TRUE,
-    thresh_lowcount=0.050
+    thresh_lowcount=0.100
   )
 
   tt_msmall <- multfsusie(
     Y=Y, X=X_perm, pos=pos, L=3,
     cor_small=TRUE,
-    nullweight=0.100,
+    nullweight=0.010,
     post_processing="none",
     quantile_trans=TRUE,
-    thresh_lowcount=0.050
+    thresh_lowcount=0.100
   )
 
   id <- sample(seq_along(Y_f),1)
 
   tt <- fsusieR::susiF(
     Y=log1p(Y_f[[id]]), X=X_perm, L=2,
-    nullweight=0.100,
+    nullweight=0.010,
     post_processing="none",
     quantile_trans=TRUE,
-    thresh_lowcount=0.050
+    thresh_lowcount=0.100
   )
 
   tt_small <- fsusieR::susiF(
     Y=log1p(Y_f[[id]]), X=X_perm, L=2,
-    nullweight=0.100,
+    nullweight=0.010,
     cor_small=TRUE,
     post_processing="none",
     quantile_trans=TRUE,
-    thresh_lowcount=0.050
+    thresh_lowcount=0.100
   )
 
   res_job[[rep_id]] <- list(
     mfsusie = tt_m$cs,
     mfsusie_corsmall = tt_msmall$cs,
     fsusie = tt$cs,
-    fsusie_corsmall = tt_small$cs,
-    region = reg_num
+    fsusie_corsmall = tt_small$cs
+    fsusie_purity= min(abs( cor(X[,tt$cs[[1]], drop=FALSE]))),
+
+
+    fsusie_small_purity= min(abs( cor(X[,tt_small$cs[[1]], drop=FALSE]))),
+     mfsusie_purity = min(abs( cor(X[,tt_m$cs[[1]], drop=FALSE]))),
+    mfsusie_corsmall_purity = min(abs( cor(X[, tt_msmall$cs[[1]], drop=FALSE])))
   )
 
 out <- list(
   results = res_job,
-  param = c(nullweight=0.100, thresh_lowcount=0.050),
+  param = c(nullweight=0.010, thresh_lowcount=0.100),
   job_id = 13
 )
 
