@@ -24,7 +24,12 @@ ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",14)),
                                  "chr18_62476957_68137751",
                                  "chr20_53859688_57519449",
                                  "chr21_24561908_27573286",
-                                 "chr21_25835755_30175889"))
+                                 "chr21_25835755_30175889"),
+                      pos0 = c(207,rep(0,17)),
+                      pos1 = c(208,rep(0,17)))
+
+# Load the allele frequency data.
+# load("../data/afreq.RData")
 
 # Load the relevant coloc results.
 coloc_res <- fread("../outputs/ROSMAP_fsusie_AD_coloc.tsv.gz",
@@ -71,7 +76,8 @@ for (i in 1:n) {
     geom_point() +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
          y = "-log10 p-value",
-         title = study) +
+         title = paste0(study,", PP(H4) = ",
+                        round(coloc_res[i,"L_PP.H4.abf"],digits = 3))) +
     theme_cowplot(font_size = 10) +
     theme(plot.title = element_text(size = 10,face = "plain"))
   
@@ -82,22 +88,30 @@ for (i in 1:n) {
                       trait,region))
   fsusie <- readRDS(rdsname)$fsusie_obj
   pip    <- fsusie$pip
+  cs     <- fsusie$sets$cs
   dat2   <- data.frame(pip = pip,
                        pos = as.numeric(sapply(names(pip),
-                               function (x) unlist(strsplit(x,":"))[2])))
+                               function (x) unlist(strsplit(x,":"))[2])),
+                       cs = 0)
+  rownames(dat2) <- names(pip)
+  for (j in 1:length(cs)) {
+    snps <- names(cs[[j]])
+    dat2[snps,"cs"] <- j
+  }
+  dat2 <- transform(dat2,cs = factor(cs))
+  stop()
   dat2   <- transform(dat2,pos = pos/1e6)
   rownames(dat2) <- NULL
-  p2 <- ggplot(dat2,aes(x = pos,y = pip)) +
+  p2 <- ggplot(dat2,aes(x = pos,y = pip,color = cs)) +
     geom_point() +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
          y = "PIP",
          title = ifelse(trait == "haQTL","haSNPs in DFPLC","mSNPs in DFPLC")) +
     theme_cowplot(font_size = 10) +
     theme(plot.title = element_text(size = 10,face = "plain"))
-  
-  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
-  
+    
   # Save the plots to a PDF.
+  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
   pdfname <- sprintf("%s_%s_plots.pdf",trait,region)
   ggsave(pdfname,
          plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
