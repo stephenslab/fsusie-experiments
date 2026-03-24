@@ -122,24 +122,25 @@ for (i in 1:n) {
     dat1[rows,"cs"] <- j
   }
   dat1 <- transform(dat1,cs = factor(cs,cs_labels))
+  levels(dat1$cs) <- substr(levels(dat1$cs),1,4)
   dat1 <- dat1[order(dat1$cs),]
   cs_colors <- c("black","red","dodgerblue","limegreen","darkorange",
                  "gold","peru","violet")
   p1 <- ggplot(dat1,aes(x = pos,y = pvalue,label = label,color = cs)) +
-      geom_point() +
+      geom_point(show.legend = TRUE) +
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
                     min.segment.length = 0,max.overlaps = Inf) +
     scale_x_continuous(breaks = seq(floor(min(dat1$pos)),
                                     ceiling(max(dat1$pos)),0.5)) +
     scale_color_manual(values = cs_colors,drop = FALSE) +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chromosome),
-         y = "-log10 p-value",
+         y = "-log10 p-value",color = "CS",
          title = paste0(study,", PP(H4) = ",
                         round(coloc_res[i,"L_PP.H4.abf"],digits = 3))) +
     theme_cowplot(font_size = 9) +
     theme(plot.title = element_text(size = 9,face = "plain"))
   p2 <- ggplot(dat2,aes(x = pos,y = pip,color = cs,label = label)) +
-    geom_point() +
+    geom_point(show.legend = TRUE) +
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
                     min.segment.length = 0,max.overlaps = Inf) +
     scale_x_continuous(breaks = seq(min(dat2$pos),max(dat2$pos),0.5)) +
