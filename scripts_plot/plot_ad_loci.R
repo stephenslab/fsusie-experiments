@@ -29,7 +29,8 @@ ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",14)),
                       pos1 = c(208,rep(0,17)))
 
 # Load the allele frequency data.
-# load("../data/afreq.RData")
+load("../data/afreq.RData")
+afreq <- subset(afreq,maf >= 0.05)
 
 # Load the relevant coloc results.
 coloc_res <- fread("../outputs/ROSMAP_fsusie_AD_coloc.tsv.gz",
@@ -63,25 +64,21 @@ for (i in 1:n) {
   ad_loci[i,"study"] <- res[1,"AD"]
   ad_loci[i,cols] <- res[1,cols]
   
-  # Plot the Alzheimer's disease GWAS results.
+  # Plot the Alzheimer's disease GWAS results and the fsusie
+  # fine-mapping results (PIPs and CSs). Note that the CSs are
+  # filtered so that the sentinel SNP always has an MAF > 5%.
   dat1 <- subset(ad_gwas,
                  type == ad_loci[i,"trait"] &
                  region == ad_loci[i,"region"])
+  dat1$label = ""
+  j <- which.min(dat1$pvalue)
+  dat1[j,"label"] <- prettyNum(dat1[j,"pos"],big.mark = ",",scientific = FALSE)
   dat1 <- transform(dat1,
-                    pos = pos/1e6,
+                    pos    = pos/1e6,
                     pvalue = -log10(pvalue))
-  chr <- dat1[i,"chrom"]
+  chromosome <- dat1[i,"chrom"]
   study <- dat1[i,"AD"]
-  p1 <- ggplot(dat1,aes(x = pos,y = pvalue)) +
-    geom_point() +
-    labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
-         y = "-log10 p-value",
-         title = paste0(study,", PP(H4) = ",
-                        round(coloc_res[i,"L_PP.H4.abf"],digits = 3))) +
-    theme_cowplot(font_size = 10) +
-    theme(plot.title = element_text(size = 10,face = "plain"))
   
-  # Plot the fsusie fine-mapping results (PIPs and CSs).
   rdsname <-
     file.path("../outputs/fsusie_ad_loci",
               sprintf("ROSMAP_%s.%s.fsusie_mixture_normal_top_pc_weights.rds",
@@ -89,26 +86,70 @@ for (i in 1:n) {
   fsusie <- readRDS(rdsname)$fsusie_obj
   pip    <- fsusie$pip
   cs     <- fsusie$sets$cs
-  dat2   <- data.frame(pip = pip,
-                       pos = as.numeric(sapply(names(pip),
-                               function (x) unlist(strsplit(x,":"))[2])),
-                       cs = 0)
+  dat2   <- data.frame(pip   = pip,
+                       pos   = as.numeric(sapply(names(pip),
+                                 function (x) unlist(strsplit(x,":"))[2])),
+                       cs    = 0,
+                       label = "",
+                       variant_id = names(pip))
   rownames(dat2) <- names(pip)
   for (j in 1:length(cs)) {
     snps <- names(cs[[j]])
-    dat2[snps,"cs"] <- j
+    sentinel_snp <- names(which.max(pip[snps]))
+    if (sum(with(afreq,chr == paste0("chr",chromosome) &
+                       pos == dat2[sentinel_snp,"pos"]) > 0)) {
+      dat2[snps,"cs"] <- j
+      dat2[sentinel_snp,"label"] <-
+        prettyNum(dat2[sentinel_snp,"pos"],big.mark = ",",scientific = FALSE)
+    } else {
+      snps <- setdiff(rownames(dat2),snps)
+      dat2 <- dat2[snps,]
+    }
   }
   dat2 <- transform(dat2,cs = factor(cs))
-  stop()
-  dat2   <- transform(dat2,pos = pos/1e6)
+  dat2 <- transform(dat2,pos = pos/1e6)
+  cs_labels <- sprintf("CS%d (%d SNPs)",1:length(cs) - 1,table(dat2$cs))
+  j <- which(table(dat2$cs) == 1)
+  cs_labels[j] <- sprintf("CS%d (1 SNP)",j - 1)
+  cs_labels[1] <- "none"
+  levels(dat2$cs) <- cs_labels
   rownames(dat2) <- NULL
-  p2 <- ggplot(dat2,aes(x = pos,y = pip,color = cs)) +
+  dat1$cs <- "none"
+  for (j in cs_labels) {
+    snps <- subset(dat2,cs == j)$variant_id
+    snps <- substr(snps,4,100)
+    rows <- which(is.element(dat1$variant_id,snps))
+    dat1[rows,"cs"] <- j
+  }
+  dat1 <- transform(dat1,cs = factor(cs,cs_labels))
+  dat1 <- dat1[order(dat1$cs),]
+  cs_colors <- c("black","red","dodgerblue","limegreen","darkorange",
+                 "gold","peru","violet")
+  p1 <- ggplot(dat1,aes(x = pos,y = pvalue,label = label,color = cs)) +
+      geom_point() +
+    geom_text_repel(size = 2.5,color = "black",segment.color = "black",
+                    min.segment.length = 0,max.overlaps = Inf) +
+    scale_x_continuous(breaks = seq(floor(min(dat1$pos)),
+                                    ceiling(max(dat1$pos)),0.5)) +
+    scale_color_manual(values = cs_colors,drop = FALSE) +
+    labs(x = sprintf("base-pair position on chromosome %d (Mb)",chromosome),
+         y = "-log10 p-value",
+         title = paste0(study,", PP(H4) = ",
+                        round(coloc_res[i,"L_PP.H4.abf"],digits = 3))) +
+    theme_cowplot(font_size = 9) +
+    theme(plot.title = element_text(size = 9,face = "plain"))
+  p2 <- ggplot(dat2,aes(x = pos,y = pip,color = cs,label = label)) +
     geom_point() +
-    labs(x = sprintf("base-pair position on chromosome %d (Mb)",chr),
-         y = "PIP",
+    geom_text_repel(size = 2.5,color = "black",segment.color = "black",
+                    min.segment.length = 0,max.overlaps = Inf) +
+    scale_x_continuous(breaks = seq(min(dat2$pos),max(dat2$pos),0.5)) +
+    scale_y_continuous(limits = c(0,1.1),breaks = c(0,0.5,1)) +
+    scale_color_manual(values = cs_colors,drop = FALSE) +
+    labs(x = sprintf("base-pair position on chromosome %d (Mb)",chromosome),
+         y = "PIP",color = "CS",
          title = ifelse(trait == "haQTL","haSNPs in DFPLC","mSNPs in DFPLC")) +
-    theme_cowplot(font_size = 10) +
-    theme(plot.title = element_text(size = 10,face = "plain"))
+    theme_cowplot(font_size = 9) +
+    theme(plot.title = element_text(size = 9,face = "plain"))
     
   # Save the plots to a PDF.
   print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
