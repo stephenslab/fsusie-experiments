@@ -108,7 +108,7 @@ for (i in 1:n) {
   }
   dat2 <- transform(dat2,cs = factor(cs))
   dat2 <- transform(dat2,pos = pos/1e6)
-  cs_labels <- sprintf("CS%d (%d SNPs)",1:length(cs) - 1,table(dat2$cs))
+  cs_labels <- sprintf("CS%d (%d SNPs)",1:nlevels(dat2$cs) - 1,table(dat2$cs))
   j <- which(table(dat2$cs) == 1)
   cs_labels[j] <- sprintf("CS%d (1 SNP)",j - 1)
   cs_labels[1] <- "none"
@@ -125,7 +125,8 @@ for (i in 1:n) {
   levels(dat1$cs) <- substr(levels(dat1$cs),1,4)
   dat1 <- dat1[order(dat1$cs),]
   cs_colors <- c("black","red","dodgerblue","limegreen","darkorange",
-                 "gold","peru","violet")
+                 "gold","peru","violet","#FFB300","#803E75","#FF6800",
+                 "#A6BDD7","#C10020","#CEA262","#817066","#007D34")
   p1 <- ggplot(dat1,aes(x = pos,y = pvalue,label = label,color = cs)) +
       geom_point(show.legend = TRUE) +
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
@@ -153,11 +154,9 @@ for (i in 1:n) {
     theme(plot.title = element_text(size = 9,face = "plain"))
     
   # Save the plots to a PDF.
-  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
+  # print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
   pdfname <- sprintf("%s_%s_plots.pdf",trait,region)
   ggsave(pdfname,
          plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
          height = 3,width = 5)
-
-  stop()
 }
