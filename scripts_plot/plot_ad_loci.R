@@ -8,8 +8,8 @@ library(cowplot)
 # coloc.
 ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",11)),
                       region = c("chr1_205117782_208795513",  #  1
-                                 "chr5_82637805_88412930",    #  2
-                                 "chr5_85967320_89904257",    #  3
+                                 "chr5_82637805_88412930",    #  2 (x)
+                                 "chr5_85967320_89904257",    #  3 
                                  "chr8_98960936_104073051",   #  4
                                  "chr10_54746550_59267894",   #  5 (x)
                                  "chr12_109831778_113509918", #  6 (x)
@@ -28,7 +28,7 @@ ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",11)),
                       pos1 = c(208.1,89,88,101,59,
                                113.5,113.5,24,63,Inf,
                                57,Inf,Inf,Inf,47.8))
-loci_to_keep <- c(1:4,9,11,15)
+loci_to_keep <- c(1,3,4,9,11,15)
 ad_loci <- ad_loci[loci_to_keep,]
 
 # Load the allele frequency data.
@@ -169,13 +169,11 @@ for (i in 1:n) {
     theme(plot.title = element_text(size = 8,face = "plain"))
 
   # Save the plots to a PDF.
-  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
+  # print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
   pdfname <- sprintf("plots/%s_%s_plots.pdf",trait,region)
   ggsave(pdfname,
          plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
          height = 3,width = 6)
-
-  stop()
   
   # invisible(readline(prompt="Press [enter] to continue"))
   # next
