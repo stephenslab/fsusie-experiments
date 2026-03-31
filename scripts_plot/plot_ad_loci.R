@@ -3,36 +3,33 @@ library(ggplot2)
 library(ggrepel)
 library(cowplot)
 
-# This is a script to plot the results from the 14 methylation and
+# This is a script to plot the results from the methylation and
 # histone acetylation loci that overlap with AD loci according to
 # coloc.
-ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",14)),
+ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",11)),
                       region = c("chr1_205117782_208795513",
                                  "chr5_82637805_88412930",
                                  "chr5_85967320_89904257",
                                  "chr8_98960936_104073051",
-                                 "chr6_44880827_48309905",
                                  "chr10_54746550_59267894",
                                  "chr12_109831778_113509918",
                                  "chr12_111405189_114438276",
-                                 "chr12_111570379_117277693",
                                  "chr16_21437007_24596316",
-                                 "chr16_24031743_30613717",
-                                 "chr16_27341433_34991551",
-                                 "chr17_58565557_62392838",
                                  "chr18_59611772_63187118",
                                  "chr18_62476957_68137751",
                                  "chr20_53859688_57519449",
                                  "chr21_24561908_27573286",
-                                 "chr21_25835755_30175889"),
-                      pos0 = c(207,-Inf,-Inf,99.5,47,-Inf,-Inf,
-                               -Inf,-Inf,-Inf,-Inf,-Inf,-Inf,62,
-                               -Inf,56,25.5,-Inf),
-                      pos1 = c(208.25,Inf,Inf,101.5,48.25,Inf,Inf,
-                               Inf,Inf,Inf,Inf,Inf,Inf,63,
-                               Inf,57,27.5,Inf))
-loci_to_keep <- c(2,3,4,5,14,17)
-ad_loci <- ad_loci[loci_to_keep,]
+                                 "chr21_25835755_30175889",
+                                 "chr3_154762617_158677749",
+                                 "chr6_44880827_48309905"),
+                      pos0 = c(207, -Inf, -Inf, -Inf, -Inf,
+                               -Inf, -Inf, -Inf, -Inf, -Inf,
+                               -Inf, -Inf, -Inf, -Inf, -Inf),
+                      pos1 = c(208.1, Inf, Inf, Inf, Inf,
+                               Inf, Inf, Inf, Inf, Inf,
+                               Inf, Inf, Inf, Inf, Inf))
+# loci_to_keep <- c(1,2,4,5,14,16)
+# ad_loci <- ad_loci[loci_to_keep,]
 
 # Load the allele frequency data.
 load("../data/afreq.RData")
@@ -69,7 +66,15 @@ for (i in 1:n) {
   res <- subset(coloc_res,xQTL == sprintf("ROSMAP_%s@%s",trait,region))
   ad_loci[i,"study"] <- res[1,"AD"]
   ad_loci[i,cols] <- res[1,cols]
-  
+
+  # print(qplot(dat1$pos,dat1$pvalue) +
+  #   scale_x_continuous(breaks = seq(floor(min(dat1$pos)),
+  #                                   ceiling(max(dat1$pos)),0.5)) +
+  #   theme_cowplot(font_size = 9))
+  # print(max(dat1$pvalue,na.rm = TRUE))
+  # invisible(readline(prompt="Press [enter] to continue"))
+  # next
+    
   # Plot the Alzheimer's disease GWAS results and the fsusie
   # fine-mapping results (PIPs and CSs). Note that the CSs are
   # filtered so that the sentinel SNP always has an MAF > 5%.
@@ -78,22 +83,13 @@ for (i in 1:n) {
                  region == ad_loci[i,"region"])
   dat1$label = ""
   j <- which.min(dat1$pvalue)
-  dat1[j,"label"] <- prettyNum(dat1[j,"pos"],big.mark = ",",scientific = FALSE)
   dat1 <- transform(dat1,
                     pos    = pos/1e6,
                     pvalue = -log10(pvalue))
+  dat1[j,"label"] <- prettyNum(dat1[j,"pos"],big.mark = ",",scientific = FALSE)
   chromosome <- dat1[i,"chrom"]
   study <- dat1[i,"AD"]
 
-  print(qplot(dat1$pos,dat1$pvalue) +
-    scale_x_continuous(breaks = seq(floor(min(dat1$pos)),
-                                    ceiling(max(dat1$pos)),0.5)) +
-    theme_cowplot(font_size = 9))
-  print(max(dat1$pvalue,na.rm = TRUE))
-  invisible(readline(prompt="Press [enter] to continue"))
-  
-  next
-  
   rdsname <-
     file.path("../outputs/fsusie_ad_loci",
               sprintf("ROSMAP_%s.%s.fsusie_mixture_normal_top_pc_weights.rds",
@@ -129,6 +125,10 @@ for (i in 1:n) {
   cs_labels[1] <- "none"
   levels(dat2$cs) <- cs_labels
   rownames(dat2) <- NULL
+
+  dat1 <- subset(dat1,
+                 pos >= min(dat2$pos) &
+                 pos <= max(dat2$pos))
   dat1$cs <- "none"
   for (j in cs_labels) {
     snps <- subset(dat2,cs == j)$variant_id
@@ -155,7 +155,7 @@ for (i in 1:n) {
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
                     min.segment.length = 0,max.overlaps = Inf) +
     scale_x_continuous(breaks = seq(floor(min(dat1$pos)),
-                                    ceiling(max(dat1$pos)),0.5)) +
+                                    ceiling(max(dat1$pos)),0.1)) +
     scale_color_manual(values = cs_colors,drop = FALSE) +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chromosome),
          y = "-log10 p-value",color = "CS",
@@ -168,7 +168,7 @@ for (i in 1:n) {
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
                     min.segment.length = 0,max.overlaps = Inf) +
     scale_x_continuous(breaks = seq(floor(min(dat2$pos)),
-                                    ceiling(max(dat2$pos)),0.5)) +
+                                    ceiling(max(dat2$pos)),0.1)) +
     scale_y_continuous(limits = c(0,1.1),breaks = c(0,0.5,1)) +
     scale_color_manual(values = cs_colors,drop = FALSE) +
     labs(x = sprintf("base-pair position on chromosome %d (Mb)",chromosome),
@@ -176,13 +176,15 @@ for (i in 1:n) {
          title = ifelse(trait == "haQTL","haSNPs in DFPLC","mSNPs in DFPLC")) +
     theme_cowplot(font_size = 8) +
     theme(plot.title = element_text(size = 8,face = "plain"))
-    
+
   # Save the plots to a PDF.
-  print(p1)
-  # print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
-  # pdfname <- sprintf("plots/%s_%s_plots.pdf",trait,region)
-  # ggsave(pdfname,
-  #        plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
-  #        height = 3,width = 6)
-  gc(verbose = TRUE)
+  print(plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"))
+  pdfname <- sprintf("plots/%s_%s_plots.pdf",trait,region)
+  ggsave(pdfname,
+         plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
+         height = 3,width = 6)
+  # gc(verbose = TRUE)
+  stop()
+  invisible(readline(prompt="Press [enter] to continue"))
+  next
 }
