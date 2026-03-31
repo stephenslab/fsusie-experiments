@@ -83,10 +83,10 @@ for (i in 1:n) {
                  region == ad_loci[i,"region"])
   dat1$label = ""
   j <- which.min(dat1$pvalue)
+  dat1[j,"label"] <- prettyNum(dat1[j,"pos"],big.mark = ",",scientific = FALSE)
   dat1 <- transform(dat1,
                     pos    = pos/1e6,
                     pvalue = -log10(pvalue))
-  dat1[j,"label"] <- prettyNum(dat1[j,"pos"],big.mark = ",",scientific = FALSE)
   chromosome <- dat1[i,"chrom"]
   study <- dat1[i,"AD"]
 
