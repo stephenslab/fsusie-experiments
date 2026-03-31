@@ -1,62 +1,3 @@
-library(data.table)
-library(ggplot2)
-library(ggrepel)
-library(cowplot)
-
-# This is a script to plot the results from the methylation and
-# histone acetylation loci that overlap with AD loci according to
-# coloc.
-ad_loci <- data.frame(trait = c(rep("haQTL",4),rep("mQTL",11)),
-                      region = c("chr1_205117782_208795513",
-                                 "chr5_82637805_88412930",
-                                 "chr5_85967320_89904257",
-                                 "chr8_98960936_104073051",
-                                 "chr10_54746550_59267894",
-                                 "chr12_109831778_113509918",
-                                 "chr12_111405189_114438276",
-                                 "chr16_21437007_24596316",
-                                 "chr18_59611772_63187118",
-                                 "chr18_62476957_68137751",
-                                 "chr20_53859688_57519449",
-                                 "chr21_24561908_27573286",
-                                 "chr21_25835755_30175889",
-                                 "chr3_154762617_158677749",
-                                 "chr6_44880827_48309905"),
-                      pos0 = c(207,86,86,100,57,
-                               -Inf,-Inf,-Inf,-Inf,-Inf,
-                               -Inf,-Inf,-Inf,-Inf,-Inf),
-                      pos1 = c(208.1,89,88,101,59,
-                               Inf,Inf,Inf,Inf,Inf,
-                               Inf,Inf,Inf,Inf,Inf))
-loci_to_keep <- c(1:5,6,7,8,9,10,11,12,13,14,15)
-ad_loci <- ad_loci[loci_to_keep,]
-
-# Load the allele frequency data.
-load("../data/afreq.RData")
-afreq <- subset(afreq,maf >= 0.05)
-
-# Load the relevant coloc results.
-coloc_res <- fread("../outputs/ROSMAP_fsusie_AD_coloc.tsv.gz",
-                   sep = "\t",header = TRUE)
-class(coloc_res) <- "data.frame"
-
-# Load the relevant AD GWAS results.
-ad_gwas <- fread("../outputs/fsusie_AD_overlap_sumstat.tsv.gz",
-                 sep = "\t",header = TRUE)
-class(ad_gwas) <- "data.frame"
-
-# Add some columns to ad_loci for storing the coloc results.
-ad_loci <- cbind(ad_loci,
-                 data.frame(study       = "",
-                            PP.H0.abf   = 0,
-                            PP.H1.abf   = 0,
-                            PP.H2.abf   = 0,
-                            L_PP.H3.abf = 0,
-                            L_PP.H4.abf = 0))
-
-# Repeat for each of the selected loci.
-n <- nrow(ad_loci)
-for (i in 1:n) {
   trait <- ad_loci[i,"trait"]
   region <- ad_loci[i,"region"]
   cat(i,"trait =",trait,"|","region =",region,"\n")
@@ -174,9 +115,3 @@ for (i in 1:n) {
   ggsave(pdfname,
          plot_grid(p1,p2,nrow = 2,ncol = 1,align = "v"),
          height = 3,width = 6)
-
-  stop()
-  
-  # invisible(readline(prompt="Press [enter] to continue"))
-  # next
-}
