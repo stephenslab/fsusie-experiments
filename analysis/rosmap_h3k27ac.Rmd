@@ -92,6 +92,7 @@ peaks_fsusie <- transform(peaks_fsusie,
 Keep only CSs if the MAF of the sentinel SNP is >5%:
 
 ```{r filter-by-maf}
+snps_fsusie_all <- snps_fsusie
 keep        <- tapply(snps_susie[c("pip","maf")],snps_susie$cs,
                       function (x) x[which.max(x$pip),"maf"] >= 0.05)
 keep_cs     <- names(which(keep))
@@ -112,6 +113,7 @@ Apply this same MAF filter to the SNP-peak association tests and the
 fSuSiE peak-level results:
 
 ```{r filter-by-maf-more}
+peaks_fsusie_all <- peaks_fsusie
 ids          <- with(assoc,paste(chr,pos,sep = "_"))
 rows         <- match(ids,afreq$id)
 assoc$maf    <- afreq[rows,"maf"]
@@ -492,6 +494,51 @@ table(abs(pdat$dist) < 0.1)
 
 ```{r dist-hasnp-peak-cs1snp-ggsave, echo=FALSE, warning=FALSE}
 ggsave("dist_hasnp_peak_cs1snp.pdf",p,height = 2.25,width = 2.5)
+```
+
+Compare the minimum distances for CSs in which the sentinel SNP has a
+MAF < 5% vs. MAF > 5%.
+
+```{r dist-hasnp-peak-cs1snp-lowmaf, fig.height=2, fig.width=3.5, warning=FALSE}
+keep <- tapply(snps_fsusie_all[c("pip","maf")],snps_fsusie_all$cs,
+               function (x) x[which.max(x$pip),"maf"] < 0.05)
+keep_cs <- names(which(keep))
+snps_fsusie_lowmaf <- subset(snps_fsusie_all,is.element(cs,keep_cs))
+snps_fsusie_lowmaf <- transform(snps_fsusie_lowmaf,
+                                region = factor(region),
+                                cs     = factor(cs))
+cs1snp_fsusie_lowmaf <- table(snps_fsusie_lowmaf$cs)
+cs1snp_fsusie_lowmaf <- names(cs1snp_fsusie_lowmaf)[cs1snp_fsusie_lowmaf == 1]
+cs1snp_fsusie_lowmaf <- subset(snps_fsusie_lowmaf,
+                               is.element(cs,cs1snp_fsusie_lowmaf))
+peaks_fsusie_lowmaf <- subset(peaks_fsusie_all,is.element(cs,keep_cs))
+peaks_fsusie_lowmaf_cs1snp <- subset(peaks_fsusie_lowmaf,
+                                     is.element(cs,cs1snp_fsusie_lowmaf$cs))
+rows <- match(peaks_fsusie_lowmaf_cs1snp$cs,cs1snp_fsusie_lowmaf$cs)
+peaks_fsusie_lowmaf_cs1snp$variant_pos <- cs1snp_fsusie_lowmaf[rows,"pos"]
+peaks_fsusie_lowmaf_cs1snp <-
+  transform(peaks_fsusie_lowmaf_cs1snp,
+            cs   = factor(cs),
+            dist = (peak_start + peak_end)/2 - variant_pos)
+pdat2 <- tapply(peaks_fsusie_lowmaf_cs1snp$dist,peaks_fsusie_lowmaf_cs1snp$cs,
+                function (x) {
+ 			     i <- which.min(abs(x)) 
+				 return(x[i])
+    		    })
+pdat2 <- data.frame(dist = pdat2/1e6)
+pdat_combined <- rbind(cbind(data.frame(maf = "above_5%"),pdat),
+                       cbind(data.frame(maf = "below_5%"),pdat2))
+pdat_combined <- transform(pdat_combined,
+                           maf  = factor(maf),
+                           dist = pmin(abs(dist),2) * sign(dist))
+p <- ggplot(pdat_combined,aes(x = dist,fill = maf)) +
+  geom_histogram(bins = 64,position = "stack") +
+  scale_fill_manual(values = c("darkorange","darkblue")) +
+  labs(x = "H3K9ac peak - haSNP pos. (Mb)",
+       y = "number of haSNPs") +
+  theme_cowplot(font_size = 10)
+print(p)
+ggsave("dist_hasnp_peak_cs1snp_by_maf.pdf",p,height = 2.25,width = 3.5)
 ```
 
 [box-download-link]: https://uchicago.box.com/s/tt1vgg7vqayfthg0vsbl8gw0sdi0f1uo
