@@ -141,6 +141,7 @@ for (i in 1:n) {
   dat2 <- subset(dat2,pos >= pos0 & pos <= pos1)
   dat2 <- transform(dat2,cs = factor(cs))
   dat1 <- transform(dat1,cs = factor(cs,levels(dat2$cs)))
+  cat(sprintf("minimum p-value = %0.1e\n",max(dat1$pvalue,na.rm = TRUE)))
   p1 <- ggplot(dat1,aes(x = pos,y = pvalue,label = label,color = cs)) +
       geom_point(show.legend = TRUE) +
     geom_text_repel(size = 2.5,color = "black",segment.color = "black",
