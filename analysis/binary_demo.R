@@ -50,6 +50,7 @@ p <- ncol(X)
 for (j in 1:p)
   X[,j] <- X[,j] - min(X[,j])
 true_pos <- c(124,174)
+X[100,174] <- 0.85
 Y <- matrix(0,n,m)
 for ( i in 1:nrow(Y)){
   prob <- sigmoid(baseline +
@@ -64,6 +65,7 @@ fit <- susiF(Y,X,L = 2,quantile_trans = FALSE,filter_cs = FALSE,
 
 # Plot the PIPs and CSs.
 p1 <- pip_plot(fit,true_pos) + xlim(0,200)
+print(p1)
 print(fit$cs)
 print(true_pos)
 
